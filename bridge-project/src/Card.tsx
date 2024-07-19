@@ -16,11 +16,12 @@ const Card: React.FC<OwnProps> = ({ data, changeContent }) => {
     }
 
     const changeSave = () => {
-        changeContent(newContent);
+        changeContent(newContent);  // 저장하기를 누르면, 지금까지의 내용으로 App 업뎃
         setEditing(false);
     }
 
     const handleChange = (index: number, value: string) => {
+        // 각 항목의 수정 사항 업데이트
         const updatedContent = [...newContent];
         updatedContent[index] = value;
         setNewContent(updatedContent);
@@ -30,6 +31,7 @@ const Card: React.FC<OwnProps> = ({ data, changeContent }) => {
         <div onDoubleClick={handleDoubleClick}>
             <h4>{data.name}</h4>
             {editing ? (
+                // 편집 중일 때
                 <div>
                     <ul>
                         {newContent.map((item, index) => (
@@ -44,11 +46,13 @@ const Card: React.FC<OwnProps> = ({ data, changeContent }) => {
                     </ul>
                     <button onClick={changeSave}>저장하기</button>
                 </div>
-            ) : (<ul>
-                {data.content.map((item, index) => (
-                    <li key={index}>{item}</li>
-                ))}
-            </ul>)}
+            ) : (
+                // 편집 중 아닐 때
+                <ul>
+                    {data.content.map((item, index) => (
+                        <li key={index}>{item}</li>
+                    ))}
+                </ul>)}
         </div>
     )
 }
