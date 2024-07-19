@@ -29,6 +29,13 @@ const App: React.FC = () => {
 
   const [myData, setMyData] = useState<Info[]>(data);
 
+  // 내용 수정
+  const changeContent = (index: number, newContent: string[]) => {
+    const updatedData = [...myData];
+    updatedData[index].content = newContent;
+    setMyData(updatedData);
+  }
+
   return (
     <>
       <div>
@@ -40,7 +47,7 @@ const App: React.FC = () => {
         </div>
         <button>작성하기</button>
         {myData.map((item, index) => (
-          <Card key={index} data={item} />
+          <Card key={index} data={item} changeContent={(newContent: string[]) => changeContent(index, newContent)} />
         ))}
       </div>
     </>
