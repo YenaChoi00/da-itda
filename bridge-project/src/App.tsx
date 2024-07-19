@@ -60,7 +60,7 @@ const App: React.FC = () => {
   const createSave = () => {
 
     if (newInfo.name.trim() === '' || newInfo.content.length === 0 || newInfo.content.every(item => item.trim() === '')) {
-      const userConfirmed = window.confirm('이름과 기도제목을 모두 입력하세요. 작성 중인 내용을 취소하시겠습니까?');
+      const userConfirmed = window.confirm('이름과 기도제목을 모두 입력해주세요.\n또는 작성을 취소하시겠습니까?');
 
       if (userConfirmed) {
         // '예'를 선택하면 입력 초기화
@@ -84,6 +84,12 @@ const App: React.FC = () => {
     setAdding(false);
   }
 
+  // 이름 수정
+  const changeName = (index: number, newName: string) => {
+    const updatedData = [...myData];
+    updatedData[index].name = newName;
+    setMyData(updatedData);
+  }
   // 내용 수정
   const changeContent = (index: number, newContent: string[]) => {
     const updatedData = [...myData];
@@ -108,7 +114,12 @@ const App: React.FC = () => {
           </div>) : (
           <button onClick={createNewInfo}>작성하기</button>)}
         {myData.map((item, index) => (
-          <Card key={index} data={item} changeContent={(newContent: string[]) => changeContent(index, newContent)} />
+          <Card
+            key={index}
+            data={item}
+            changeContent={(newContent: string[]) => changeContent(index, newContent)}
+            changeName={(newName: string) => changeName(index, newName)}
+          />
         ))}
       </div >
     </>
