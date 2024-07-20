@@ -4,8 +4,8 @@ import Card from './Card'
 import { Info } from './model/info'
 
 const App: React.FC = () => {
-  let date: string = '2024-07-17';
-  let data: Info[] = [
+  const date: string = '2024-07-17';
+  const data: Info[] = [
     {
       name: '최예나',
       date: '2024-07-17',
@@ -24,7 +24,7 @@ const App: React.FC = () => {
       ]
     }
   ]
-  let emptyData: Info = {
+  const emptyData: Info = {
     name: '',
     date: '',
     content: ['']

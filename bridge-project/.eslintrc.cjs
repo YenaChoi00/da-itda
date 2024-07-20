@@ -14,5 +14,12 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
+    '@typescript-eslint/no-unused-vars': [
+      'warn', // 오류가 아닌 경고로 변경
+      {
+        vars: 'all',
+        args: 'none', 
+        ignoreRestSiblings: true,
+      },
   },
 }
