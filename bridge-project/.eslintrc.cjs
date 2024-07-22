@@ -21,5 +21,6 @@ module.exports = {
         args: 'none', 
         ignoreRestSiblings: true,
       },
+    ],
   },
 }
