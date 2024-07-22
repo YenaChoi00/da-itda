@@ -1,29 +1,31 @@
-import React, { useState } from "react";
-import { Info } from "./model/info";
-import { BsFillTrashFill } from "react-icons/bs";
+import React, { useState } from 'react';
+import { Info } from './model/info';
+import { BsFillTrashFill } from 'react-icons/bs';
 
 interface OwnProps {
   data: Info;
   changeContent(newContent: string[]): void;
-  changeName(newName: string): void;
+  changeTitle(newTitle: string): void;
 }
 
-const Card: React.FC<OwnProps> = ({ data, changeContent, changeName }) => {
+const Card: React.FC<OwnProps> = ({ data, changeContent, changeTitle }) => {
   // 더블클릭 - 수정
-  const [editing, setEditing] = useState(false);
-  const [editingName, setEditingName] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [newContent, setNewContent] = useState(data.content);
-  const [newName, setNewName] = useState(data.name);
+  const [newTitle, setNewTitle] = useState(data.name);
 
   // 내용 수정
-  const handleDoubleClick = () => {
-    setEditingName(true);
-    setEditing(true);
+  const updateEditState = () => {
+    setIsEditing(true);
   };
 
-  const handleChange = (index: number, value: string) => {
+  const updateTitle = (value: string) => {
+    setNewTitle(value);
+  };
+
+  const updateContent = (index: number, value: string) => {
     const updatedContent = [...newContent];
-    if (value == "") {
+    if (value == '') {
       // 빈 값이면 아예 삭제
       updatedContent.splice(index, 1);
     } else {
@@ -32,26 +34,22 @@ const Card: React.FC<OwnProps> = ({ data, changeContent, changeName }) => {
     setNewContent(updatedContent);
   };
 
-  const contentSave = () => {
+  // 수정된 내용 저장
+  const saveUpdates = () => {
     changeContent(newContent);
-    changeName(newName);
-    setEditingName(false);
-    setEditing(false);
-  };
-
-  const handleNameChange = (value: string) => {
-    setNewName(value);
+    changeTitle(newTitle);
+    setIsEditing(false);
   };
 
   return (
     <>
-      {editing ? (
+      {isEditing ? (
         // 편집 중일 때
         <div className="flex flex-col p-2">
           <input
             type="text"
-            value={newName}
-            onChange={(e) => handleNameChange(e.target.value)}
+            value={newTitle}
+            onChange={(e) => updateTitle(e.target.value)}
             className="w-full mb-2 input-box"
           />
           <ol className="pl-5 mb-2 space-y-2 list-decimal">
@@ -59,31 +57,22 @@ const Card: React.FC<OwnProps> = ({ data, changeContent, changeName }) => {
               <li key={index}>
                 <textarea
                   value={item}
-                  onChange={(e) => handleChange(index, e.target.value)}
+                  onChange={(e) => updateContent(index, e.target.value)}
                   className="w-full input-box"
                 />
               </li>
             ))}
           </ol>
-          <button
-            onClick={contentSave}
-            type="button"
-            className="self-end w-2/3 primary-btn"
-          >
+          <button onClick={saveUpdates} type="button" className="self-end w-2/3 primary-btn">
             저장/취소하기
           </button>
         </div>
       ) : (
         // 편집 중 아닐 때
         <div className="container flex justify-start">
-          <div
-            onDoubleClick={handleDoubleClick}
-            className="flex flex-col w-full"
-          >
+          <div onDoubleClick={updateEditState} className="flex flex-col w-full">
             <div className="flex justify-between mb-1">
-              <h4 className="self-center text-base font-semibold">
-                {data.name}
-              </h4>
+              <h4 className="self-center text-base font-semibold">{data.name}</h4>
               <button className="bg-transparent">
                 <BsFillTrashFill />
               </button>

@@ -1,79 +1,77 @@
-import { useState } from "react";
-import "./App.css";
-import Card from "./Card";
-import { Info } from "./model/info";
-import { IoIosArrowBack } from "react-icons/io";
-import { IoIosArrowForward } from "react-icons/io";
+import { useState } from 'react';
+import './App.css';
+import Card from './Card';
+import { Info } from './model/info';
+import { IoIosArrowBack } from 'react-icons/io';
+import { IoIosArrowForward } from 'react-icons/io';
 
 const App: React.FC = () => {
-  const date: string = "2024-07-17";
+  const date: string = '2024-07-17';
   const data: Info[] = [
     {
-      name: "최예나",
-      date: "2024-07-17",
+      name: '최예나',
+      date: '2024-07-17',
       content: [
-        "오늘 말씀을 기억하며 하나님과 동행하는 취준 기간이 되도록",
-        "동생이 군대에서 하나님을 만날 수 있기를",
+        '오늘 말씀을 기억하며 하나님과 동행하는 취준 기간이 되도록',
+        '동생이 군대에서 하나님을 만날 수 있기를',
       ],
     },
     {
-      name: "서지혜",
-      date: "2024-07-17",
+      name: '서지혜',
+      date: '2024-07-17',
       content: [
-        "알바를 시작했는데, 취준과 병행할 수 있도록 체력을 허락하시길",
-        "준비할 것도 많고, 막막한 취준이지만 그렇기에 더 철저히 하나님을 붙잡고 가는 기간이 되길",
-        "가족들을 위한 중보를 할 때, 무거운 마음이 아니라 맡겨드리는 마음이 되길.힘듦을 이겨낼 사랑의 마음을 부어주시길.",
+        '알바를 시작했는데, 취준과 병행할 수 있도록 체력을 허락하시길',
+        '준비할 것도 많고, 막막한 취준이지만 그렇기에 더 철저히 하나님을 붙잡고 가는 기간이 되길',
+        '가족들을 위한 중보를 할 때, 무거운 마음이 아니라 맡겨드리는 마음이 되길.힘듦을 이겨낼 사랑의 마음을 부어주시길.',
       ],
     },
   ];
   const emptyData: Info = {
-    name: "",
-    date: "",
-    content: [""],
+    name: '',
+    date: '',
+    content: [''],
   };
 
   const [curDate, setCurDate] = useState<string>(date);
   const [myData, setMyData] = useState<Info[]>(data);
 
-  const [adding, setAdding] = useState(false);
+  const [isCreate, setIsCreate] = useState(false);
   const [newInfo, setNewInfo] = useState<Info>(emptyData);
-
-  const [isChange, setIsChange] = useState(false);
 
   // 작성
   const createNewInfo = () => {
-    setAdding(true);
+    setIsCreate(true);
   };
 
-  const handleNameChange = (value: string) => {
+  const createTitle = (value: string) => {
     setNewInfo((prevInfo) => ({
       ...prevInfo,
       name: value,
     }));
   };
 
-  const handleContentChange = (value: string) => {
-    const list = value.split("\n");
+  const createContent = (value: string) => {
+    const list = value.split('\n');
     setNewInfo((prevInfo) => ({
       ...prevInfo,
       content: list,
     }));
   };
 
-  const createSave = () => {
+  const updateChanges = () => {
     if (
-      newInfo.name.trim() === "" ||
+      newInfo.name.trim() === '' ||
       newInfo.content.length === 0 ||
-      newInfo.content.every((item) => item.trim() === "")
+      newInfo.content.every((item) => item.trim() === '')
     ) {
       const userConfirmed = window.confirm(
-        "이름과 기도제목을 모두 입력해주세요.\n또는 작성을 취소하시겠습니까?"
+        '이름과 기도제목을 모두 입력해주세요.\n또는 작성을 취소하시겠습니까?',
       );
 
       if (userConfirmed) {
         // '예'를 선택하면 입력 초기화
         setNewInfo(emptyData);
-        setAdding(false);
+        setIsCreate(false);
       }
 
       return;
@@ -88,7 +86,7 @@ const App: React.FC = () => {
     // 데이터 초기화
     setNewInfo(emptyData);
     // 작성 중 상태 해제
-    setAdding(false);
+    setIsCreate(false);
   };
 
   // 이름 수정
@@ -98,9 +96,9 @@ const App: React.FC = () => {
     setMyData(updatedData);
   };
   // 내용 수정
-  const changeContent = (index: number, newContent: string[]) => {
+  const changePrayerRequest = (index: number, newRequest: string[]) => {
     const updatedData = [...myData];
-    updatedData[index].content = newContent;
+    updatedData[index].content = newRequest;
     setMyData(updatedData);
   };
 
@@ -117,18 +115,18 @@ const App: React.FC = () => {
             <IoIosArrowForward />
           </button>
         </div>
-        {adding ? (
+        {isCreate ? (
           <div className="flex flex-col w-full px-2 space-y-2">
             <input
               type="text"
               id="name-with-label"
-              onChange={(e) => handleNameChange(e.target.value)}
+              onChange={(e) => createTitle(e.target.value)}
               name="name"
               placeholder="이름"
               className="w-full input-box"
             />
             <textarea
-              onChange={(e) => handleContentChange(e.target.value)}
+              onChange={(e) => createContent(e.target.value)}
               id="content"
               placeholder="기도제목을 입력해주세요. 엔터로 번호가 구분됩니다."
               name="content"
@@ -138,7 +136,7 @@ const App: React.FC = () => {
             ></textarea>
 
             <button
-              onClick={createSave}
+              onClick={updateChanges}
               type="button"
               className="self-end w-2/3 my-2 primary-btn"
             >
@@ -158,10 +156,8 @@ const App: React.FC = () => {
           <Card
             key={index}
             data={item}
-            changeContent={(newContent: string[]) =>
-              changeContent(index, newContent)
-            }
-            changeName={(newName: string) => changeName(index, newName)}
+            changeContent={(newContent: string[]) => changePrayerRequest(index, newContent)}
+            changeTitle={(newTitle: string) => changeName(index, newTitle)}
           />
         ))}
       </div>
