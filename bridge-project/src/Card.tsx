@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Info } from './model/info';
-import { BsFillTrashFill } from 'react-icons/bs';
+import { HiOutlineTrash } from 'react-icons/hi';
 
 interface OwnProps {
   data: Info;
@@ -74,12 +74,12 @@ const Card: React.FC<OwnProps> = ({ data, changeContent, changeTitle }) => {
             <div className="flex justify-between mb-1">
               <h4 className="self-center text-base font-semibold">{data.name}</h4>
               <button className="bg-transparent">
-                <BsFillTrashFill />
+                <HiOutlineTrash />
               </button>
             </div>
             <ol className="pl-5 list-decimal">
               {data.content.map((item, index) => (
-                <li key={index} className="text-left">
+                <li key={index} className="text-left whitespace-pre-line">
                   {item}
                 </li>
               ))}

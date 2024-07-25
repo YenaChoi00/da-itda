@@ -2,11 +2,11 @@ import { useState } from 'react';
 import './App.css';
 import Card from './Card';
 import { Info } from './model/info';
-import { IoIosArrowBack } from 'react-icons/io';
-import { IoIosArrowForward } from 'react-icons/io';
+import { HiChevronLeft } from 'react-icons/hi';
+import { HiChevronRight } from 'react-icons/hi';
 
 const App: React.FC = () => {
-  const date: string = '2024-07-17';
+  const DATE: string = '2024-07-17';
   const data: Info[] = [
     {
       name: '최예나',
@@ -32,7 +32,7 @@ const App: React.FC = () => {
     content: [''],
   };
 
-  const [curDate, setCurDate] = useState<string>(date);
+  const [curDate, setCurDate] = useState<string>(DATE);
   const [myData, setMyData] = useState<Info[]>(data);
 
   const [isCreate, setIsCreate] = useState(false);
@@ -108,11 +108,11 @@ const App: React.FC = () => {
         <h2 className="text-2xl font-semibold">예나셀</h2>
         <div className="flex content-center justify-between my-2">
           <button className="bg-transparent hover:border-primary">
-            <IoIosArrowBack />
+            <HiChevronLeft />
           </button>
           <span className="self-center">{curDate}</span>
           <button className="bg-transparent hover:border-primary">
-            <IoIosArrowForward />
+            <HiChevronRight />
           </button>
         </div>
         {isCreate ? (
