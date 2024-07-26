@@ -1,5 +1,6 @@
 export type Info = {
-    name: string;
-    date: string;
-    content: string[];
-}
+  id: number;
+  name: string;
+  date: string;
+  content: string[];
+};

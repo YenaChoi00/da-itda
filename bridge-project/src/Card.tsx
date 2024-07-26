@@ -6,9 +6,19 @@ interface OwnProps {
   data: Info;
   changeContent(newContent: string[]): void;
   changeTitle(newTitle: string): void;
+  isEditable: boolean;
+  startEdit(id: number): void;
+  endEdit(): void;
 }
 
-const Card: React.FC<OwnProps> = ({ data, changeContent, changeTitle }) => {
+const Card: React.FC<OwnProps> = ({
+  data,
+  changeContent,
+  changeTitle,
+  isEditable,
+  startEdit,
+  endEdit,
+}) => {
   // 더블클릭 - 수정
   const [isEditing, setIsEditing] = useState(false);
   const [newContent, setNewContent] = useState(data.content);
@@ -16,6 +26,7 @@ const Card: React.FC<OwnProps> = ({ data, changeContent, changeTitle }) => {
 
   // 내용 수정
   const updateEditState = () => {
+    startEdit(data.id);
     setIsEditing(true);
   };
 
@@ -39,11 +50,12 @@ const Card: React.FC<OwnProps> = ({ data, changeContent, changeTitle }) => {
     changeContent(newContent);
     changeTitle(newTitle);
     setIsEditing(false);
+    endEdit();
   };
 
   return (
     <>
-      {isEditing ? (
+      {isEditing && isEditable ? (
         // 편집 중일 때
         <div className="flex flex-col p-2">
           <input

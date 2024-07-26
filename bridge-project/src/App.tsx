@@ -9,6 +9,7 @@ const App: React.FC = () => {
   const DATE: string = '2024-07-17';
   const data: Info[] = [
     {
+      id: 1,
       name: '최예나',
       date: '2024-07-17',
       content: [
@@ -17,6 +18,7 @@ const App: React.FC = () => {
       ],
     },
     {
+      id: 2,
       name: '서지혜',
       date: '2024-07-17',
       content: [
@@ -27,6 +29,7 @@ const App: React.FC = () => {
     },
   ];
   const emptyData: Info = {
+    id: 0,
     name: '',
     date: '',
     content: [''],
@@ -37,6 +40,8 @@ const App: React.FC = () => {
 
   const [isCreate, setIsCreate] = useState(false);
   const [newInfo, setNewInfo] = useState<Info>(emptyData);
+
+  const [editingId, setEditingId] = useState(0);
 
   // 작성
   const createNewInfo = () => {
@@ -87,6 +92,14 @@ const App: React.FC = () => {
     setNewInfo(emptyData);
     // 작성 중 상태 해제
     setIsCreate(false);
+  };
+
+  // 어떤 카드의 수정이 시작되었을 때
+  const startEdit = (id: number) => {
+    setEditingId(id);
+  };
+  const endEdit = () => {
+    setEditingId(0);
   };
 
   // 이름 수정
@@ -158,6 +171,9 @@ const App: React.FC = () => {
             data={item}
             changeContent={(newContent: string[]) => changePrayerRequest(index, newContent)}
             changeTitle={(newTitle: string) => changeName(index, newTitle)}
+            startEdit={(id: number) => startEdit(id)}
+            endEdit={endEdit}
+            isEditable={item.id == editingId ? true : false}
           />
         ))}
       </div>
