@@ -60,6 +60,7 @@ const App: React.FC = () => {
     setNewInfo((prevInfo) => ({
       ...prevInfo,
       content: list,
+      id: myData.length + 1, // 임시
     }));
   };
 
@@ -115,9 +116,16 @@ const App: React.FC = () => {
     setMyData(updatedData);
   };
 
+  // 삭제
+  const deleteItem = (id: number) => {
+    let updatedData = [...myData];
+    updatedData = updatedData.filter((data) => data.id != id);
+    setMyData(updatedData);
+  };
+
   return (
     <>
-      <div className="container flex flex-col content-start">
+      <div className="container flex flex-col content-start w-96">
         <h2 className="text-2xl font-semibold">예나셀</h2>
         <div className="flex content-center justify-between my-2">
           <button className="bg-transparent hover:border-primary">
@@ -165,17 +173,23 @@ const App: React.FC = () => {
             추가하기
           </button>
         )}
-        {myData.map((item, index) => (
-          <Card
-            key={index}
-            data={item}
-            changeContent={(newContent: string[]) => changePrayerRequest(index, newContent)}
-            changeTitle={(newTitle: string) => changeName(index, newTitle)}
-            startEdit={(id: number) => startEdit(id)}
-            endEdit={endEdit}
-            isEditable={item.id == editingId ? true : false}
-          />
-        ))}
+
+        {myData.length != 0 ? (
+          myData.map((item, index) => (
+            <Card
+              key={index}
+              data={item}
+              changeContent={(newContent: string[]) => changePrayerRequest(index, newContent)}
+              changeTitle={(newTitle: string) => changeName(index, newTitle)}
+              isEditable={item.id == editingId ? true : false}
+              startEdit={(id: number) => startEdit(id)}
+              endEdit={endEdit}
+              deleteItem={deleteItem}
+            />
+          ))
+        ) : (
+          <div className="container place-self-center">추가된 기도제목이 없습니다</div>
+        )}
       </div>
     </>
   );

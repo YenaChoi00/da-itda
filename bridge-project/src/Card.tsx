@@ -9,6 +9,7 @@ interface OwnProps {
   isEditable: boolean;
   startEdit(id: number): void;
   endEdit(): void;
+  deleteItem(id: number): void;
 }
 
 const Card: React.FC<OwnProps> = ({
@@ -18,6 +19,7 @@ const Card: React.FC<OwnProps> = ({
   isEditable,
   startEdit,
   endEdit,
+  deleteItem,
 }) => {
   // 더블클릭 - 수정
   const [isEditing, setIsEditing] = useState(false);
@@ -53,6 +55,17 @@ const Card: React.FC<OwnProps> = ({
     endEdit();
   };
 
+  // 삭제
+  const deleteContent = () => {
+    const userConfirmed = window.confirm('정말 삭제 하시겠습니까?');
+
+    if (userConfirmed) {
+      deleteItem(data.id);
+    }
+
+    return;
+  };
+
   return (
     <>
       {isEditing && isEditable ? (
@@ -85,7 +98,7 @@ const Card: React.FC<OwnProps> = ({
           <div onDoubleClick={updateEditState} className="flex flex-col w-full">
             <div className="flex justify-between mb-1">
               <h4 className="self-center text-base font-semibold">{data.name}</h4>
-              <button className="bg-transparent">
+              <button className="bg-transparent" onClick={deleteContent}>
                 <HiOutlineTrash />
               </button>
             </div>
