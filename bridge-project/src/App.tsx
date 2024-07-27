@@ -4,9 +4,10 @@ import Card from './Card';
 import { Info } from './model/info';
 import { HiChevronLeft } from 'react-icons/hi';
 import { HiChevronRight } from 'react-icons/hi';
+import moment from 'moment';
 
 const App: React.FC = () => {
-  const DATE: string = '2024-07-17';
+  const DATE: string = moment('2024-07-17').format('YYYY년 MM월 D일');
   const data: Info[] = [
     {
       id: 1,
@@ -42,6 +43,18 @@ const App: React.FC = () => {
   const [newInfo, setNewInfo] = useState<Info>(emptyData);
 
   const [editingId, setEditingId] = useState(0);
+
+  // 날짜 이동
+  const moveForward = () => {
+    const momentDate = moment(curDate, 'YYYY년 MM월 D일');
+    const newDate = momentDate.add(1, 'days').format('YYYY년 MM월 D일').toString();
+    setCurDate(newDate);
+  };
+  const moveBackward = () => {
+    const momentDate = moment(curDate, 'YYYY년 MM월 D일');
+    const newDate = momentDate.subtract(1, 'days').format('YYYY년 MM월 D일').toString();
+    setCurDate(newDate);
+  };
 
   // 작성
   const createNewInfo = () => {
@@ -128,11 +141,11 @@ const App: React.FC = () => {
       <div className="container flex flex-col content-start w-96">
         <h2 className="text-2xl font-semibold">예나셀</h2>
         <div className="flex content-center justify-between my-2">
-          <button className="bg-transparent hover:border-primary">
+          <button className="bg-transparent hover:border-primary" onClick={moveBackward}>
             <HiChevronLeft />
           </button>
           <span className="self-center">{curDate}</span>
-          <button className="bg-transparent hover:border-primary">
+          <button className="bg-transparent hover:border-primary" onClick={moveForward}>
             <HiChevronRight />
           </button>
         </div>
