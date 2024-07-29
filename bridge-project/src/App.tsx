@@ -85,7 +85,9 @@ const App: React.FC = () => {
   };
 
   const createContent = (value: string) => {
-    const list = value.split('\n');
+    const list = value.split('\n')
+                    .map(item => item.trim())       // 앞뒤 공백 제거
+                    .filter(item => item !== '');   // \n 여러 번 입력해서 빈 요소가 된 것들 제거
     setNewInfo((prevInfo) => ({
       ...prevInfo,
       content: list,
@@ -133,18 +135,20 @@ const App: React.FC = () => {
     setEditingId(0);
   };
 
-  // 이름 수정
-  const changeName = (index: number, newName: string) => {
-    const updatedData = [...myData];
-    updatedData[index].name = newName;
+  const changeItem = (id: number, newName: string | undefined, newRequest: string[] | undefined) => {
+    let updatedData = [...myData];
+    if (newName) {
+      updatedData = updatedData.map(item =>
+      item.id === id ? { ...item, name: newName } : item
+    );
+    }
+    if (newRequest) {
+      updatedData = updatedData.map(item =>
+      item.id === id ? { ...item, content: newRequest } : item
+    );
+    }
     setMyData(updatedData);
-  };
-  // 내용 수정
-  const changePrayerRequest = (index: number, newRequest: string[]) => {
-    const updatedData = [...myData];
-    updatedData[index].content = newRequest;
-    setMyData(updatedData);
-  };
+  }
 
   // 삭제
   const deleteItem = (id: number) => {
@@ -208,8 +212,7 @@ const App: React.FC = () => {
             <Card
               key={index}
               data={item}
-              changeContent={(newContent: string[]) => changePrayerRequest(index, newContent)}
-              changeTitle={(newTitle: string) => changeName(index, newTitle)}
+              changeCard={(newTitle: string, newContent: string[]) => changeItem(item.id, newTitle, newContent)}
               isEditable={item.id == editingId ? true : false}
               startEdit={(id: number) => startEdit(id)}
               endEdit={endEdit}

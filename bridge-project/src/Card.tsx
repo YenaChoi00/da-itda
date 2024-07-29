@@ -4,8 +4,7 @@ import { HiOutlineTrash } from 'react-icons/hi';
 
 interface OwnProps {
   data: Info;
-  changeContent(newContent: string[]): void;
-  changeTitle(newTitle: string): void;
+  changeCard(newTitle: string, newContent: string[]): void;
   isEditable: boolean;
   startEdit(id: number): void;
   endEdit(): void;
@@ -14,8 +13,7 @@ interface OwnProps {
 
 const Card: React.FC<OwnProps> = ({
   data,
-  changeContent,
-  changeTitle,
+  changeCard,
   isEditable,
   startEdit,
   endEdit,
@@ -49,8 +47,7 @@ const Card: React.FC<OwnProps> = ({
 
   // 수정된 내용 저장
   const saveUpdates = () => {
-    changeContent(newContent);
-    changeTitle(newTitle);
+    changeCard(newTitle, newContent);
     setIsEditing(false);
     endEdit();
   };
