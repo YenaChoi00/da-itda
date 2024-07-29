@@ -4,7 +4,10 @@ import Card from './Card';
 import { Info } from './model/info';
 import { HiChevronLeft } from 'react-icons/hi';
 import { HiChevronRight } from 'react-icons/hi';
-import moment, {Moment} from 'moment';
+import moment from 'moment';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App: React.FC = () => {
   const DATE: string = moment('2024-07-17').format('YYYY-MM-DD').toString();
@@ -48,17 +51,33 @@ const App: React.FC = () => {
 
   const [curDate, setCurDate] = useState<string>(DATE);
   const [myData, setMyData] = useState<Info[]>(data);
-  const [curDateItem, setcurDateItem] = useState<Info[]>([]);
+  const [curDateItem, setCurDateItem] = useState<Info[]>([]);
 
-  const [isCreate, setIsCreate] = useState(false);
+  const [isCreate, setIsCreate] = useState<boolean>(false);
   const [newInfo, setNewInfo] = useState<Info>(emptyData);
 
-  const [editingId, setEditingId] = useState(0);
+  const [editingId, setEditingId] = useState<number>(0);
+
+  const [contentForCopy, setContentForCopy] = useState<string>('');
 
   useEffect(() => {
     const filtered = myData.filter((item) => item.date === curDate);
-    setcurDateItem(filtered);
+    setCurDateItem(filtered);
   }, [curDate, myData]);
+
+  useEffect(() => {
+    const data = [...curDateItem];
+    const copyData = data
+      .map((item) => {
+        const contentText = item.content
+          .map((contentItem, index) => `${index + 1}. ${contentItem}`)
+          .join('\n');
+        return `${item.name}\n${contentText}`;
+      })
+      .join('\n\n');
+
+    setContentForCopy(copyData);
+  }, [curDateItem]);
 
   // 날짜 이동
   const moveForward = () => {
@@ -85,9 +104,10 @@ const App: React.FC = () => {
   };
 
   const createContent = (value: string) => {
-    const list = value.split('\n')
-                    .map(item => item.trim())       // 앞뒤 공백 제거
-                    .filter(item => item !== '');   // \n 여러 번 입력해서 빈 요소가 된 것들 제거
+    const list = value
+      .split('\n')
+      .map((item) => item.trim()) // 앞뒤 공백 제거
+      .filter((item) => item !== ''); // \n 여러 번 입력해서 빈 요소가 된 것들 제거
     setNewInfo((prevInfo) => ({
       ...prevInfo,
       content: list,
@@ -135,20 +155,22 @@ const App: React.FC = () => {
     setEditingId(0);
   };
 
-  const changeItem = (id: number, newName: string | undefined, newRequest: string[] | undefined) => {
+  const changeItem = (
+    id: number,
+    newName: string | undefined,
+    newRequest: string[] | undefined,
+  ) => {
     let updatedData = [...myData];
     if (newName) {
-      updatedData = updatedData.map(item =>
-      item.id === id ? { ...item, name: newName } : item
-    );
+      updatedData = updatedData.map((item) => (item.id === id ? { ...item, name: newName } : item));
     }
     if (newRequest) {
-      updatedData = updatedData.map(item =>
-      item.id === id ? { ...item, content: newRequest } : item
-    );
+      updatedData = updatedData.map((item) =>
+        item.id === id ? { ...item, content: newRequest } : item,
+      );
     }
     setMyData(updatedData);
-  }
+  };
 
   // 삭제
   const deleteItem = (id: number) => {
@@ -156,6 +178,19 @@ const App: React.FC = () => {
     updatedData = updatedData.filter((data) => data.id != id);
     setMyData(updatedData);
   };
+
+  // 복사
+  const copyToast = () =>
+    toast.info('기도제목이 복사되었습니다.', {
+      position: 'bottom-left',
+      autoClose: 1500,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'light',
+    });
 
   return (
     <>
@@ -199,20 +234,37 @@ const App: React.FC = () => {
             </button>
           </div>
         ) : (
-          <button
-            onClick={createNewInfo}
-            type="button"
-            className="self-center w-2/3 my-2 font-semibold outline-hover-btn"
-          >
-            추가하기
-          </button>
+          <div className="flex flex-row justify-center my-2">
+            <button
+              onClick={createNewInfo}
+              type="button"
+              className="self-center w-1/3 mx-1 font-semibold outline-hover-btn"
+            >
+              추가하기
+            </button>
+            {curDateItem.length != 0 ? (
+              <CopyToClipboard text={contentForCopy} onCopy={copyToast}>
+                <button
+                  type="button"
+                  className="self-center w-1/3 mx-1 font-semibold outline-hover-btn"
+                >
+                  복사하기
+                </button>
+              </CopyToClipboard>
+            ) : (
+              <></>
+            )}
+            <ToastContainer />
+          </div>
         )}
         {curDateItem.length != 0 ? (
           curDateItem.map((item, index) => (
             <Card
               key={index}
               data={item}
-              changeCard={(newTitle: string, newContent: string[]) => changeItem(item.id, newTitle, newContent)}
+              changeCard={(newTitle: string, newContent: string[]) =>
+                changeItem(item.id, newTitle, newContent)
+              }
               isEditable={item.id == editingId ? true : false}
               startEdit={(id: number) => startEdit(id)}
               endEdit={endEdit}
