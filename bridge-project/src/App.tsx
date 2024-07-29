@@ -1,13 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import Card from './Card';
 import { Info } from './model/info';
 import { HiChevronLeft } from 'react-icons/hi';
 import { HiChevronRight } from 'react-icons/hi';
-import moment from 'moment';
+import moment, {Moment} from 'moment';
 
 const App: React.FC = () => {
-  const DATE: string = moment('2024-07-17').format('YYYY년 MM월 D일');
+  const DATE: string = moment('2024-07-17').format('YYYY-MM-DD').toString();
   const data: Info[] = [
     {
       id: 1,
@@ -28,6 +28,16 @@ const App: React.FC = () => {
         '가족들을 위한 중보를 할 때, 무거운 마음이 아니라 맡겨드리는 마음이 되길.힘듦을 이겨낼 사랑의 마음을 부어주시길.',
       ],
     },
+    {
+      id: 3,
+      name: '최예나',
+      date: '2024-07-24',
+      content: [
+        '새로운 기도제목1',
+        '새로운 기도제목2',
+        '가족들을 위한 중보를 할 때, 무거운 마음이 아니라 맡겨드리는 마음이 되길.힘듦을 이겨낼 사랑의 마음을 부어주시길.',
+      ],
+    },
   ];
   const emptyData: Info = {
     id: 0,
@@ -38,21 +48,27 @@ const App: React.FC = () => {
 
   const [curDate, setCurDate] = useState<string>(DATE);
   const [myData, setMyData] = useState<Info[]>(data);
+  const [curDateItem, setcurDateItem] = useState<Info[]>([]);
 
   const [isCreate, setIsCreate] = useState(false);
   const [newInfo, setNewInfo] = useState<Info>(emptyData);
 
   const [editingId, setEditingId] = useState(0);
 
+  useEffect(() => {
+    const filtered = myData.filter((item) => item.date === curDate);
+    setcurDateItem(filtered);
+  }, [curDate, myData]);
+
   // 날짜 이동
   const moveForward = () => {
-    const momentDate = moment(curDate, 'YYYY년 MM월 D일');
-    const newDate = momentDate.add(1, 'days').format('YYYY년 MM월 D일').toString();
+    const momentDate = moment(curDate, 'YYYY-MM-DD');
+    const newDate = momentDate.add(7, 'days').format('YYYY-MM-DD').toString(); // n째주 대신 7일 기준으로
     setCurDate(newDate);
   };
   const moveBackward = () => {
-    const momentDate = moment(curDate, 'YYYY년 MM월 D일');
-    const newDate = momentDate.subtract(1, 'days').format('YYYY년 MM월 D일').toString();
+    const momentDate = moment(curDate, 'YYYY-MM-DD');
+    const newDate = momentDate.subtract(7, 'days').format('YYYY-MM-DD').toString();
     setCurDate(newDate);
   };
 
@@ -73,6 +89,7 @@ const App: React.FC = () => {
     setNewInfo((prevInfo) => ({
       ...prevInfo,
       content: list,
+      date: curDate,
       id: myData.length + 1, // 임시
     }));
   };
@@ -138,7 +155,7 @@ const App: React.FC = () => {
 
   return (
     <>
-      <div className="container flex flex-col content-start w-96">
+      <div className="container flex flex-col content-start w-96 h-svh">
         <h2 className="text-2xl font-semibold">예나셀</h2>
         <div className="flex content-center justify-between my-2">
           <button className="bg-transparent hover:border-primary" onClick={moveBackward}>
@@ -186,9 +203,8 @@ const App: React.FC = () => {
             추가하기
           </button>
         )}
-
-        {myData.length != 0 ? (
-          myData.map((item, index) => (
+        {curDateItem.length != 0 ? (
+          curDateItem.map((item, index) => (
             <Card
               key={index}
               data={item}
