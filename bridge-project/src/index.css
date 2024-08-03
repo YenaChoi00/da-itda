@@ -66,11 +66,15 @@ textarea {
 }
 
 .outline-hover-btn {
-  @apply bg-white border border-primary text-primary/100 hover:text-white hover:bg-primary hover:border-transparent;
+  @apply bg-white border border-primary text-primary/100 hover:text-black hover:bg-primary/50 hover:border-transparent;
 }
 
 .primary-btn {
   @apply text-white bg-primary hover:border-transparent;
+}
+
+.primary-hover-btn {
+  @apply text-white bg-primary hover:border-transparent hover:text-black hover:bg-primary/50;
 }
 
 @media (prefers-color-scheme: light) {

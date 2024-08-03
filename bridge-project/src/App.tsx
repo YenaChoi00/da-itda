@@ -2,46 +2,13 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import Card from './Card';
 import { Info } from './model/info';
-import { HiChevronLeft } from 'react-icons/hi';
-import { HiChevronRight } from 'react-icons/hi';
-import moment from 'moment';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { data, DATE } from './assets/dummy';
+import Header from './Header.tsx';
 
 const App: React.FC = () => {
-  const DATE: string = moment('2024-07-17').format('YYYY-MM-DD').toString();
-  const data: Info[] = [
-    {
-      id: 1,
-      name: '최예나',
-      date: '2024-07-17',
-      content: [
-        '오늘 말씀을 기억하며 하나님과 동행하는 취준 기간이 되도록',
-        '동생이 군대에서 하나님을 만날 수 있기를',
-      ],
-    },
-    {
-      id: 2,
-      name: '서지혜',
-      date: '2024-07-17',
-      content: [
-        '알바를 시작했는데, 취준과 병행할 수 있도록 체력을 허락하시길',
-        '준비할 것도 많고, 막막한 취준이지만 그렇기에 더 철저히 하나님을 붙잡고 가는 기간이 되길',
-        '가족들을 위한 중보를 할 때, 무거운 마음이 아니라 맡겨드리는 마음이 되길.힘듦을 이겨낼 사랑의 마음을 부어주시길.',
-      ],
-    },
-    {
-      id: 3,
-      name: '최예나',
-      date: '2024-07-24',
-      content: [
-        '새로운 기도제목1',
-        '새로운 기도제목2',
-        '가족들을 위한 중보를 할 때, 무거운 마음이 아니라 맡겨드리는 마음이 되길.힘듦을 이겨낼 사랑의 마음을 부어주시길.',
-      ],
-    },
-  ];
   const emptyData: Info = {
     id: 0,
     name: '',
@@ -56,39 +23,20 @@ const App: React.FC = () => {
   const [isCreate, setIsCreate] = useState<boolean>(false);
   const [newInfo, setNewInfo] = useState<Info>(emptyData);
 
-  const [editingId, setEditingId] = useState<number>(0);
+  const [editingId, setEditingId] = useState<number>(-1);
 
   const [contentForCopy, setContentForCopy] = useState<string>('');
 
   useEffect(() => {
     const filtered = myData.filter((item) => item.date === curDate);
+    console.log('현재 표시될 data: ', filtered);
+    console.log('현재 editingID: ', editingId);
     setCurDateItem(filtered);
   }, [curDate, myData]);
 
-  useEffect(() => {
-    const data = [...curDateItem];
-    const copyData = data
-      .map((item) => {
-        const contentText = item.content
-          .map((contentItem, index) => `${index + 1}. ${contentItem}`)
-          .join('\n');
-        return `${item.name}\n${contentText}`;
-      })
-      .join('\n\n');
-
-    setContentForCopy(copyData);
-  }, [curDateItem]);
-
-  // 날짜 이동
-  const moveForward = () => {
-    const momentDate = moment(curDate, 'YYYY-MM-DD');
-    const newDate = momentDate.add(7, 'days').format('YYYY-MM-DD').toString(); // n째주 대신 7일 기준으로
+  const changeDate = (newDate: string) => {
     setCurDate(newDate);
-  };
-  const moveBackward = () => {
-    const momentDate = moment(curDate, 'YYYY-MM-DD');
-    const newDate = momentDate.subtract(7, 'days').format('YYYY-MM-DD').toString();
-    setCurDate(newDate);
+    endEdit();
   };
 
   // 작성
@@ -147,12 +95,12 @@ const App: React.FC = () => {
     setIsCreate(false);
   };
 
-  // 어떤 카드의 수정이 시작되었을 때
   const startEdit = (id: number) => {
     setEditingId(id);
   };
+
   const endEdit = () => {
-    setEditingId(0);
+    setEditingId(-1);
   };
 
   const changeItem = (
@@ -180,6 +128,20 @@ const App: React.FC = () => {
   };
 
   // 복사
+  const copy = () => {
+    const data = [...curDateItem];
+    const copyData = data
+      .map((item) => {
+        const contentText = item.content
+          .map((contentItem, index) => `${index + 1}. ${contentItem}`)
+          .join('\n');
+        return `${item.name}\n${contentText}`;
+      })
+      .join('\n\n');
+
+    setContentForCopy(copyData);
+  };
+
   const copyToast = () =>
     toast.info('기도제목이 복사되었습니다.', {
       position: 'bottom-left',
@@ -195,16 +157,7 @@ const App: React.FC = () => {
   return (
     <>
       <div className="container flex flex-col content-start w-96 h-svh">
-        <h2 className="text-2xl font-semibold">예나셀</h2>
-        <div className="flex content-center justify-between my-2">
-          <button className="bg-transparent hover:border-primary" onClick={moveBackward}>
-            <HiChevronLeft />
-          </button>
-          <span className="self-center">{curDate}</span>
-          <button className="bg-transparent hover:border-primary" onClick={moveForward}>
-            <HiChevronRight />
-          </button>
-        </div>
+        <Header curDate={curDate} changeDate={changeDate}></Header>
         {isCreate ? (
           <div className="flex flex-col w-full px-2 space-y-2">
             <input
@@ -247,6 +200,7 @@ const App: React.FC = () => {
                 <button
                   type="button"
                   className="self-center w-1/3 mx-1 font-semibold outline-hover-btn"
+                  onMouseUp={copy}
                 >
                   복사하기
                 </button>

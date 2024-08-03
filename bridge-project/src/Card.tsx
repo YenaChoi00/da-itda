@@ -20,14 +20,12 @@ const Card: React.FC<OwnProps> = ({
   deleteItem,
 }) => {
   // 더블클릭 - 수정
-  const [isEditing, setIsEditing] = useState(false);
   const [newContent, setNewContent] = useState(data.content);
   const [newTitle, setNewTitle] = useState(data.name);
 
   // 내용 수정
   const updateEditState = () => {
     startEdit(data.id);
-    setIsEditing(true);
   };
 
   const updateTitle = (value: string) => {
@@ -45,10 +43,16 @@ const Card: React.FC<OwnProps> = ({
     setNewContent(updatedContent);
   };
 
+  const closeEdit = () => {
+    // 초기화
+    setNewContent(data.content);
+    endEdit();
+  };
+
   // 수정된 내용 저장
   const saveUpdates = () => {
     changeCard(newTitle, newContent);
-    setIsEditing(false);
+    // setIsEditing(false);
     endEdit();
   };
 
@@ -65,7 +69,7 @@ const Card: React.FC<OwnProps> = ({
 
   return (
     <>
-      {isEditing && isEditable ? (
+      {isEditable ? (
         // 편집 중일 때
         <div className="flex flex-col p-2">
           <input
@@ -85,9 +89,14 @@ const Card: React.FC<OwnProps> = ({
               </li>
             ))}
           </ol>
-          <button onClick={saveUpdates} type="button" className="self-end w-2/3 primary-btn">
-            저장/취소하기
-          </button>
+          <div className="flex flex-row justify-end space-x-2">
+            <button onClick={closeEdit} type="button" className="self-end outline-hover-btn">
+              취소
+            </button>
+            <button onClick={saveUpdates} type="button" className="self-end primary-hover-btn">
+              저장
+            </button>
+          </div>
         </div>
       ) : (
         // 편집 중 아닐 때
