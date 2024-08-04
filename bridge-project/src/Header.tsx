@@ -5,11 +5,11 @@ import moment from 'moment';
 
 interface HeaderProps {
   curDate: string;
-  // name: String // 셀 이름
+  name: string; // 셀 이름
   changeDate(newDate: string): void;
 }
 
-const Header: React.FC<HeaderProps> = ({ changeDate, curDate }) => {
+const Header: React.FC<HeaderProps> = ({ changeDate, name, curDate }) => {
   const moveDate = (date: number, direction: string) => {
     const momentDate = moment(curDate, 'YYYY-MM-DD');
     let newDate = momentDate;
@@ -22,7 +22,7 @@ const Header: React.FC<HeaderProps> = ({ changeDate, curDate }) => {
 
   return (
     <>
-      <h2 className="text-2xl font-semibold">예나셀</h2>
+      <h2 className="text-2xl font-semibold">{name}</h2>
       <div className="flex content-center justify-between my-2">
         <button
           className="bg-transparent hover:border-primary"

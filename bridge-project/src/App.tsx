@@ -18,7 +18,7 @@ const App: React.FC = () => {
   const [myData, setMyData] = useState<Info[]>(data);
   const [curDateItem, setCurDateItem] = useState<Info[]>([]);
 
-  const [isCreate, setIsCreate] = useState<boolean>(false);
+  const [isWriting, setIsWriting] = useState<boolean>(false);
   const [newInfo, setNewInfo] = useState<Info>(emptyData);
 
   const [editingId, setEditingId] = useState<number>(-1);
@@ -68,7 +68,7 @@ const App: React.FC = () => {
       if (userConfirmed) {
         // '예' 선택 -> 작성 취소
         setNewInfo(emptyData);
-        setIsCreate(false);
+        setIsWriting(false);
       }
 
       return;
@@ -82,10 +82,9 @@ const App: React.FC = () => {
     }));
     // 지금까지 작성된 Info 데이터 저장 & 업데이트
     setMyData([...myData, newInfo]);
-    // 데이터 초기화
+
     setNewInfo(emptyData);
-    // 작성 중 상태 해제
-    setIsCreate(false);
+    setIsWriting(false);
   };
 
   const startEdit = (id: number) => {
@@ -136,73 +135,71 @@ const App: React.FC = () => {
   };
 
   return (
-    <>
-      <div className="container flex flex-col content-start w-96 h-svh">
-        <Header curDate={curDate} changeDate={changeDate}></Header>
-        {isCreate ? (
-          <div className="flex flex-col w-full px-2 space-y-2">
-            <input
-              type="text"
-              id="name-with-label"
-              onChange={(e) => createTitle(e.target.value)}
-              name="name"
-              placeholder="이름"
-              className="w-full input-box"
-            />
-            <textarea
-              onChange={(e) => createContent(e.target.value)}
-              id="content"
-              placeholder="기도제목을 입력해주세요. 엔터로 번호가 구분됩니다."
-              name="content"
-              rows={5}
-              cols={40}
-              className="w-full input-box"
-            ></textarea>
+    <div className="container flex flex-col content-start w-96 h-svh">
+      <Header curDate={curDate} name="예나셀" changeDate={changeDate}></Header>
+      {isWriting ? (
+        <div className="flex flex-col w-full px-2 space-y-2">
+          <input
+            type="text"
+            id="name-with-label"
+            onChange={(e) => createTitle(e.target.value)}
+            name="name"
+            placeholder="이름"
+            className="w-full input-box"
+          />
+          <textarea
+            onChange={(e) => createContent(e.target.value)}
+            id="content"
+            placeholder="기도제목을 입력해주세요. 엔터로 번호가 구분됩니다."
+            name="content"
+            rows={5}
+            cols={40}
+            className="w-full input-box"
+          ></textarea>
 
-            <button onClick={checkEmpty} type="button" className="self-end w-2/3 my-2 primary-btn">
-              저장/취소하기
-            </button>
-          </div>
-        ) : (
-          <div className="flex flex-row justify-center my-2">
-            <button
-              onClick={() => setIsCreate(true)}
-              type="button"
-              className="self-center w-1/3 mx-1 font-semibold outline-hover-btn"
-            >
-              추가하기
-            </button>
-            {curDateItem.length != 0 ? (
-              <CopyBtn
-                btnText="복사하기"
-                copyContent={contentForCopy}
-                toastText="기도제목이 복사되었습니다."
-                copy={copy}
-              ></CopyBtn>
-            ) : (
-              <></>
-            )}
-          </div>
-        )}
-        {curDateItem.length != 0 ? (
-          curDateItem.map((item, index) => (
-            <Card
-              key={index}
-              data={item}
-              changeCard={(newTitle: string, newContent: string[]) =>
-                changeItem(item.id, newTitle, newContent)
-              }
-              isEditable={item.id == editingId ? true : false}
-              startEdit={(id: number) => startEdit(id)}
-              endEdit={endEdit}
-              deleteItem={deleteItem}
-            />
-          ))
-        ) : (
-          <div className="container place-self-center">추가된 기도제목이 없습니다</div>
-        )}
-      </div>
-    </>
+          <button onClick={checkEmpty} type="button" className="self-end w-2/3 my-2 primary-btn">
+            저장/취소하기
+          </button>
+        </div>
+      ) : (
+        <div className="flex flex-row justify-center my-2">
+          <button
+            onClick={() => setIsWriting(true)}
+            type="button"
+            className="self-center w-1/3 mx-1 font-semibold outline-hover-btn"
+          >
+            추가하기
+          </button>
+          {curDateItem.length != 0 ? (
+            <CopyBtn
+              btnText="복사하기"
+              copyContent={contentForCopy}
+              toastText="기도제목이 복사되었습니다."
+              copy={copy}
+            ></CopyBtn>
+          ) : (
+            <></>
+          )}
+        </div>
+      )}
+      {curDateItem.length != 0 ? (
+        curDateItem.map((item, index) => (
+          <Card
+            key={index}
+            data={item}
+            changeCard={(newTitle: string, newContent: string[]) =>
+              changeItem(item.id, newTitle, newContent)
+            }
+            isEditable={item.id == editingId ? true : false}
+            startEdit={(id: number) => startEdit(id)}
+            endEdit={endEdit}
+            deleteItem={deleteItem}
+          />
+        ))
+      ) : (
+        <div className="container place-self-center">추가된 기도제목이 없습니다</div>
+      )}
+    </div>
   );
 };
 

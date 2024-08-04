@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Info } from './model/info';
 import { HiOutlineTrash } from 'react-icons/hi';
 
@@ -19,11 +19,14 @@ const Card: React.FC<OwnProps> = ({
   endEdit,
   deleteItem,
 }) => {
-  // 더블클릭 - 수정
   const [newContent, setNewContent] = useState(data.content);
   const [newTitle, setNewTitle] = useState(data.name);
 
-  // 내용 수정
+  useEffect(() => {
+    setNewContent(data.content);
+    setNewTitle(data.name);
+  }, [data]);
+
   const updateEditState = () => {
     startEdit(data.id);
   };
@@ -46,13 +49,13 @@ const Card: React.FC<OwnProps> = ({
   const closeEdit = () => {
     // 초기화
     setNewContent(data.content);
+    setNewTitle(data.name);
     endEdit();
   };
 
   // 수정된 내용 저장
   const saveUpdates = () => {
     changeCard(newTitle, newContent);
-    // setIsEditing(false);
     endEdit();
   };
 
