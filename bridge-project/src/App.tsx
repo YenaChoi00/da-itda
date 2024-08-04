@@ -2,11 +2,9 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import Card from './Card';
 import { Info } from './model/info';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { data, DATE } from './assets/dummy';
 import Header from './Header.tsx';
+import CopyBtn from './CopyBtn.tsx';
 
 const App: React.FC = () => {
   const emptyData: Info = {
@@ -29,19 +27,12 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const filtered = myData.filter((item) => item.date === curDate);
-    console.log('현재 표시될 data: ', filtered);
-    console.log('현재 editingID: ', editingId);
     setCurDateItem(filtered);
   }, [curDate, myData]);
 
   const changeDate = (newDate: string) => {
     setCurDate(newDate);
     endEdit();
-  };
-
-  // 작성
-  const createNewInfo = () => {
-    setIsCreate(true);
   };
 
   const createTitle = (value: string) => {
@@ -64,7 +55,7 @@ const App: React.FC = () => {
     }));
   };
 
-  const updateChanges = () => {
+  const checkEmpty = () => {
     if (
       newInfo.name.trim() === '' ||
       newInfo.content.length === 0 ||
@@ -75,14 +66,16 @@ const App: React.FC = () => {
       );
 
       if (userConfirmed) {
-        // '예'를 선택하면 입력 초기화
+        // '예' 선택 -> 작성 취소
         setNewInfo(emptyData);
         setIsCreate(false);
       }
 
       return;
-    }
+    } else updateChanges();
+  };
 
+  const updateChanges = () => {
     setNewInfo((prevInfo) => ({
       ...prevInfo,
       date: curDate, // 현재 페이지의 날짜로 자동 지정
@@ -142,18 +135,6 @@ const App: React.FC = () => {
     setContentForCopy(copyData);
   };
 
-  const copyToast = () =>
-    toast.info('기도제목이 복사되었습니다.', {
-      position: 'bottom-left',
-      autoClose: 1500,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: 'light',
-    });
-
   return (
     <>
       <div className="container flex flex-col content-start w-96 h-svh">
@@ -178,37 +159,29 @@ const App: React.FC = () => {
               className="w-full input-box"
             ></textarea>
 
-            <button
-              onClick={updateChanges}
-              type="button"
-              className="self-end w-2/3 my-2 primary-btn"
-            >
+            <button onClick={checkEmpty} type="button" className="self-end w-2/3 my-2 primary-btn">
               저장/취소하기
             </button>
           </div>
         ) : (
           <div className="flex flex-row justify-center my-2">
             <button
-              onClick={createNewInfo}
+              onClick={() => setIsCreate(true)}
               type="button"
               className="self-center w-1/3 mx-1 font-semibold outline-hover-btn"
             >
               추가하기
             </button>
             {curDateItem.length != 0 ? (
-              <CopyToClipboard text={contentForCopy} onCopy={copyToast}>
-                <button
-                  type="button"
-                  className="self-center w-1/3 mx-1 font-semibold outline-hover-btn"
-                  onMouseUp={copy}
-                >
-                  복사하기
-                </button>
-              </CopyToClipboard>
+              <CopyBtn
+                btnText="복사하기"
+                copyContent={contentForCopy}
+                toastText="기도제목이 복사되었습니다."
+                copy={copy}
+              ></CopyBtn>
             ) : (
               <></>
             )}
-            <ToastContainer />
           </div>
         )}
         {curDateItem.length != 0 ? (
