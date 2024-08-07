@@ -170,27 +170,25 @@ const App: React.FC = () => {
           >
             추가하기
           </button>
-          {curDateItem.length != 0 ? (
+          {curDateItem.length > 0 && (
             <CopyBtn
               btnText="복사하기"
               copyContent={contentForCopy}
               toastText="기도제목이 복사되었습니다."
               copy={copy}
-            ></CopyBtn>
-          ) : (
-            <></>
+            />
           )}
         </div>
       )}
-      {curDateItem.length != 0 ? (
-        curDateItem.map((item, index) => (
+      {curDateItem.length > 0 ? (
+        curDateItem.map((item) => (
           <Card
-            key={index}
+            key={item.id}
             data={item}
             changeCard={(newTitle: string, newContent: string[]) =>
               changeItem(item.id, newTitle, newContent)
             }
-            isEditable={item.id == editingId ? true : false}
+            isEditable={item.id === editingId}
             startEdit={(id: number) => startEdit(id)}
             endEdit={endEdit}
             deleteItem={deleteItem}
