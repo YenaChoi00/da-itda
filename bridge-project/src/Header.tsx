@@ -10,12 +10,13 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ changeDate, name, curDate }) => {
-  const moveDate = (date: number, direction: string) => {
+  const moveDate = (date: number, direction: 'forward' | 'backward') => {
     const momentDate = moment(curDate, 'YYYY-MM-DD');
     let newDate = momentDate;
 
     if (direction == 'forward') newDate = newDate.add(date, 'days');
     else if (direction == 'backward') newDate = newDate.subtract(date, 'days');
+    else return; // 오류 처리
 
     changeDate(newDate.format('YYYY-MM-DD'));
   };

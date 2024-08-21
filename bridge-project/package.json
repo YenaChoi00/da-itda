@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.51.23",
+    "axios": "^1.7.4",
     "moment": "^2.30.1",
     "react": "^18.3.1",
     "react-copy-to-clipboard": "^5.1.0",
@@ -18,6 +20,7 @@
     "react-toastify": "^10.0.5"
   },
   "devDependencies": {
+    "@tanstack/eslint-plugin-query": "^5.51.15",
     "@types/react": "^18.3.3",
     "@types/react-copy-to-clipboard": "^5.0.7",
     "@types/react-dom": "^18.3.0",

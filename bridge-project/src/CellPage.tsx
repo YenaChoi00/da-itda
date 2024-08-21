@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import './App.css';
-import Card from './Card';
-import { Info } from './model/info';
-import { data, DATE } from './assets/dummy';
+import './CellPage.css';
+import Card from './Card.tsx';
+import { Info } from './model/info.ts';
+import { data, DATE } from './assets/dummy.ts';
 import Header from './Header.tsx';
 import CopyBtn from './CopyBtn.tsx';
 
-const App: React.FC = () => {
+const CellPage: React.FC = () => {
   const emptyData: Info = {
     id: 0,
     name: '',
@@ -201,4 +201,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default CellPage;
