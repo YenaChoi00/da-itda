@@ -1,11 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-// import CellPage from './CellPage.tsx';
 import './index.css';
-import Detail from './Detail.tsx';
+import ContentList from './ContentList.tsx';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <Detail />
+    <ContentList />
   </React.StrictMode>,
 );
