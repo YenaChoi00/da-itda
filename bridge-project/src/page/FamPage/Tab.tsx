@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TabModel } from './model/tabModel';
+import { TabModel } from '../../model/tabModel';
 
 interface TabsProps {
   tabs: TabModel[];

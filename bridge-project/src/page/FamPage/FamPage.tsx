@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import './ContentList.css';
-import Card from './Card/index.tsx';
-import { Info } from './model/info.ts';
-import { data, DATE } from './assets/dummy.ts';
-import Header from './Header/index.tsx';
-import CopyBtn from './Header/CopyBtn.tsx';
+import './FamPage.css';
+import Card from '../Card/index.tsx';
+import { Info } from '../../model/info.ts';
+import { data, DATE } from '../../assets/dummy.ts';
+import Header from '../Header/index.tsx';
+import CopyBtn from './CopyBtn.tsx';
 
-const ContentList: React.FC = () => {
+const FamPage: React.FC = () => {
   const emptyData: Info = {
     id: 0,
     name: '',
@@ -201,4 +201,4 @@ const ContentList: React.FC = () => {
   );
 };
 
-export default ContentList;
+export default FamPage;

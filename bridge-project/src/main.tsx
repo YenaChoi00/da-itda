@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import ContentList from './ContentList.tsx';
+import FamPage from './page/FamPage/FamPage.tsx';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <ContentList />
+    <FamPage />
   </React.StrictMode>,
 );
