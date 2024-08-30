@@ -1,4 +1,7 @@
+import { Info } from './info';
+
 export type TabModel = {
-  title: string;
-  content: JSX.Element[];
+  name: string;
+  id: number;
+  content: Info[];
 };

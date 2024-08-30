@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Info } from '../model/info';
+import { Info } from '../../model/info';
 import { HiOutlineTrash } from 'react-icons/hi';
 
 interface OwnProps {
