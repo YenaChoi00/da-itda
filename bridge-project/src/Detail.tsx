@@ -3,8 +3,8 @@ import Tab from './Tab';
 import { TabModel } from './model/tabModel';
 import { data, data2, total } from './assets/dummy.ts';
 import { Info } from './model/info';
-import CardReadOnly from './CardReadOnly.tsx';
-import Header from './Header.tsx';
+import CardReadOnly from './Card/CardReadOnly.tsx';
+import Header from './Header/index.tsx';
 
 const Detail: React.FC = () => {
   const curDate: string = '2024-07-17';

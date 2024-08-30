@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import './CellPage.css';
-import Card from './Card.tsx';
+import Card from './Card/index.tsx';
 import { Info } from './model/info.ts';
 import { data, DATE } from './assets/dummy.ts';
-import Header from './Header.tsx';
-import CopyBtn from './CopyBtn.tsx';
+import Header from './Header/index.tsx';
+import CopyBtn from './Header/CopyBtn.tsx';
 
 const CellPage: React.FC = () => {
   const emptyData: Info = {
