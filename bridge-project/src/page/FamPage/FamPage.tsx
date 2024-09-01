@@ -17,15 +17,21 @@ const FamPage: React.FC = () => {
     content: [''],
   };
 
-  const tabs: TabModel[] = [
-    { name: '전체', id: 1, content: [] },
-    { name: '하형셀', id: 12, content: [] },
-    { name: '예나셀', id: 11, content: [] },
-  ];
+  const tabs: TabModel[] = useMemo(
+    () => [
+      { name: '전체', id: 1, content: [] },
+      { name: '하형셀', id: 12, content: [] },
+      { name: '예나셀', id: 11, content: [] },
+    ],
+    [],
+  );
 
   const [curDate, setCurDate] = useState<string>(DATE);
   const [famData, setFamData] = useState<Info[]>(total);
+  // 날짜별
   const [curDateList, setCurDateList] = useState<Info[]>([]);
+  // 탭(셀)별
+  const [tabData, setTabData] = useState<TabModel[]>(tabs);
 
   const [isWriting, setIsWriting] = useState<boolean>(false);
   const [newInfo, setNewInfo] = useState<Info>(emptyData);
@@ -34,8 +40,6 @@ const FamPage: React.FC = () => {
 
   const [editingId, setEditingId] = useState<number>(-1);
 
-  // Tab 변수들
-  const [tabData, setTabData] = useState<TabModel[]>(tabs);
   const [active, setActive] = useState(0);
 
   useEffect(() => {
@@ -44,7 +48,7 @@ const FamPage: React.FC = () => {
     setCurDateList(filtered);
   }, [curDate, famData]);
 
-  // 현재 날짜 데이터 중, *해당 셀*(id로 비교)에 해당하는 데이터
+  // 현재 날짜 데이터 중, *해당 셀*에 해당하는 데이터
   const updatedTabData = useMemo(() => {
     return tabs.map((item) => ({
       ...item,
@@ -53,11 +57,12 @@ const FamPage: React.FC = () => {
           ? curDateList
           : curDateList.filter((curItem) => curItem.cellId === item.id),
     }));
-  }, [curDateList]);
+  }, [curDateList, tabs]);
 
   useEffect(() => {
     setTabData(updatedTabData);
   }, [updatedTabData]);
+  // ----모듈화---
 
   const changeDate = (newDate: string) => {
     setCurDate(newDate);
@@ -151,7 +156,7 @@ const FamPage: React.FC = () => {
 
   // 복사
   const copy = () => {
-    const data = [...curDateList];
+    const data = [...tabData[active].content];
     const copyData = data
       .map((item) => {
         const contentText = item.content
@@ -211,13 +216,13 @@ const FamPage: React.FC = () => {
         </div>
       )}
       {curDateList.length > 0 ? (
-        <div className="flex flex-col mb-3">
-          <ul>
+        <div className="flex flex-col my-3 tab">
+          <ul className="grid grid-flow-col cursor-pointer justify-stretch">
             {tabData.map((tab: TabModel, index: number) => (
               <li
                 key={index}
                 onClick={() => setActive(index)}
-                className={`${active === index ? 'active' : ''} text-lg inline mx-1 cursor-pointer`}
+                className={`${active === index ? 'active' : ''} inline-block p-4 border-b-2`}
               >
                 {tab.name}
               </li>

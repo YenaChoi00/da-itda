@@ -15,13 +15,17 @@ const Tab: React.FC<TabsProps> = ({ tabs }) => {
           <li
             key={index}
             onClick={() => setActive(index)}
-            className={active === index ? 'active inline mx-1' : 'inline mx-1'}
+            className={`${active === index ? 'active inline mx-1' : 'inline mx-1'}rounded-t-lg`}
           >
-            {tab.title}
+            {tab.name}
           </li>
         ))}
       </ul>
-      <div>{tabs[active].content}</div>
+      <div>
+        {
+          //tabs[active].content
+        }
+      </div>
     </div>
   );
 };
