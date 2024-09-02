@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Info } from './model/info';
+import React, { useState } from 'react';
+import { Info } from '../../model/info';
 import { HiOutlineTrash } from 'react-icons/hi';
 
 interface OwnProps {
@@ -107,7 +107,7 @@ const Card: React.FC<OwnProps> = ({
           </div>
           <ol className="pl-5 list-decimal">
             {data.content.map((item, index) => (
-              <li key={index} className="text-left whitespace-pre-line">
+              <li key={index} className="mb-2 text-left whitespace-pre-line">
                 {item}
               </li>
             ))}

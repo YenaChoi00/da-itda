@@ -1,38 +1,72 @@
-import { useEffect, useState } from 'react';
-import './CellPage.css';
-import Card from './Card.tsx';
-import { Info } from './model/info.ts';
-import { data, DATE } from './assets/dummy.ts';
-import Header from './Header.tsx';
+import { useEffect, useMemo, useState } from 'react';
+import './FamPage.css';
+import { Info } from '../../model/info.ts';
+import { TabModel } from '../../model/tabModel.ts';
+import { total, DATE } from '../../assets/dummy.ts';
+import Header from '../Header';
 import CopyBtn from './CopyBtn.tsx';
+import Card from '../Card/index.tsx';
 
-const CellPage: React.FC = () => {
+const FamPage: React.FC = () => {
   const emptyData: Info = {
     id: 0,
     name: '',
+    famId: 0,
+    cellId: 0,
     date: '',
     content: [''],
   };
 
+  const tabs: TabModel[] = useMemo(
+    () => [
+      { name: '전체', id: 1, content: [] },
+      { name: '하형셀', id: 12, content: [] },
+      { name: '예나셀', id: 11, content: [] },
+    ],
+    [],
+  );
+
   const [curDate, setCurDate] = useState<string>(DATE);
-  const [myData, setMyData] = useState<Info[]>(data);
-  const [curDateItem, setCurDateItem] = useState<Info[]>([]);
+  const [famData, setFamData] = useState<Info[]>(total);
+  // 날짜별
+  const [curDateList, setCurDateList] = useState<Info[]>([]);
+  // 탭(셀)별
+  const [tabData, setTabData] = useState<TabModel[]>(tabs);
 
   const [isWriting, setIsWriting] = useState<boolean>(false);
   const [newInfo, setNewInfo] = useState<Info>(emptyData);
 
-  const [editingId, setEditingId] = useState<number>(-1);
-
   const [contentForCopy, setContentForCopy] = useState<string>('');
 
+  const [editingId, setEditingId] = useState<number>(-1);
+
+  const [active, setActive] = useState(0);
+
   useEffect(() => {
-    const filtered = myData.filter((item) => item.date === curDate);
-    setCurDateItem(filtered);
-  }, [curDate, myData]);
+    // 팸 전체 데이터 중, *현재 날짜*에 해당하는 데이터
+    const filtered = famData.filter((item) => item.date === curDate);
+    setCurDateList(filtered);
+  }, [curDate, famData]);
+
+  // 현재 날짜 데이터 중, *해당 셀*에 해당하는 데이터
+  const updatedTabData = useMemo(() => {
+    return tabs.map((item) => ({
+      ...item,
+      content:
+        item.name === '전체'
+          ? curDateList
+          : curDateList.filter((curItem) => curItem.cellId === item.id),
+    }));
+  }, [curDateList, tabs]);
+
+  useEffect(() => {
+    setTabData(updatedTabData);
+  }, [updatedTabData]);
+  // ----모듈화---
 
   const changeDate = (newDate: string) => {
     setCurDate(newDate);
-    endEdit();
+    // setEditingId(-1);
   };
 
   const createTitle = (value: string) => {
@@ -51,7 +85,7 @@ const CellPage: React.FC = () => {
       ...prevInfo,
       content: list,
       date: curDate,
-      id: myData.length + 1, // 임시
+      id: famData.length + 1, // 임시
     }));
   };
 
@@ -81,12 +115,13 @@ const CellPage: React.FC = () => {
       date: curDate, // 현재 페이지의 날짜로 자동 지정
     }));
     // 지금까지 작성된 Info 데이터 저장 & 업데이트
-    setMyData([...myData, newInfo]);
+    setFamData([...famData, newInfo]);
 
     setNewInfo(emptyData);
     setIsWriting(false);
   };
 
+  // Card 동작 관련 함수
   const startEdit = (id: number) => {
     setEditingId(id);
   };
@@ -100,7 +135,7 @@ const CellPage: React.FC = () => {
     newName: string | undefined,
     newRequest: string[] | undefined,
   ) => {
-    let updatedData = [...myData];
+    let updatedData = [...famData];
     if (newName) {
       updatedData = updatedData.map((item) => (item.id === id ? { ...item, name: newName } : item));
     }
@@ -109,19 +144,19 @@ const CellPage: React.FC = () => {
         item.id === id ? { ...item, content: newRequest } : item,
       );
     }
-    setMyData(updatedData);
+    setFamData(updatedData);
   };
 
   // 삭제
   const deleteItem = (id: number) => {
-    let updatedData = [...myData];
+    let updatedData = [...famData];
     updatedData = updatedData.filter((data) => data.id != id);
-    setMyData(updatedData);
+    setFamData(updatedData);
   };
 
   // 복사
   const copy = () => {
-    const data = [...curDateItem];
+    const data = [...tabData[active].content];
     const copyData = data
       .map((item) => {
         const contentText = item.content
@@ -136,7 +171,7 @@ const CellPage: React.FC = () => {
 
   return (
     <div className="container flex flex-col content-start w-96 h-svh">
-      <Header curDate={curDate} name="예나셀" changeDate={changeDate}></Header>
+      <Header curDate={curDate} name="예빈팸" changeDate={changeDate}></Header>
       {isWriting ? (
         <div className="flex flex-col w-full px-2 space-y-2">
           <input
@@ -170,7 +205,7 @@ const CellPage: React.FC = () => {
           >
             추가하기
           </button>
-          {curDateItem.length > 0 && (
+          {curDateList.length > 0 && (
             <CopyBtn
               btnText="복사하기"
               copyContent={contentForCopy}
@@ -180,20 +215,36 @@ const CellPage: React.FC = () => {
           )}
         </div>
       )}
-      {curDateItem.length > 0 ? (
-        curDateItem.map((item) => (
-          <Card
-            key={item.id}
-            data={item}
-            changeCard={(newTitle: string, newContent: string[]) =>
-              changeItem(item.id, newTitle, newContent)
-            }
-            isEditable={item.id === editingId}
-            startEdit={(id: number) => startEdit(id)}
-            endEdit={endEdit}
-            deleteItem={deleteItem}
-          />
-        ))
+      {curDateList.length > 0 ? (
+        <div className="flex flex-col my-3 tab">
+          <ul className="grid grid-flow-col cursor-pointer justify-stretch">
+            {tabData.map((tab: TabModel, index: number) => (
+              <li
+                key={index}
+                onClick={() => setActive(index)}
+                className={`${active === index ? 'active' : ''} inline-block p-4 border-b-2`}
+              >
+                {tab.name}
+              </li>
+            ))}
+          </ul>
+
+          <div>
+            {tabData[active].content.map((item) => (
+              <Card
+                key={item.id}
+                data={item}
+                changeCard={(newTitle: string, newContent: string[]) =>
+                  changeItem(item.id, newTitle, newContent)
+                }
+                isEditable={item.id === editingId}
+                startEdit={(id: number) => startEdit(id)}
+                endEdit={endEdit}
+                deleteItem={deleteItem}
+              />
+            ))}
+          </div>
+        </div>
       ) : (
         <div className="container place-self-center">추가된 기도제목이 없습니다</div>
       )}
@@ -201,4 +252,4 @@ const CellPage: React.FC = () => {
   );
 };
 
-export default CellPage;
+export default FamPage;

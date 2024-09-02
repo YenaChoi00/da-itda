@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TabModel } from './model/tabModel';
+import { TabModel } from '../../model/tabModel';
 
 interface TabsProps {
   tabs: TabModel[];
@@ -15,13 +15,17 @@ const Tab: React.FC<TabsProps> = ({ tabs }) => {
           <li
             key={index}
             onClick={() => setActive(index)}
-            className={active === index ? 'active inline mx-1' : 'inline mx-1'}
+            className={`${active === index ? 'active inline mx-1' : 'inline mx-1'}rounded-t-lg`}
           >
-            {tab.title}
+            {tab.name}
           </li>
         ))}
       </ul>
-      <div>{tabs[active].content}</div>
+      <div>
+        {
+          //tabs[active].content
+        }
+      </div>
     </div>
   );
 };
