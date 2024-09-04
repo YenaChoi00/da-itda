@@ -6,17 +6,9 @@ import { total, DATE } from '../../assets/dummy.ts';
 import Header from '../Header';
 import CopyBtn from './CopyBtn.tsx';
 import TabPage from './TabPage.tsx';
+import CreateBtn from './CreateBtn.tsx';
 
 const FamPage: React.FC = () => {
-  const emptyData: Info = {
-    id: 0,
-    name: '',
-    famId: 0,
-    cellId: 0,
-    date: '',
-    content: [''],
-  };
-
   const tabs: TabModel[] = useMemo(
     () => [
       { name: '전체', id: 1, content: [] },
@@ -34,7 +26,6 @@ const FamPage: React.FC = () => {
   const [tabData, setTabData] = useState<TabModel[]>(tabs);
 
   const [isWriting, setIsWriting] = useState<boolean>(false);
-  const [newInfo, setNewInfo] = useState<Info>(emptyData);
 
   const [contentForCopy, setContentForCopy] = useState<string>('');
 
@@ -58,63 +49,10 @@ const FamPage: React.FC = () => {
   useEffect(() => {
     setTabData(updatedTabData);
   }, [updatedTabData]);
-  // ----모듈화---
 
   const changeDate = (newDate: string) => {
     setCurDate(newDate);
     // setEditingId(-1);
-  };
-
-  const createTitle = (value: string) => {
-    setNewInfo((prevInfo) => ({
-      ...prevInfo,
-      name: value,
-    }));
-  };
-
-  const createContent = (value: string) => {
-    const list = value
-      .split('\n')
-      .map((item) => item.trim()) // 앞뒤 공백 제거
-      .filter((item) => item !== ''); // \n 여러 번 입력해서 빈 요소가 된 것들 제거
-    setNewInfo((prevInfo) => ({
-      ...prevInfo,
-      content: list,
-      date: curDate,
-      id: famData.length + 1, // 임시
-    }));
-  };
-
-  const checkEmpty = () => {
-    if (
-      newInfo.name.trim() === '' ||
-      newInfo.content.length === 0 ||
-      newInfo.content.every((item) => item.trim() === '')
-    ) {
-      const userConfirmed = window.confirm(
-        '이름과 기도제목을 모두 입력해주세요.\n또는 작성을 취소하시겠습니까?',
-      );
-
-      if (userConfirmed) {
-        // '예' 선택 -> 작성 취소
-        setNewInfo(emptyData);
-        setIsWriting(false);
-      }
-
-      return;
-    } else updateChanges();
-  };
-
-  const updateChanges = () => {
-    setNewInfo((prevInfo) => ({
-      ...prevInfo,
-      date: curDate, // 현재 페이지의 날짜로 자동 지정
-    }));
-    // 지금까지 작성된 Info 데이터 저장 & 업데이트
-    setFamData([...famData, newInfo]);
-
-    setNewInfo(emptyData);
-    setIsWriting(false);
   };
 
   // TabPage 내부 업데이트 관련 함수
@@ -138,52 +76,42 @@ const FamPage: React.FC = () => {
     setContentForCopy(copyData);
   };
 
+  function CreateCopyBtn() {
+    return (
+      <div className="flex flex-row justify-center my-2">
+        <button
+          onClick={() => setIsWriting(true)}
+          type="button"
+          className="self-center w-1/3 mx-1 font-semibold outline-hover-btn"
+        >
+          추가하기
+        </button>
+        {curDateList.length > 0 && (
+          <CopyBtn
+            btnText="복사하기"
+            copyContent={contentForCopy}
+            toastText="기도제목이 복사되었습니다."
+            copy={copy}
+          />
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="container flex flex-col content-start w-96 h-svh">
       <Header curDate={curDate} name="예빈팸" changeDate={changeDate}></Header>
       {isWriting ? (
-        <div className="flex flex-col w-full px-2 space-y-2">
-          <input
-            type="text"
-            id="name-with-label"
-            onChange={(e) => createTitle(e.target.value)}
-            name="name"
-            placeholder="이름"
-            className="w-full input-box"
-          />
-          <textarea
-            onChange={(e) => createContent(e.target.value)}
-            id="content"
-            placeholder="기도제목을 입력해주세요. 엔터로 번호가 구분됩니다."
-            name="content"
-            rows={5}
-            cols={40}
-            className="w-full input-box"
-          ></textarea>
-
-          <button onClick={checkEmpty} type="button" className="self-end w-2/3 my-2 primary-btn">
-            저장/취소하기
-          </button>
-        </div>
+        <CreateBtn
+          curDate={curDate}
+          newId={famData.length + 1}
+          changeIsWriting={(isWriting: boolean) => setIsWriting(isWriting)}
+          updateFamData={(newData: Info) => updateFamData([...famData, newData])}
+        />
       ) : (
-        <div className="flex flex-row justify-center my-2">
-          <button
-            onClick={() => setIsWriting(true)}
-            type="button"
-            className="self-center w-1/3 mx-1 font-semibold outline-hover-btn"
-          >
-            추가하기
-          </button>
-          {curDateList.length > 0 && (
-            <CopyBtn
-              btnText="복사하기"
-              copyContent={contentForCopy}
-              toastText="기도제목이 복사되었습니다."
-              copy={copy}
-            />
-          )}
-        </div>
+        CreateCopyBtn()
       )}
+
       {curDateList.length > 0 ? (
         <TabPage tabData={tabData} famData={famData} updateFamData={updateFamData} />
       ) : (
