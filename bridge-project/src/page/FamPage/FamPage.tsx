@@ -5,7 +5,7 @@ import { TabModel } from '../../model/tabModel.ts';
 import { total, DATE } from '../../assets/dummy.ts';
 import Header from '../Header';
 import CopyBtn from './CopyBtn.tsx';
-import Card from '../Card/index.tsx';
+import TabPage from './TabPage.tsx';
 
 const FamPage: React.FC = () => {
   const emptyData: Info = {
@@ -37,10 +37,6 @@ const FamPage: React.FC = () => {
   const [newInfo, setNewInfo] = useState<Info>(emptyData);
 
   const [contentForCopy, setContentForCopy] = useState<string>('');
-
-  const [editingId, setEditingId] = useState<number>(-1);
-
-  const [active, setActive] = useState(0);
 
   useEffect(() => {
     // 팸 전체 데이터 중, *현재 날짜*에 해당하는 데이터
@@ -121,42 +117,15 @@ const FamPage: React.FC = () => {
     setIsWriting(false);
   };
 
-  // Card 동작 관련 함수
-  const startEdit = (id: number) => {
-    setEditingId(id);
-  };
-
-  const endEdit = () => {
-    setEditingId(-1);
-  };
-
-  const changeItem = (
-    id: number,
-    newName: string | undefined,
-    newRequest: string[] | undefined,
-  ) => {
-    let updatedData = [...famData];
-    if (newName) {
-      updatedData = updatedData.map((item) => (item.id === id ? { ...item, name: newName } : item));
-    }
-    if (newRequest) {
-      updatedData = updatedData.map((item) =>
-        item.id === id ? { ...item, content: newRequest } : item,
-      );
-    }
-    setFamData(updatedData);
-  };
-
-  // 삭제
-  const deleteItem = (id: number) => {
-    let updatedData = [...famData];
-    updatedData = updatedData.filter((data) => data.id != id);
+  // TabPage 내부 업데이트 관련 함수
+  const updateFamData = (updatedData: Info[]) => {
     setFamData(updatedData);
   };
 
   // 복사
   const copy = () => {
-    const data = [...tabData[active].content];
+    // const data = [...tabData[active].content];
+    const data = [...tabData[0].content]; // 임시
     const copyData = data
       .map((item) => {
         const contentText = item.content
@@ -216,35 +185,7 @@ const FamPage: React.FC = () => {
         </div>
       )}
       {curDateList.length > 0 ? (
-        <div className="flex flex-col my-3 tab">
-          <ul className="grid grid-flow-col cursor-pointer justify-stretch">
-            {tabData.map((tab: TabModel, index: number) => (
-              <li
-                key={index}
-                onClick={() => setActive(index)}
-                className={`${active === index ? 'active' : ''} inline-block p-4 border-b-2`}
-              >
-                {tab.name}
-              </li>
-            ))}
-          </ul>
-
-          <div>
-            {tabData[active].content.map((item) => (
-              <Card
-                key={item.id}
-                data={item}
-                changeCard={(newTitle: string, newContent: string[]) =>
-                  changeItem(item.id, newTitle, newContent)
-                }
-                isEditable={item.id === editingId}
-                startEdit={(id: number) => startEdit(id)}
-                endEdit={endEdit}
-                deleteItem={deleteItem}
-              />
-            ))}
-          </div>
-        </div>
+        <TabPage tabData={tabData} famData={famData} updateFamData={updateFamData} />
       ) : (
         <div className="container place-self-center">추가된 기도제목이 없습니다</div>
       )}
