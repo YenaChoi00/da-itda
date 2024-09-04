@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Info } from '../../model/info';
 
-interface CreateBtnProps {
+interface CreateFormProps {
   curDate: string;
   newId: number;
   changeIsWriting(isWriting: boolean): void;
   updateFamData(newData: Info): void;
 }
 
-const CreateBtn: React.FC<CreateBtnProps> = ({
+const CreateForm: React.FC<CreateFormProps> = ({
   curDate,
   newId,
   changeIsWriting,
@@ -107,4 +107,4 @@ const CreateBtn: React.FC<CreateBtnProps> = ({
   );
 };
 
-export default CreateBtn;
+export default CreateForm;

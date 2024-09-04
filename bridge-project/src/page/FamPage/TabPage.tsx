@@ -10,8 +10,7 @@ interface TabProps {
 }
 
 const TabPage: React.FC<TabProps> = ({ tabData, famData, updateFamData }) => {
-  const [active, setActive] = useState(0);
-
+  const [activeNum, setActiveNum] = useState(0);
   const [editingId, setEditingId] = useState<number>(-1);
 
   const startEdit = (id: number) => {
@@ -52,8 +51,8 @@ const TabPage: React.FC<TabProps> = ({ tabData, famData, updateFamData }) => {
         {tabData.map((tab: TabModel, index: number) => (
           <li
             key={index}
-            onClick={() => setActive(index)}
-            className={`${active === index ? 'active' : ''} inline-block p-4 border-b-2`}
+            onClick={() => setActiveNum(index)}
+            className={`${activeNum === index ? 'activeNum' : ''} inline-block p-4 border-b-2`}
           >
             {tab.name}
           </li>
@@ -61,7 +60,7 @@ const TabPage: React.FC<TabProps> = ({ tabData, famData, updateFamData }) => {
       </ul>
 
       <div>
-        {tabData[active].content.map((item) => (
+        {tabData[activeNum].content.map((item) => (
           <Card
             key={item.id}
             data={item}

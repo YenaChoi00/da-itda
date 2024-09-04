@@ -6,7 +6,7 @@ import { total, DATE } from '../../assets/dummy.ts';
 import Header from '../Header';
 import CopyBtn from './CopyBtn.tsx';
 import TabPage from './TabPage.tsx';
-import CreateBtn from './CreateBtn.tsx';
+import CreateForm from './CreateForm.tsx';
 
 const FamPage: React.FC = () => {
   const tabs: TabModel[] = useMemo(
@@ -52,7 +52,6 @@ const FamPage: React.FC = () => {
 
   const changeDate = (newDate: string) => {
     setCurDate(newDate);
-    // setEditingId(-1);
   };
 
   // TabPage 내부 업데이트 관련 함수
@@ -61,8 +60,8 @@ const FamPage: React.FC = () => {
   };
 
   // 복사
-  const copy = () => {
-    // const data = [...tabData[active].content];
+  const setCopyData = () => {
+    // const data = [...tabData[activeNum].content];
     const data = [...tabData[0].content]; // 임시
     const copyData = data
       .map((item) => {
@@ -77,40 +76,41 @@ const FamPage: React.FC = () => {
   };
 
   function CreateCopyBtn() {
-    return (
-      <div className="flex flex-row justify-center my-2">
-        <button
-          onClick={() => setIsWriting(true)}
-          type="button"
-          className="self-center w-1/3 mx-1 font-semibold outline-hover-btn"
-        >
-          추가하기
-        </button>
-        {curDateList.length > 0 && (
-          <CopyBtn
-            btnText="복사하기"
-            copyContent={contentForCopy}
-            toastText="기도제목이 복사되었습니다."
-            copy={copy}
-          />
-        )}
-      </div>
-    );
-  }
-
-  return (
-    <div className="container flex flex-col content-start w-96 h-svh">
-      <Header curDate={curDate} name="예빈팸" changeDate={changeDate}></Header>
-      {isWriting ? (
-        <CreateBtn
+    if (isWriting)
+      return (
+        <CreateForm
           curDate={curDate}
           newId={famData.length + 1}
           changeIsWriting={(isWriting: boolean) => setIsWriting(isWriting)}
           updateFamData={(newData: Info) => updateFamData([...famData, newData])}
         />
-      ) : (
-        CreateCopyBtn()
-      )}
+      );
+    else
+      return (
+        <div className="flex flex-row justify-center my-2">
+          <button
+            onClick={() => setIsWriting(true)}
+            type="button"
+            className="self-center w-1/3 mx-1 font-semibold outline-hover-btn"
+          >
+            추가하기
+          </button>
+          {curDateList.length > 0 && (
+            <CopyBtn
+              btnText="복사하기"
+              copyContent={contentForCopy}
+              toastText="기도제목이 복사되었습니다."
+              copy={setCopyData}
+            />
+          )}
+        </div>
+      );
+  }
+
+  return (
+    <div className="container flex flex-col content-start w-96 h-svh">
+      <Header curDate={curDate} name="예빈팸" changeDate={changeDate}></Header>
+      {CreateCopyBtn()}
 
       {curDateList.length > 0 ? (
         <TabPage tabData={tabData} famData={famData} updateFamData={updateFamData} />
