@@ -69,7 +69,7 @@
   @apply text-sm font-medium text-center border-b border-gray-200 dark:text-gray-400 dark:border-gray-700;
 }
 
-.active {
+.activeNum {
   @apply font-semibold text-primary border-primary dark:text-primary dark:border-primary;
 }
 
