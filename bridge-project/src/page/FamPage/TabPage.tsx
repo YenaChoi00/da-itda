@@ -5,12 +5,19 @@ import { Info } from '../../model/info.ts';
 
 interface TabProps {
   tabData: TabModel[];
+  activeTabNum: number;
+  setActiveTabNum: (num: number) => void;
   famData: Info[];
   updateFamData: (updatedData: Info[]) => void;
 }
 
-const TabPage: React.FC<TabProps> = ({ tabData, famData, updateFamData }) => {
-  const [activeNum, setActiveNum] = useState(0);
+const TabPage: React.FC<TabProps> = ({
+  tabData,
+  activeTabNum,
+  setActiveTabNum,
+  famData,
+  updateFamData,
+}) => {
   const [editingId, setEditingId] = useState<number>(-1);
 
   const startEdit = (id: number) => {
@@ -46,13 +53,13 @@ const TabPage: React.FC<TabProps> = ({ tabData, famData, updateFamData }) => {
   };
 
   return (
-    <div className="flex flex-col my-3 tab">
+    <div className="flex flex-col tab">
       <ul className="grid grid-flow-col cursor-pointer justify-stretch">
         {tabData.map((tab: TabModel, index: number) => (
           <li
             key={index}
-            onClick={() => setActiveNum(index)}
-            className={`${activeNum === index ? 'activeNum' : ''} inline-block p-4 border-b-2`}
+            onClick={() => setActiveTabNum(index)}
+            className={`${activeTabNum === index ? 'active' : ''} inline-block p-4 border-b-2`}
           >
             {tab.name}
           </li>
@@ -60,7 +67,7 @@ const TabPage: React.FC<TabProps> = ({ tabData, famData, updateFamData }) => {
       </ul>
 
       <div>
-        {tabData[activeNum].content.map((item) => (
+        {tabData[activeTabNum].content.map((item) => (
           <Card
             key={item.id}
             data={item}

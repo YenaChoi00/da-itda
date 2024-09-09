@@ -4,7 +4,9 @@ import { Info } from '../../model/info.ts';
 import { TabModel } from '../../model/tabModel.ts';
 import { total, DATE } from '../../assets/dummy.ts';
 import Header from '../Header';
-import CopyBtn from './CopyBtn.tsx';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import TabPage from './TabPage.tsx';
 import CreateForm from './CreateForm.tsx';
 
@@ -20,31 +22,31 @@ const FamPage: React.FC = () => {
 
   const [curDate, setCurDate] = useState<string>(DATE);
   const [famData, setFamData] = useState<Info[]>(total);
-  // 날짜별
-  const [curDateList, setCurDateList] = useState<Info[]>([]);
-  // 탭(셀)별
-  const [tabData, setTabData] = useState<TabModel[]>(tabs);
 
   const [isWriting, setIsWriting] = useState<boolean>(false);
-
   const [contentForCopy, setContentForCopy] = useState<string>('');
 
+  // 날짜별
+  const [curDateData, setCurDateData] = useState<Info[]>([]);
   useEffect(() => {
     // 팸 전체 데이터 중, *현재 날짜*에 해당하는 데이터
     const filtered = famData.filter((item) => item.date === curDate);
-    setCurDateList(filtered);
+    setCurDateData(filtered);
   }, [curDate, famData]);
 
+  // 탭(셀)별
+  const [tabData, setTabData] = useState<TabModel[]>(tabs);
+  const [activeTab, setActiveTab] = useState(0);
   // 현재 날짜 데이터 중, *해당 셀*에 해당하는 데이터
   const updatedTabData = useMemo(() => {
     return tabs.map((item) => ({
       ...item,
       content:
         item.name === '전체'
-          ? curDateList
-          : curDateList.filter((curItem) => curItem.cellId === item.id),
+          ? curDateData
+          : curDateData.filter((curItem) => curItem.cellId === item.id),
     }));
-  }, [curDateList, tabs]);
+  }, [curDateData, tabs]);
 
   useEffect(() => {
     setTabData(updatedTabData);
@@ -61,8 +63,7 @@ const FamPage: React.FC = () => {
 
   // 복사
   const setCopyData = () => {
-    // const data = [...tabData[activeNum].content];
-    const data = [...tabData[0].content]; // 임시
+    const data = [...tabData[activeTab].content];
     const copyData = data
       .map((item) => {
         const contentText = item.content
@@ -74,6 +75,18 @@ const FamPage: React.FC = () => {
 
     setContentForCopy(copyData);
   };
+
+  const copyToast = () =>
+    toast.info('기도제목이 복사되었습니다.', {
+      position: 'bottom-left',
+      autoClose: 1500,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'light',
+    });
 
   function CreateCopyBtn() {
     if (isWriting)
@@ -95,13 +108,19 @@ const FamPage: React.FC = () => {
           >
             추가하기
           </button>
-          {curDateList.length > 0 && (
-            <CopyBtn
-              btnText="복사하기"
-              copyContent={contentForCopy}
-              toastText="기도제목이 복사되었습니다."
-              copy={setCopyData}
-            />
+          {curDateData.length > 0 && (
+            <>
+              <CopyToClipboard text={contentForCopy} onCopy={copyToast}>
+                <button
+                  type="button"
+                  className="self-center w-1/3 mx-1 font-semibold outline-hover-btn"
+                  onMouseUp={setCopyData}
+                >
+                  복사하기
+                </button>
+              </CopyToClipboard>
+              <ToastContainer />
+            </>
           )}
         </div>
       );
@@ -110,10 +129,17 @@ const FamPage: React.FC = () => {
   return (
     <div className="container flex flex-col content-start w-96 h-svh">
       <Header curDate={curDate} name="예빈팸" changeDate={changeDate}></Header>
+
       {CreateCopyBtn()}
 
-      {curDateList.length > 0 ? (
-        <TabPage tabData={tabData} famData={famData} updateFamData={updateFamData} />
+      {curDateData.length > 0 ? (
+        <TabPage
+          tabData={tabData}
+          activeTabNum={activeTab}
+          setActiveTabNum={setActiveTab}
+          famData={famData}
+          updateFamData={updateFamData}
+        />
       ) : (
         <div className="container place-self-center">추가된 기도제목이 없습니다</div>
       )}
