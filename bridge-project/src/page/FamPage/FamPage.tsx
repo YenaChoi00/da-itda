@@ -94,6 +94,7 @@ const FamPage: React.FC = () => {
         <CreateForm
           curDate={curDate}
           newId={famData.length + 1}
+          categories={tabData}
           changeIsWriting={(isWriting: boolean) => setIsWriting(isWriting)}
           updateFamData={(newData: Info) => updateFamData([...famData, newData])}
         />
