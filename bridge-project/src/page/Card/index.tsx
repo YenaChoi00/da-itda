@@ -41,7 +41,7 @@ const Card: React.FC<OwnProps> = ({
     setNewContent(updatedContent);
   };
 
-  const closeEdit = () => {
+  const initForm = () => {
     // 초기화
     setNewContent(data.content);
     setNewTitle(data.name);
@@ -86,7 +86,7 @@ const Card: React.FC<OwnProps> = ({
           ))}
         </ol>
         <div className="flex flex-row justify-end space-x-2">
-          <button onClick={closeEdit} type="button" className="self-end outline-hover-btn">
+          <button onClick={initForm} type="button" className="self-end outline-hover-btn">
             취소
           </button>
           <button onClick={saveUpdates} type="button" className="self-end primary-hover-btn">
