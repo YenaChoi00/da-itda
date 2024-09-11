@@ -25,15 +25,37 @@ try {
   );
 }
 
+// Check Firestore database instance
+const checkDb = (): boolean => {
+  if (!db) {
+    console.error('Firebase is not initialized.');
+    return false;
+  }
+  return true;
+};
+
+// Get Firestore database instance
+export const getDb = (): Firestore => {
+  if (!checkDb()) {
+    throw new Error('Firestore database is not initialized');
+  }
+  return db!;
+};
+
+// Collection getter functions
+export const getUsersCollection = () => collection(getDb(), 'user-dev');
+export const getCellsCollection = () => collection(getDb(), 'cell-dev');
+export const getFamiliesCollection = () => collection(getDb(), 'family-dev');
+export const getPrayerRequestsCollection = () => collection(getDb(), 'prayer-request-dev');
+
 // FIXME: remove test code
 export async function getTest() {
-  if (!db) {
-    console.error('Firebase is not initialized. Cannot perform getTest()');
-    return;
+  try {
+    const querySnapshot = await getDocs(getUsersCollection());
+    querySnapshot.forEach((doc) => {
+      console.log(`${doc.id} => `, doc.data());
+    });
+  } catch (error) {
+    console.error('Error in getTest:', error instanceof Error ? error.message : String(error));
   }
-
-  const querySnapshot = await getDocs(collection(db, 'user-dev'));
-  querySnapshot.forEach((doc) => {
-    console.log(`${doc.id} => `, doc.data());
-  });
 }
