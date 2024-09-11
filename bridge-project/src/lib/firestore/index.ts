@@ -1,20 +1,19 @@
 import { FirebaseApp, initializeApp } from 'firebase/app';
 import { collection, Firestore, getDocs, getFirestore } from 'firebase/firestore';
-import { existsSync, readFileSync } from 'fs';
-import { join } from 'path';
 
 let app: FirebaseApp | undefined;
 let db: Firestore | undefined;
 
 try {
-  const configPath = join(process.cwd(), 'firebase.json');
-
-  if (!existsSync(configPath)) {
-    throw new Error('firebase.json does not exist');
-  }
-
-  // Load Firebase configuration from firebase.json
-  const firebaseConfig = JSON.parse(readFileSync(configPath, 'utf8'));
+  const firebaseConfig = {
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
+    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+  };
 
   app = initializeApp(firebaseConfig);
   db = getFirestore(app);
