@@ -42,15 +42,15 @@ export const getDb = (): Firestore => {
 };
 
 // Collection getter functions
-export const getUsersCollection = () => collection(getDb(), 'user-dev');
-export const getCellsCollection = () => collection(getDb(), 'cell-dev');
-export const getFamiliesCollection = () => collection(getDb(), 'family-dev');
-export const getPrayerRequestsCollection = () => collection(getDb(), 'prayer-request-dev');
+export const getUserCollection = () => collection(getDb(), 'user-dev');
+export const getCellCollection = () => collection(getDb(), 'cell-dev');
+export const getFamilyCollection = () => collection(getDb(), 'family-dev');
+export const getPrayerRequestCollection = () => collection(getDb(), 'prayer-request-dev');
 
 // FIXME: remove test code
 export async function getTest() {
   try {
-    const querySnapshot = await getDocs(getUsersCollection());
+    const querySnapshot = await getDocs(getUserCollection());
     querySnapshot.forEach((doc) => {
       console.log(`${doc.id} => `, doc.data());
     });
@@ -58,3 +58,5 @@ export async function getTest() {
     console.error('Error in getTest:', error instanceof Error ? error.message : String(error));
   }
 }
+
+export * from './tmp';
