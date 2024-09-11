@@ -1,8 +1,8 @@
 export type Info = {
-  id: number;
+  id: string;
   name: string;
-  famId: number;
-  cellId: number;
+  famId: string;
+  cellId: string;
   date: string;
   content: string[];
 };

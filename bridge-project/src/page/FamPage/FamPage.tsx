@@ -1,27 +1,27 @@
 import { useEffect, useMemo, useState } from 'react';
-import './FamPage.css';
+import { DATE, total } from '../../assets/dummy.ts';
 import { Info } from '../../model/info.ts';
 import { TabModel } from '../../model/tabModel.ts';
-import { total, DATE } from '../../assets/dummy.ts';
+import Card from '../Card/index.tsx';
 import Header from '../Header';
 import CopyBtn from './CopyBtn.tsx';
-import Card from '../Card/index.tsx';
+import './FamPage.css';
 
 const FamPage: React.FC = () => {
   const emptyData: Info = {
-    id: 0,
+    id: '0',
     name: '',
-    famId: 0,
-    cellId: 0,
+    famId: '0',
+    cellId: '0',
     date: '',
     content: [''],
   };
 
   const tabs: TabModel[] = useMemo(
     () => [
-      { name: '전체', id: 1, content: [] },
-      { name: '하형셀', id: 12, content: [] },
-      { name: '예나셀', id: 11, content: [] },
+      { name: '전체', id: '1', content: [] },
+      { name: '하형셀', id: '12', content: [] },
+      { name: '예나셀', id: '11', content: [] },
     ],
     [],
   );
@@ -38,7 +38,7 @@ const FamPage: React.FC = () => {
 
   const [contentForCopy, setContentForCopy] = useState<string>('');
 
-  const [editingId, setEditingId] = useState<number>(-1);
+  const [editingId, setEditingId] = useState<string>('-1');
 
   const [active, setActive] = useState(0);
 
@@ -85,7 +85,7 @@ const FamPage: React.FC = () => {
       ...prevInfo,
       content: list,
       date: curDate,
-      id: famData.length + 1, // 임시
+      id: (famData.length + 1).toString(), // 임시
     }));
   };
 
@@ -122,16 +122,16 @@ const FamPage: React.FC = () => {
   };
 
   // Card 동작 관련 함수
-  const startEdit = (id: number) => {
+  const startEdit = (id: string) => {
     setEditingId(id);
   };
 
   const endEdit = () => {
-    setEditingId(-1);
+    setEditingId('-1');
   };
 
   const changeItem = (
-    id: number,
+    id: string,
     newName: string | undefined,
     newRequest: string[] | undefined,
   ) => {
@@ -148,7 +148,7 @@ const FamPage: React.FC = () => {
   };
 
   // 삭제
-  const deleteItem = (id: number) => {
+  const deleteItem = (id: string) => {
     let updatedData = [...famData];
     updatedData = updatedData.filter((data) => data.id != id);
     setFamData(updatedData);
@@ -238,7 +238,7 @@ const FamPage: React.FC = () => {
                   changeItem(item.id, newTitle, newContent)
                 }
                 isEditable={item.id === editingId}
-                startEdit={(id: number) => startEdit(id)}
+                startEdit={(id: number) => startEdit(id.toString())}
                 endEdit={endEdit}
                 deleteItem={deleteItem}
               />

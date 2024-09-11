@@ -1,4 +1,9 @@
+import { doc, getDoc, getDocs, query, where } from 'firebase/firestore';
+import moment from 'moment';
+import { getFamilyCollection, getPrayerRequestCollection, getUserCollection } from '.';
+import { Info } from '../../model/info';
 import { TabModel } from '../../model/tabModel';
+import { CellDoc, PrayerRequestDoc } from './type';
 
 const FAMILY_ID = '';
 
@@ -6,14 +11,56 @@ export async function getTabModels(): Promise<TabModel[]> {
   try {
     const tabModels: TabModel[] = [];
 
-    // TODO: get family with FAMILY_ID
-    // family collection has name(string), cellArr(reference array to cell collection)
-    // cell collection has name(string), memberArr(reference array to user collection)
-    // prayer request collection has content(string array), date(timestamp), user(reference to user collection)
-    // TODO: load every prayer request which is included in this family
-    // TODO: convert prayer request to Info[]
-    // TabModel is about cell
-    // TODO: push Info[] to tabModels with cell id, cell name
+    // Get family with FAMILY_ID
+    const familyRef = doc(getFamilyCollection(), FAMILY_ID);
+    const familyDoc = await getDoc(familyRef);
+
+    if (!familyDoc.exists()) {
+      throw new Error('Family not found');
+    }
+
+    const familyData = familyDoc.data();
+    const cellRefs = familyData.cellArr || [];
+
+    // Iterate through cells
+    for (const cellRef of cellRefs) {
+      const cellDoc = await getDoc(cellRef);
+      const cellData = cellDoc.data() as CellDoc;
+      const cellId = cellDoc.id;
+      const cellName = cellData.name;
+
+      // Get prayer requests for this cell
+      const prayerRequestQuery = query(
+        getPrayerRequestCollection(),
+        where(
+          'user',
+          'in',
+          cellData.memberArr.map((ref) => doc(getUserCollection(), ref.id)),
+        ),
+      );
+      const prayerRequestDocs = await getDocs(prayerRequestQuery);
+
+      // Convert prayer requests to Info[]
+      const infos: Info[] = prayerRequestDocs.docs.map((doc) => {
+        const data = doc.data() as PrayerRequestDoc;
+        return {
+          id: doc.id,
+          content: data.content,
+          date: moment(data.date.toDate()).format('YYYY-MM-DD'),
+          userId: data.user.id,
+          name: cellName,
+          cellId: cellId,
+          famId: FAMILY_ID,
+        };
+      });
+
+      // Push Info[] to tabModels with cell id and cell name
+      tabModels.push({
+        id: cellId,
+        name: cellName,
+        content: infos,
+      });
+    }
 
     return tabModels;
   } catch (error) {
