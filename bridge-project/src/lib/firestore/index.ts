@@ -59,4 +59,4 @@ export async function getTest() {
   }
 }
 
-export * from './tmp';
+export * from './tab';
