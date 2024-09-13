@@ -1,6 +1,6 @@
 import { doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import moment from 'moment';
-import { getFamilyCollection, getPrayerRequestCollection, getUserArr } from '.';
+import { getFamilyCollection, getPrayerRequestCollection, readUserArr } from '.';
 import { Info } from '../../model/info';
 import { TabModel } from '../../model/tabModel';
 import { CellDoc, FamilyDoc, PrayerRequestDoc } from './type';
@@ -9,7 +9,7 @@ const FAMILY_ID = '';
 
 export async function getTabModels(): Promise<TabModel[]> {
   try {
-    const tabModels: TabModel[] = [];
+    const cellArray: TabModel[] = [];
 
     // Get family with FAMILY_ID
     const familyRef = doc(getFamilyCollection(), FAMILY_ID);
@@ -30,7 +30,7 @@ export async function getTabModels(): Promise<TabModel[]> {
       const cellName = cellData.name;
 
       // Create userDict for this cell
-      const userDict = await getUserArr({ userRefArr: cellData.memberArr });
+      const userDict = await readUserArr({ userRefArr: cellData.memberArr });
 
       // Get prayer requests for this cell
       const prayerRequestQuery = query(
@@ -56,12 +56,23 @@ export async function getTabModels(): Promise<TabModel[]> {
       });
 
       // Push Info[] to tabModels with cell id and cell name
-      tabModels.push({
+      cellArray.push({
         id: cellId,
         name: cellName,
         content: infos,
       });
     }
+
+    // Create an "All" tab that includes all prayer requests
+    const allInfos = cellArray.flatMap((tab) => tab.content);
+    const tabModels = [
+      {
+        id: 'all',
+        name: '전체',
+        content: allInfos,
+      },
+      ...cellArray,
+    ];
 
     return tabModels;
   } catch (error) {

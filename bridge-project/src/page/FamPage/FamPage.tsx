@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { DATE, total } from '../../assets/dummy.ts';
+import { getTabModels } from '../../lib/firestore';
 import { Info } from '../../model/info.ts';
 import { TabModel } from '../../model/tabModel.ts';
 import Header from '../Header';
@@ -11,17 +12,18 @@ import './FamPage.css';
 import TabPage from './TabPage.tsx';
 
 const FamPage: React.FC = () => {
-  const tabs: TabModel[] = useMemo(
-    () => [
-      { name: '전체', id: '1', content: [] },
-      { name: '하형셀', id: '12', content: [] },
-      { name: '예나셀', id: '11', content: [] },
-    ],
-    [],
-  );
-
+  const [tabs, setTabs] = useState<TabModel[]>([]);
   const [curDate, setCurDate] = useState<string>(DATE);
   const [famData, setFamData] = useState<Info[]>(total);
+
+  useEffect(() => {
+    const fetchTabs = async () => {
+      const fetchedTabs = await getTabModels();
+      setTabs(fetchedTabs);
+      setFamData(fetchedTabs[0].content); // FIXME: find famData with famId
+    };
+    fetchTabs();
+  }, []);
 
   const [isWriting, setIsWriting] = useState<boolean>(false);
   const [contentForCopy, setContentForCopy] = useState<string>('');
@@ -37,20 +39,19 @@ const FamPage: React.FC = () => {
   // 탭(셀)별
   const [tabData, setTabData] = useState<TabModel[]>(tabs);
   const [activeTab, setActiveTab] = useState(0);
-  // 현재 날짜 데이터 중, *해당 셀*에 해당하는 데이터
-  const updatedTabData = useMemo(() => {
-    return tabs.map((item) => ({
-      ...item,
-      content:
-        item.name === '전체'
-          ? curDateData
-          : curDateData.filter((curItem) => curItem.cellId === item.id),
-    }));
-  }, [curDateData, tabs]);
 
   useEffect(() => {
-    setTabData(updatedTabData);
-  }, [updatedTabData]);
+    // 현재 날짜 데이터 중, *해당 셀*에 해당하는 데이터
+    setTabData(
+      tabs.map((item) => ({
+        ...item,
+        content:
+          item.name === '전체'
+            ? curDateData
+            : curDateData.filter((curItem) => curItem.cellId === item.id),
+      })),
+    );
+  }, [curDateData, tabs]);
 
   const changeDate = (newDate: string) => {
     setCurDate(newDate);

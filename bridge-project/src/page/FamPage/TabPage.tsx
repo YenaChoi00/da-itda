@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
+import { Info } from '../../model/info.ts';
 import { TabModel } from '../../model/tabModel';
 import Card from '../Card/index.tsx';
-import { Info } from '../../model/info.ts';
 
 interface TabProps {
   tabData: TabModel[];
@@ -18,18 +18,18 @@ const TabPage: React.FC<TabProps> = ({
   famData,
   updateFamData,
 }) => {
-  const [editingId, setEditingId] = useState<number>(-1);
+  const [editingId, setEditingId] = useState<string>('-1');
 
-  const startEdit = (id: number) => {
+  const startEdit = (id: string) => {
     setEditingId(id);
   };
 
   const endEdit = () => {
-    setEditingId(-1);
+    setEditingId('-1');
   };
 
   const changeItem = (
-    id: number,
+    id: string,
     newName: string | undefined,
     newRequest: string[] | undefined,
   ) => {
@@ -46,7 +46,7 @@ const TabPage: React.FC<TabProps> = ({
   };
 
   // 삭제
-  const deleteItem = (id: number) => {
+  const deleteItem = (id: string) => {
     let updatedData = [...famData];
     updatedData = updatedData.filter((data) => data.id != id);
     updateFamData(updatedData);
@@ -67,19 +67,20 @@ const TabPage: React.FC<TabProps> = ({
       </ul>
 
       <div>
-        {tabData[activeTabNum].content.map((item) => (
-          <Card
-            key={item.id}
-            data={item}
-            changeCard={(newTitle: string, newContent: string[]) =>
-              changeItem(item.id, newTitle, newContent)
-            }
-            isEditable={item.id === editingId}
-            startEdit={(id: number) => startEdit(id)}
-            endEdit={endEdit}
-            deleteItem={deleteItem}
-          />
-        ))}
+        {tabData.length > 0 &&
+          tabData[activeTabNum].content.map((item) => (
+            <Card
+              key={item.id}
+              data={item}
+              changeCard={(newTitle: string, newContent: string[]) =>
+                changeItem(item.id, newTitle, newContent)
+              }
+              isEditable={item.id === editingId}
+              startEdit={(id: string) => startEdit(id)}
+              endEdit={endEdit}
+              deleteItem={deleteItem}
+            />
+          ))}
       </div>
     </div>
   );
