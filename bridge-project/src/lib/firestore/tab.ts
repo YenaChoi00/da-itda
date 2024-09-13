@@ -3,7 +3,7 @@ import moment from 'moment';
 import { getFamilyCollection, getPrayerRequestCollection, getUserCollection } from '.';
 import { Info } from '../../model/info';
 import { TabModel } from '../../model/tabModel';
-import { CellDoc, PrayerRequestDoc } from './type';
+import { CellDoc, FamilyDoc, PrayerRequestDoc } from './type';
 
 const FAMILY_ID = '';
 
@@ -19,8 +19,8 @@ export async function getTabModels(): Promise<TabModel[]> {
       throw new Error('Family not found');
     }
 
-    const familyData = familyDoc.data();
-    const cellRefs = familyData.cellArr || [];
+    const familyData = familyDoc.data() as FamilyDoc;
+    const cellRefs = familyData.cellArr;
 
     // Iterate through cells
     for (const cellRef of cellRefs) {
@@ -48,7 +48,7 @@ export async function getTabModels(): Promise<TabModel[]> {
           content: data.content,
           date: moment(data.date.toDate()).format('YYYY-MM-DD'),
           userId: data.user.id,
-          name: cellName,
+          name: cellName,  // FIXME: cellName -> user name
           cellId: cellId,
           famId: FAMILY_ID,
         };

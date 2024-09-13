@@ -4,16 +4,16 @@ import { Info } from '../model/info';
 
 export const DATE: string = moment('2024-07-17').format('YYYY-MM-DD').toString();
 export const YebinFam: Fam = {
-  id: '1', // Changed from 1 to '1'
+  id: '1',
   name: '예빈팸',
-  cellArr: ['11', '12'], // Changed from [11, 12] to ['11', '12']
+  cellArr: ['11', '12'],
 };
 
 export const total: Info[] = [
   {
     id: '1',
-    famId: '1', // Changed from 1 to '1'
-    cellId: '11', // Changed from 11 to '11'
+    famId: '1',
+    cellId: '11',
     name: '최예나',
     date: '2024-07-17',
     content: [
@@ -24,8 +24,8 @@ export const total: Info[] = [
   {
     id: '2',
     name: '김예진',
-    famId: '1', // Changed from 1 to '1'
-    cellId: '11', // Changed from 11 to '11'
+    famId: '1',
+    cellId: '11',
     date: '2024-07-17',
     content: [
       '알바를 시작했는데, 취준과 병행할 수 있도록 체력을 허락하시길',
@@ -36,8 +36,8 @@ export const total: Info[] = [
   {
     id: '3',
     name: '이하형',
-    famId: '1', // Changed from 1 to '1'
-    cellId: '12', // Changed from 12 to '12'
+    famId: '1',
+    cellId: '12',
     date: '2024-07-17',
     content: [
       '아버지 가게 일을 돕고있는데, 가게의 모든 상황과 체력 지켜주시기를',
@@ -47,8 +47,8 @@ export const total: Info[] = [
   {
     id: '4',
     name: '서지혜',
-    famId: '1', // Changed from 1 to '1'
-    cellId: '12', // Changed from 12 to '12'
+    famId: '1',
+    cellId: '12',
     date: '2024-07-17',
     content: [
       '일본 전공연수를 앞두고 지진으로 인한 우려가 많은데, 모든 상황과 결과 맡겨드리기를. 무엇보다도 그 땅을 위해 기도하는 마음 허락하시기를',
@@ -58,8 +58,8 @@ export const total: Info[] = [
   {
     id: '5',
     name: '박예나',
-    famId: '1', // Changed from 1 to '1'
-    cellId: '11', // Changed from 11 to '11'
+    famId: '1',
+    cellId: '11',
     date: '2024-07-24',
     content: [
       '새로운 기도제목1',
@@ -70,8 +70,8 @@ export const total: Info[] = [
   {
     id: '6',
     name: '이은결',
-    famId: '1', // Changed from 1 to '1'
-    cellId: '12', // Changed from 12 to '12'
+    famId: '1',
+    cellId: '12',
     date: '2024-07-24',
     content: ['새로운1 기도제목1', '새로운2 기도제목2', '힘듦을 이겨낼 사랑의 마음을 부어주시길.'],
   },
