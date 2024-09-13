@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Info } from '../../model/info';
 import { HiOutlineTrash } from 'react-icons/hi';
+import { Info } from '../../model/info';
 
 interface OwnProps {
   data: Info;
@@ -8,7 +8,7 @@ interface OwnProps {
   isEditable: boolean;
   startEdit(id: number): void;
   endEdit(): void;
-  deleteItem(id: number): void;
+  deleteItem(id: string): void;
 }
 
 const Card: React.FC<OwnProps> = ({

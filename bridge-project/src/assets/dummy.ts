@@ -1,20 +1,20 @@
 import moment from 'moment';
-import { Info } from '../model/info';
 import { Fam } from '../model/fam';
+import { Info } from '../model/info';
 
 export const DATE: string = moment('2024-07-17').format('YYYY-MM-DD').toString();
 export const YebinFam: Fam = {
-  id: 1,
+  id: '1',
   name: '예빈팸',
-  cellArr: [11, 12],
+  cellArr: ['11', '12'],
 };
 
 export const total: Info[] = [
   {
-    id: 1,
-    famId: 1,
+    id: '1',
+    famId: '1',
     famName: '예빈팸',
-    cellId: 11,
+    cellId: '11',
     cellName: '예나셀',
     name: '최예나',
     date: '2024-07-17',
@@ -24,11 +24,11 @@ export const total: Info[] = [
     ],
   },
   {
-    id: 2,
+    id: '2',
     name: '김예진',
-    famId: 1,
+    famId: '1',
     famName: '예빈팸',
-    cellId: 11,
+    cellId: '11',
     cellName: '예나셀',
     date: '2024-07-17',
     content: [
@@ -38,12 +38,12 @@ export const total: Info[] = [
     ],
   },
   {
-    id: 3,
+    id: '3',
     name: '이하형',
-    famId: 1,
+    famId: '1',
     famName: '예빈팸',
     cellName: '하형셀',
-    cellId: 12,
+    cellId: '12',
     date: '2024-07-17',
     content: [
       '아버지 가게 일을 돕고있는데, 가게의 모든 상황과 체력 지켜주시기를',
@@ -51,11 +51,11 @@ export const total: Info[] = [
     ],
   },
   {
-    id: 4,
+    id: '4',
     name: '서지혜',
-    famId: 1,
+    famId: '1',
     famName: '예빈팸',
-    cellId: 12,
+    cellId: '12',
     cellName: '하형셀',
     date: '2024-07-17',
     content: [
@@ -64,11 +64,11 @@ export const total: Info[] = [
     ],
   },
   {
-    id: 5,
+    id: '5',
     name: '박예나',
-    famId: 1,
+    famId: '1',
     famName: '예빈팸',
-    cellId: 11,
+    cellId: '11',
     cellName: '예나셀',
     date: '2024-07-24',
     content: [
@@ -78,11 +78,11 @@ export const total: Info[] = [
     ],
   },
   {
-    id: 6,
+    id: '6',
     name: '이은결',
-    famId: 1,
+    famId: '1',
     famName: '예빈팸',
-    cellId: 12,
+    cellId: '12',
     cellName: '하형셀',
     date: '2024-07-24',
     content: ['새로운1 기도제목1', '새로운2 기도제목2', '힘듦을 이겨낼 사랑의 마음을 부어주시길.'],

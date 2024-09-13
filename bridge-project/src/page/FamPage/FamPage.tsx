@@ -1,21 +1,21 @@
 import { useEffect, useMemo, useState } from 'react';
-import './FamPage.css';
-import { Info } from '../../model/info.ts';
-import { TabModel } from '../../model/tabModel.ts';
-import { total, DATE } from '../../assets/dummy.ts';
-import Header from '../Header';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import TabPage from './TabPage.tsx';
+import { DATE, total } from '../../assets/dummy.ts';
+import { Info } from '../../model/info.ts';
+import { TabModel } from '../../model/tabModel.ts';
+import Header from '../Header';
 import CreateForm from './CreateForm.tsx';
+import './FamPage.css';
+import TabPage from './TabPage.tsx';
 
 const FamPage: React.FC = () => {
   const tabs: TabModel[] = useMemo(
     () => [
-      { name: '전체', id: 1, content: [] },
-      { name: '하형셀', id: 12, content: [] },
-      { name: '예나셀', id: 11, content: [] },
+      { name: '전체', id: '1', content: [] },
+      { name: '하형셀', id: '12', content: [] },
+      { name: '예나셀', id: '11', content: [] },
     ],
     [],
   );
