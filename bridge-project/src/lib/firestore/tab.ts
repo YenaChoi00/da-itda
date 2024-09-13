@@ -9,7 +9,7 @@ const FAMILY_ID = '';
 
 export async function getTabModels(): Promise<TabModel[]> {
   try {
-    const tabModels: TabModel[] = [];
+    const cellArray: TabModel[] = [];
 
     // Get family with FAMILY_ID
     const familyRef = doc(getFamilyCollection(), FAMILY_ID);
@@ -56,7 +56,7 @@ export async function getTabModels(): Promise<TabModel[]> {
       });
 
       // Push Info[] to tabModels with cell id and cell name
-      tabModels.push({
+      cellArray.push({
         id: cellId,
         name: cellName,
         content: infos,
@@ -64,12 +64,15 @@ export async function getTabModels(): Promise<TabModel[]> {
     }
 
     // Create an "All" tab that includes all prayer requests
-    const allInfos = tabModels.flatMap((tab) => tab.content);
-    tabModels.push({
-      id: 'all',
-      name: '전체',
-      content: allInfos,
-    });
+    const allInfos = cellArray.flatMap((tab) => tab.content);
+    const tabModels = [
+      {
+        id: 'all',
+        name: '전체',
+        content: allInfos,
+      },
+      ...cellArray,
+    ];
 
     return tabModels;
   } catch (error) {
