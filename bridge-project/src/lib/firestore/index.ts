@@ -1,5 +1,13 @@
 import { FirebaseApp, initializeApp } from 'firebase/app';
-import { collection, Firestore, getDocs, getFirestore } from 'firebase/firestore';
+import {
+  collection,
+  DocumentReference,
+  Firestore,
+  getDoc,
+  getDocs,
+  getFirestore,
+} from 'firebase/firestore';
+import { UserDoc } from './type';
 
 let app: FirebaseApp | undefined;
 let db: Firestore | undefined;
@@ -57,6 +65,18 @@ export async function getTest() {
   } catch (error) {
     console.error('Error in getTest:', error instanceof Error ? error.message : String(error));
   }
+}
+
+export async function getUserDict(
+  memberArr: DocumentReference[],
+): Promise<{ [key: string]: string }> {
+  const userDict: { [key: string]: string } = {};
+  for (const userRef of memberArr) {
+    const userDoc = await getDoc(userRef);
+    const userData = userDoc.data() as UserDoc;
+    userDict[userRef.id] = userData.name;
+  }
+  return userDict;
 }
 
 export * from './tab';

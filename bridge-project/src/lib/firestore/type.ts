@@ -10,6 +10,10 @@ export type CellDoc = {
   memberArr: DocumentReference[];
 };
 
+export type UserDoc = {
+  name: string;
+};
+
 export type PrayerRequestDoc = {
   content: string[];
   date: Timestamp;

@@ -1,6 +1,6 @@
 import { doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import moment from 'moment';
-import { getFamilyCollection, getPrayerRequestCollection, getUserCollection } from '.';
+import { getFamilyCollection, getPrayerRequestCollection, getUserDict } from '.';
 import { Info } from '../../model/info';
 import { TabModel } from '../../model/tabModel';
 import { CellDoc, FamilyDoc, PrayerRequestDoc } from './type';
@@ -29,14 +29,13 @@ export async function getTabModels(): Promise<TabModel[]> {
       const cellId = cellDoc.id;
       const cellName = cellData.name;
 
+      // Create userDict for this cell
+      const userDict = await getUserDict(cellData.memberArr);
+
       // Get prayer requests for this cell
       const prayerRequestQuery = query(
         getPrayerRequestCollection(),
-        where(
-          'user',
-          'in',
-          cellData.memberArr.map((ref) => doc(getUserCollection(), ref.id)),
-        ),
+        where('user', 'in', cellData.memberArr),
       );
       const prayerRequestDocs = await getDocs(prayerRequestQuery);
 
@@ -48,9 +47,11 @@ export async function getTabModels(): Promise<TabModel[]> {
           content: data.content,
           date: moment(data.date.toDate()).format('YYYY-MM-DD'),
           userId: data.user.id,
-          name: cellName,  // FIXME: cellName -> user name
+          name: userDict[data.user.id],
           cellId: cellId,
           famId: FAMILY_ID,
+          famName: familyData.name,
+          cellName: cellName,
         };
       });
 
