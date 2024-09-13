@@ -13,17 +13,17 @@ import TabPage from './TabPage.tsx';
 
 const FamPage: React.FC = () => {
   const [tabs, setTabs] = useState<TabModel[]>([]);
+  const [curDate, setCurDate] = useState<string>(DATE);
+  const [famData, setFamData] = useState<Info[]>(total);
 
   useEffect(() => {
     const fetchTabs = async () => {
       const fetchedTabs = await getTabModels();
       setTabs(fetchedTabs);
+      setFamData(fetchedTabs[0].content); // FIXME: find famData with famId
     };
     fetchTabs();
   }, []);
-
-  const [curDate, setCurDate] = useState<string>(DATE);
-  const [famData, setFamData] = useState<Info[]>(total);
 
   const [isWriting, setIsWriting] = useState<boolean>(false);
   const [contentForCopy, setContentForCopy] = useState<string>('');
