@@ -8,6 +8,7 @@ import {
   getFirestore,
 } from 'firebase/firestore';
 import { UserDoc } from './type';
+import { getUserCollection } from './user';
 
 let app: FirebaseApp | undefined;
 let db: Firestore | undefined;
@@ -50,7 +51,6 @@ export const getDb = (): Firestore => {
 };
 
 // Collection getter functions
-export const getUserCollection = () => collection(getDb(), 'user-dev');
 export const getCellCollection = () => collection(getDb(), 'cell-dev');
 export const getFamilyCollection = () => collection(getDb(), 'family-dev');
 export const getPrayerRequestCollection = () => collection(getDb(), 'prayer-request-dev');
@@ -80,3 +80,4 @@ export async function getUserDict(
 }
 
 export * from './tab';
+export * from './user';
