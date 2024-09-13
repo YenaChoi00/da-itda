@@ -1,4 +1,13 @@
-import { collection, doc, DocumentReference, getDoc, getDocs, setDoc } from 'firebase/firestore';
+import {
+  collection,
+  deleteDoc,
+  doc,
+  DocumentReference,
+  getDoc,
+  getDocs,
+  setDoc,
+  updateDoc,
+} from 'firebase/firestore';
 
 import { getDb } from '.';
 import { UserDoc } from './type';
@@ -47,5 +56,31 @@ export async function readUser({ id }: { id: string }): Promise<UserDoc | null> 
     return userSnap.data() as UserDoc;
   } else {
     return null;
+  }
+}
+
+export async function updateUser({
+  id,
+  userData,
+}: {
+  id: string;
+  userData: Partial<UserDoc>;
+}): Promise<void> {
+  try {
+    const userRef = doc(getUserCollection(), id);
+    await updateDoc(userRef, userData);
+  } catch (error) {
+    console.error('Error updating user:', error);
+    throw error;
+  }
+}
+
+export async function deleteUser({ id }: { id: string }): Promise<void> {
+  try {
+    const userRef = doc(getUserCollection(), id);
+    await deleteDoc(userRef);
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    throw error;
   }
 }
