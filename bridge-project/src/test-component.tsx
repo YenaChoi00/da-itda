@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { getTest } from './lib/firebase'; // Adjust the path based on your project structure
+import { useEffect } from 'react';
+import { getTest } from './lib/firestore'; // Adjust the path based on your project structure
 
 const TestComponent = () => {
   useEffect(() => {
