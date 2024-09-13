@@ -1,6 +1,6 @@
 import { doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import moment from 'moment';
-import { getFamilyCollection, getPrayerRequestCollection, getUserArr } from '.';
+import { getFamilyCollection, getPrayerRequestCollection, readUserArr } from '.';
 import { Info } from '../../model/info';
 import { TabModel } from '../../model/tabModel';
 import { CellDoc, FamilyDoc, PrayerRequestDoc } from './type';
@@ -30,7 +30,7 @@ export async function getTabModels(): Promise<TabModel[]> {
       const cellName = cellData.name;
 
       // Create userDict for this cell
-      const userDict = await getUserArr({ userRefArr: cellData.memberArr });
+      const userDict = await readUserArr({ userRefArr: cellData.memberArr });
 
       // Get prayer requests for this cell
       const prayerRequestQuery = query(
