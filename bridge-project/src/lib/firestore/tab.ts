@@ -63,6 +63,14 @@ export async function getTabModels(): Promise<TabModel[]> {
       });
     }
 
+    // Create an "All" tab that includes all prayer requests
+    const allInfos = tabModels.flatMap((tab) => tab.content);
+    tabModels.push({
+      id: 'all',
+      name: '전체',
+      content: allInfos,
+    });
+
     return tabModels;
   } catch (error) {
     console.error('Error fetching tab models:', error);

@@ -6,7 +6,7 @@ interface OwnProps {
   data: Info;
   changeCard(newTitle: string, newContent: string[]): void;
   isEditable: boolean;
-  startEdit(id: number): void;
+  startEdit(id: string): void;
   endEdit(): void;
   deleteItem(id: string): void;
 }
