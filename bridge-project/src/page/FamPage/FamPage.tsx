@@ -20,7 +20,7 @@ const FamPage: React.FC = () => {
     const fetchTabs = async () => {
       const fetchedTabs = await getTabModels();
       setTabs(fetchedTabs);
-      setFamData(fetchedTabs[0].content); // FIXME: find famData with famId
+      setFamData(fetchedTabs[0].content);
     };
     fetchTabs();
   }, []);
