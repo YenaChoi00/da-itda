@@ -63,8 +63,6 @@ export async function getTabModels(): Promise<TabModel[]> {
       });
     }
 
-    console.log('cellArray: ', cellArray);
-
     // Create an "All" tab that includes all prayer requests
     const allInfos = cellArray.flatMap((tab) => tab.content);
     const tabModels = [
