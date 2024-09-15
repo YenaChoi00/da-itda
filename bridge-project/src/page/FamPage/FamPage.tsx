@@ -16,12 +16,13 @@ const FamPage: React.FC = () => {
   const [curDate, setCurDate] = useState<string>(DATE);
   const [famData, setFamData] = useState<Info[]>(total);
 
+  const fetchTabs = async () => {
+    const fetchedTabs = await getTabModels();
+    setTabs(fetchedTabs);
+    setFamData(fetchedTabs[0].content);
+  };
+
   useEffect(() => {
-    const fetchTabs = async () => {
-      const fetchedTabs = await getTabModels();
-      setTabs(fetchedTabs);
-      setFamData(fetchedTabs[0].content);
-    };
     fetchTabs();
   }, []);
 
@@ -62,6 +63,11 @@ const FamPage: React.FC = () => {
     setFamData(updatedData);
   };
 
+  const changeWrtState = (state: boolean) => {
+    setIsWriting(state);
+    fetchTabs(); // 화면 업데이트
+  };
+
   // 복사
   const setCopyData = () => {
     const data = [...tabData[activeTab].content];
@@ -96,7 +102,7 @@ const FamPage: React.FC = () => {
           curDate={curDate}
           newId={String(famData.length + 1)}
           categories={tabData}
-          changeIsWriting={(isWriting: boolean) => setIsWriting(isWriting)}
+          changeIsWriting={(isWriting: boolean) => changeWrtState(isWriting)}
         />
       );
     else
