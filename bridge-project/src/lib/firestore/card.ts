@@ -33,3 +33,11 @@ export async function deletePrayerRequest(id: string) {
     alive: false,
   });
 }
+
+export async function updatePrayerRequest(data: Info) {
+  const requestRef = doc(getPrayerRequestCollection(), data.id);
+  // user: ref 객체
+  await updateDoc(requestRef, {
+    content: data.content,
+  });
+}

@@ -97,7 +97,6 @@ const FamPage: React.FC = () => {
       return (
         <CreateForm
           curDate={curDate}
-          newId={String(famData.length + 1)}
           categories={tabData}
           changeIsWriting={(isWriting: boolean) => changeWrtState(isWriting)}
         />

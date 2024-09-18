@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { HiOutlineTrash } from 'react-icons/hi';
 import { Info } from '../../model/info';
-import { deletePrayerRequest } from '../../lib/firestore/card';
+import { deletePrayerRequest, updatePrayerRequest } from '../../lib/firestore/card';
+import { TabModel } from '../../model/tabModel';
 
 interface OwnProps {
   data: Info;
-  changeCard(newTitle: string, newContent: string[]): void;
+  categories: TabModel[];
   isEditable: boolean;
   startEdit(id: string): void;
   endEdit(): void;
@@ -14,7 +15,7 @@ interface OwnProps {
 
 const Card: React.FC<OwnProps> = ({
   data,
-  changeCard,
+  categories,
   isEditable,
   startEdit,
   endEdit,
@@ -22,6 +23,7 @@ const Card: React.FC<OwnProps> = ({
 }) => {
   const [newContent, setNewContent] = useState(data.content);
   const [newTitle, setNewTitle] = useState(data.name);
+  const [newCategory, setNewCategory] = useState(data.cellId);
 
   const updateEditState = () => {
     startEdit(data.id);
@@ -50,9 +52,20 @@ const Card: React.FC<OwnProps> = ({
   };
 
   // 수정된 내용 저장
-  const saveUpdates = () => {
-    changeCard(newTitle, newContent);
+  const saveUpdates = async () => {
+    try {
+      await updatePrayerRequest({
+        ...data,
+        content: newContent,
+      });
+    } catch (error) {
+      console.error('Error updating data:', error);
+    }
     endEdit();
+  };
+
+  const createCategory = (value: string) => {
+    setNewCategory(value);
   };
 
   // 삭제
@@ -74,12 +87,25 @@ const Card: React.FC<OwnProps> = ({
   if (isEditable)
     return (
       <div className="flex flex-col p-2">
-        <input
-          type="text"
-          value={newTitle}
-          onChange={(e) => updateTitle(e.target.value)}
-          className="w-full mb-2 input-box"
-        />
+        <div className="flex space-x-2">
+          <input
+            type="text"
+            value={newTitle}
+            onChange={(e) => updateTitle(e.target.value)}
+            className="w-2/3 mb-2 input-box"
+          />
+          <select
+            className="w-1/3 input-box"
+            value={newCategory}
+            onChange={(e) => createCategory(e.target.value)}
+          >
+            {categories.map((item) => (
+              <option value={item.id} key={item.id}>
+                {item.name}
+              </option>
+            ))}
+          </select>
+        </div>
         <ol className="pl-5 mb-2 space-y-2 list-decimal">
           {newContent.map((item, index) => (
             <li key={index}>

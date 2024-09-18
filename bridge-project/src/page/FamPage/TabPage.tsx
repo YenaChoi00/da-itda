@@ -26,23 +26,6 @@ const TabPage: React.FC<TabProps> = ({
 
   const endEdit = () => {
     setEditingId('-1');
-  };
-
-  const changeItem = (
-    id: string,
-    newName: string | undefined,
-    newRequest: string[] | undefined,
-  ) => {
-    let updatedData = [...famData];
-    if (newName) {
-      updatedData = updatedData.map((item) => (item.id === id ? { ...item, name: newName } : item));
-    }
-    if (newRequest) {
-      updatedData = updatedData.map((item) =>
-        item.id === id ? { ...item, content: newRequest } : item,
-      );
-    }
-    // updateFamData(updatedData);
     refreshPage();
   };
 
@@ -66,9 +49,7 @@ const TabPage: React.FC<TabProps> = ({
             <Card
               key={item.id}
               data={item}
-              changeCard={(newTitle: string, newContent: string[]) =>
-                changeItem(item.id, newTitle, newContent)
-              }
+              categories={tabData}
               isEditable={item.id === editingId}
               startEdit={(id: string) => startEdit(id)}
               endEdit={endEdit}

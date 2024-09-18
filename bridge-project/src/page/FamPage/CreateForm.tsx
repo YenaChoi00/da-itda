@@ -5,12 +5,11 @@ import { addPrayerRequest } from '../../lib/firestore/card';
 
 interface CreateFormProps {
   curDate: string;
-  newId: string;
   categories: TabModel[];
   changeIsWriting(isWriting: boolean): void;
 }
 
-const CreateForm: React.FC<CreateFormProps> = ({ curDate, newId, categories, changeIsWriting }) => {
+const CreateForm: React.FC<CreateFormProps> = ({ curDate, categories, changeIsWriting }) => {
   const emptyData: Info = {
     id: '0',
     name: '',
@@ -41,7 +40,7 @@ const CreateForm: React.FC<CreateFormProps> = ({ curDate, newId, categories, cha
       ...prevInfo,
       content: list,
       date: curDate,
-      id: newId, // 임시
+      id: '',
     }));
   };
 
