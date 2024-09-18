@@ -53,7 +53,7 @@ const CreateForm: React.FC<CreateFormProps> = ({ curDate, categories, changeIsWr
   };
 
   const vaildForm = () => {
-    if (isFilled()) updateChanges();
+    if (isFilled()) submitChanges();
   };
 
   const isFormEmpty = (): boolean => {
@@ -81,7 +81,7 @@ const CreateForm: React.FC<CreateFormProps> = ({ curDate, categories, changeIsWr
     return true; // 폼이 비어있지 않음
   };
 
-  const updateChanges = async () => {
+  const submitChanges = async () => {
     setNewInfo((prevInfo) => ({
       ...prevInfo,
       date: curDate, // 현재 페이지의 날짜로 자동 지정

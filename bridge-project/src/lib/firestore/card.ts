@@ -20,6 +20,7 @@ export async function addPrayerRequest(param: Info) {
       content: param.content,
       date: Timestamp.fromDate(date),
       user: userRef,
+      alive: true,
     });
   } catch (error) {
     console.error('Error fetching tab models:', error);
