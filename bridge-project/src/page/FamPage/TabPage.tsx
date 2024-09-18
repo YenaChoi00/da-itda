@@ -8,7 +8,7 @@ interface TabProps {
   activeTabNum: number;
   setActiveTabNum: (num: number) => void;
   famData: Info[];
-  updateFamData: (updatedData: Info[]) => void;
+  refreshPage: () => Promise<void>;
 }
 
 const TabPage: React.FC<TabProps> = ({
@@ -16,7 +16,7 @@ const TabPage: React.FC<TabProps> = ({
   activeTabNum,
   setActiveTabNum,
   famData,
-  updateFamData,
+  refreshPage,
 }) => {
   const [editingId, setEditingId] = useState<string>('-1');
 
@@ -42,14 +42,8 @@ const TabPage: React.FC<TabProps> = ({
         item.id === id ? { ...item, content: newRequest } : item,
       );
     }
-    updateFamData(updatedData);
-  };
-
-  // 삭제
-  const deleteItem = (id: string) => {
-    let updatedData = [...famData];
-    updatedData = updatedData.filter((data) => data.id != id);
-    updateFamData(updatedData);
+    // updateFamData(updatedData);
+    refreshPage();
   };
 
   return (
@@ -78,7 +72,7 @@ const TabPage: React.FC<TabProps> = ({
               isEditable={item.id === editingId}
               startEdit={(id: string) => startEdit(id)}
               endEdit={endEdit}
-              deleteItem={deleteItem}
+              refreshParentPage={refreshPage}
             />
           ))}
       </div>

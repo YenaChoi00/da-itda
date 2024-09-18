@@ -52,6 +52,7 @@ export async function getTabModels(): Promise<TabModel[]> {
           famId: FAMILY_ID,
           famName: familyData.name,
           cellName: cellName,
+          alive: data.alive,
         };
       });
 

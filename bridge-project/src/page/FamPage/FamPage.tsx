@@ -33,7 +33,9 @@ const FamPage: React.FC = () => {
   const [curDateData, setCurDateData] = useState<Info[]>([]);
   useEffect(() => {
     // 팸 전체 데이터 중, *현재 날짜*에 해당하는 데이터
-    const filtered = famData.filter((item) => item.date === curDate);
+    const filtered = famData.filter((item) => {
+      return item.date === curDate && item.alive === true;
+    });
     setCurDateData(filtered);
   }, [curDate, famData]);
 
@@ -56,11 +58,6 @@ const FamPage: React.FC = () => {
 
   const changeDate = (newDate: string) => {
     setCurDate(newDate);
-  };
-
-  // TabPage 내부 업데이트 관련 함수
-  const updateFamData = (updatedData: Info[]) => {
-    setFamData(updatedData);
   };
 
   const changeWrtState = (state: boolean) => {
@@ -145,7 +142,7 @@ const FamPage: React.FC = () => {
           activeTabNum={activeTab}
           setActiveTabNum={setActiveTab}
           famData={famData}
-          updateFamData={updateFamData}
+          refreshPage={fetchTabs}
         />
       ) : (
         <div className="container place-self-center">추가된 기도제목이 없습니다</div>

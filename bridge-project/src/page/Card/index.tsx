@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { HiOutlineTrash } from 'react-icons/hi';
 import { Info } from '../../model/info';
+import { deletePrayerRequest } from '../../lib/firestore/card';
 
 interface OwnProps {
   data: Info;
@@ -8,7 +9,7 @@ interface OwnProps {
   isEditable: boolean;
   startEdit(id: string): void;
   endEdit(): void;
-  deleteItem(id: string): void;
+  refreshParentPage: () => Promise<void>;
 }
 
 const Card: React.FC<OwnProps> = ({
@@ -17,7 +18,7 @@ const Card: React.FC<OwnProps> = ({
   isEditable,
   startEdit,
   endEdit,
-  deleteItem,
+  refreshParentPage,
 }) => {
   const [newContent, setNewContent] = useState(data.content);
   const [newTitle, setNewTitle] = useState(data.name);
@@ -55,11 +56,16 @@ const Card: React.FC<OwnProps> = ({
   };
 
   // 삭제
-  const deleteContent = () => {
+  const deleteContent = async () => {
     const userConfirmed = window.confirm('정말 삭제 하시겠습니까?');
 
     if (userConfirmed) {
-      deleteItem(data.id);
+      try {
+        await deletePrayerRequest(data.id);
+        refreshParentPage();
+      } catch (error) {
+        console.error('Error deleting prayer request:', error);
+      }
     }
 
     return;

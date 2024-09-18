@@ -20,6 +20,7 @@ const CreateForm: React.FC<CreateFormProps> = ({ curDate, newId, categories, cha
     cellName: '',
     date: '',
     content: [''],
+    alive: true,
   };
 
   const [newInfo, setNewInfo] = useState<Info>(emptyData);

@@ -7,4 +7,5 @@ export type Info = {
   cellName: string;
   date: string;
   content: string[];
+  alive: boolean;
 };

@@ -18,4 +18,5 @@ export type PrayerRequestDoc = {
   content: string[];
   date: Timestamp;
   user: DocumentReference;
+  alive: boolean;
 };
