@@ -2,7 +2,7 @@ import { addDoc, doc, getDocs, query, Timestamp, updateDoc, where } from 'fireba
 import { getPrayerRequestCollection, getUserCollection } from '.';
 import { Info } from '../../model/info';
 
-export async function addPrayerRequest(param: Info) {
+export async function addPrayerRequest(param: Omit<Info, 'id'>) {
   try {
     const date = new Date(param.date);
 

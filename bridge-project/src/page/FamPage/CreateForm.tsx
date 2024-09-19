@@ -10,8 +10,7 @@ interface CreateFormProps {
 }
 
 const CreateForm: React.FC<CreateFormProps> = ({ curDate, categories, changeIsWriting }) => {
-  const emptyData: Info = {
-    id: '0',
+  const emptyData: Omit<Info, 'id'> = {
     name: '',
     famId: '0',
     famName: '',
@@ -22,7 +21,7 @@ const CreateForm: React.FC<CreateFormProps> = ({ curDate, categories, changeIsWr
     alive: true,
   };
 
-  const [newInfo, setNewInfo] = useState<Info>(emptyData);
+  const [newInfo, setNewInfo] = useState<Omit<Info, 'id'>>(emptyData);
 
   const createTitle = (value: string) => {
     setNewInfo((prevInfo) => ({
@@ -40,7 +39,6 @@ const CreateForm: React.FC<CreateFormProps> = ({ curDate, categories, changeIsWr
       ...prevInfo,
       content: list,
       date: curDate,
-      id: '',
     }));
   };
 
