@@ -12,6 +12,7 @@ export type CellDoc = {
 
 export type UserDoc = {
   name: string;
+  level: number;
 };
 
 export type PrayerRequestDoc = {

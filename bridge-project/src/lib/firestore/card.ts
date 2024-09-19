@@ -7,11 +7,10 @@ export async function addPrayerRequest(param: Omit<Info, 'id'>) {
     const date = new Date(param.date);
 
     const userQuery = query(getUserCollection(), where('name', '==', param.name));
-    // 이름 없으면 새로운 user 생성
-    // createUser()
+
     const userDocs = await getDocs(userQuery);
     if (userDocs.empty) {
-      throw new Error('No user found with the name ${param.name}');
+      throw console.log(`No user found with the name ${param.name}`);
     }
     const userRef = userDocs.docs[0].ref;
 
@@ -23,8 +22,7 @@ export async function addPrayerRequest(param: Omit<Info, 'id'>) {
       alive: true,
     });
   } catch (error) {
-    console.error('Error fetching tab models:', error);
-    throw error;
+    throw new Error(`Error fetching tab models: ${error}`);
   }
 }
 
