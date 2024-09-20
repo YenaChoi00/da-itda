@@ -1,27 +1,30 @@
-import { useEffect, useMemo, useState } from 'react';
-import './FamPage.css';
-import { Info } from '../../model/info.ts';
-import { TabModel } from '../../model/tabModel.ts';
-import { total, DATE } from '../../assets/dummy.ts';
-import Header from '../Header';
+import { useEffect, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import TabPage from './TabPage.tsx';
+import { DATE, total } from '../../assets/dummy.ts';
+import { getTabModels } from '../../lib/firestore';
+import { Info } from '../../model/info.ts';
+import { TabModel } from '../../model/tabModel.ts';
+import Header from '../Header';
 import CreateForm from './CreateForm.tsx';
+import './FamPage.css';
+import TabPage from './TabPage.tsx';
 
 const FamPage: React.FC = () => {
-  const tabs: TabModel[] = useMemo(
-    () => [
-      { name: '전체', id: 1, content: [] },
-      { name: '하형셀', id: 12, content: [] },
-      { name: '예나셀', id: 11, content: [] },
-    ],
-    [],
-  );
-
+  const [tabs, setTabs] = useState<TabModel[]>([]);
   const [curDate, setCurDate] = useState<string>(DATE);
   const [famData, setFamData] = useState<Info[]>(total);
+
+  const fetchTabs = async () => {
+    const fetchedTabs = await getTabModels();
+    setTabs(fetchedTabs);
+    setFamData(fetchedTabs[0].content);
+  };
+
+  useEffect(() => {
+    fetchTabs();
+  }, []);
 
   const [isWriting, setIsWriting] = useState<boolean>(false);
   const [contentForCopy, setContentForCopy] = useState<string>('');
@@ -30,35 +33,36 @@ const FamPage: React.FC = () => {
   const [curDateData, setCurDateData] = useState<Info[]>([]);
   useEffect(() => {
     // 팸 전체 데이터 중, *현재 날짜*에 해당하는 데이터
-    const filtered = famData.filter((item) => item.date === curDate);
+    const filtered = famData.filter((item) => {
+      return item.date === curDate && item.alive === true;
+    });
     setCurDateData(filtered);
   }, [curDate, famData]);
 
   // 탭(셀)별
   const [tabData, setTabData] = useState<TabModel[]>(tabs);
   const [activeTab, setActiveTab] = useState(0);
-  // 현재 날짜 데이터 중, *해당 셀*에 해당하는 데이터
-  const updatedTabData = useMemo(() => {
-    return tabs.map((item) => ({
-      ...item,
-      content:
-        item.name === '전체'
-          ? curDateData
-          : curDateData.filter((curItem) => curItem.cellId === item.id),
-    }));
-  }, [curDateData, tabs]);
 
   useEffect(() => {
-    setTabData(updatedTabData);
-  }, [updatedTabData]);
+    // 현재 날짜 데이터 중, *해당 셀*에 해당하는 데이터
+    setTabData(
+      tabs.map((item) => ({
+        ...item,
+        content:
+          item.name === '전체'
+            ? curDateData
+            : curDateData.filter((curItem) => curItem.cellId === item.id),
+      })),
+    );
+  }, [curDateData, tabs]);
 
   const changeDate = (newDate: string) => {
     setCurDate(newDate);
   };
 
-  // TabPage 내부 업데이트 관련 함수
-  const updateFamData = (updatedData: Info[]) => {
-    setFamData(updatedData);
+  const changeWrtState = (state: boolean) => {
+    setIsWriting(state);
+    fetchTabs(); // 화면 업데이트
   };
 
   // 복사
@@ -93,10 +97,8 @@ const FamPage: React.FC = () => {
       return (
         <CreateForm
           curDate={curDate}
-          newId={famData.length + 1}
           categories={tabData}
-          changeIsWriting={(isWriting: boolean) => setIsWriting(isWriting)}
-          updateFamData={(newData: Info) => updateFamData([...famData, newData])}
+          changeIsWriting={(isWriting: boolean) => changeWrtState(isWriting)}
         />
       );
     else
@@ -139,7 +141,7 @@ const FamPage: React.FC = () => {
           activeTabNum={activeTab}
           setActiveTabNum={setActiveTab}
           famData={famData}
-          updateFamData={updateFamData}
+          refreshPage={fetchTabs}
         />
       ) : (
         <div className="container place-self-center">추가된 기도제목이 없습니다</div>

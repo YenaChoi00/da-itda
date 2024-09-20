@@ -1,31 +1,25 @@
 import React, { useState } from 'react';
 import { Info } from '../../model/info';
 import { TabModel } from '../../model/tabModel';
+import { addPrayerRequest } from '../../lib/firestore/card';
 
 interface CreateFormProps {
   curDate: string;
-  newId: number;
   categories: TabModel[];
   changeIsWriting(isWriting: boolean): void;
-  updateFamData(newData: Info): void;
 }
 
-const CreateForm: React.FC<CreateFormProps> = ({
-  curDate,
-  newId,
-  categories,
-  changeIsWriting,
-  updateFamData,
-}) => {
+const CreateForm: React.FC<CreateFormProps> = ({ curDate, categories, changeIsWriting }) => {
   const emptyData: Info = {
-    id: 0,
+    id: '0',
     name: '',
-    famId: 0,
+    famId: '0',
     famName: '',
-    cellId: 0,
+    cellId: '0',
     cellName: '',
     date: '',
     content: [''],
+    alive: true,
   };
 
   const [newInfo, setNewInfo] = useState<Info>(emptyData);
@@ -46,12 +40,12 @@ const CreateForm: React.FC<CreateFormProps> = ({
       ...prevInfo,
       content: list,
       date: curDate,
-      id: newId, // 임시
+      id: '',
     }));
   };
 
   const createCategory = (value: string) => {
-    const id = Number(value);
+    const id = value;
     setNewInfo((prevInfo) => ({
       ...prevInfo,
       cellId: id,
@@ -59,7 +53,7 @@ const CreateForm: React.FC<CreateFormProps> = ({
   };
 
   const vaildForm = () => {
-    if (isFilled()) updateChanges();
+    if (isFilled()) submitChanges();
   };
 
   const isFormEmpty = (): boolean => {
@@ -87,15 +81,18 @@ const CreateForm: React.FC<CreateFormProps> = ({
     return true; // 폼이 비어있지 않음
   };
 
-  const updateChanges = () => {
+  const submitChanges = async () => {
     setNewInfo((prevInfo) => ({
       ...prevInfo,
       date: curDate, // 현재 페이지의 날짜로 자동 지정
     }));
-    // 지금까지 작성된 Info 데이터 저장 & 업데이트
-    updateFamData(newInfo);
 
-    initForm();
+    try {
+      await addPrayerRequest(newInfo);
+      initForm();
+    } catch (error) {
+      console.error('Error adding prayer request:', error);
+    }
   };
 
   const initForm = () => {

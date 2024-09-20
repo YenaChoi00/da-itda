@@ -1,5 +1,5 @@
-export type Fam = {
-  id: number;
+export interface Fam {
+  id: string;
   name: string;
-  cellArr: number[];
-};
+  cellArr: string[];
+}
