@@ -37,12 +37,7 @@ const Card: React.FC<OwnProps> = ({
 
   const updateContent = (index: number, value: string) => {
     const updatedContent = [...newContent];
-    if (value == '') {
-      // 빈 값이면 아예 삭제
-      updatedContent.splice(index, 1);
-    } else {
-      updatedContent[index] = value;
-    }
+    updatedContent[index] = value;
     setNewContent(updatedContent);
   };
 
@@ -63,12 +58,21 @@ const Card: React.FC<OwnProps> = ({
     endEdit();
   };
 
+  const checkEmptyContent = () => {
+    const validArr = newContent.filter((e) => e !== '');
+    if (validArr.length === 0) {
+      deleteContent();
+    }
+    return validArr;
+  };
+
   // 수정된 내용 저장
   const saveUpdates = async () => {
     try {
+      const content = checkEmptyContent();
       await updatePrayerRequest({
         ...data,
-        content: newContent,
+        content: content,
       });
     } catch (error) {
       console.error('Error updating data:', error);
@@ -82,7 +86,7 @@ const Card: React.FC<OwnProps> = ({
 
   // 삭제
   const deleteContent = async () => {
-    const userConfirmed = window.confirm('정말 삭제 하시겠습니까?');
+    const userConfirmed = window.confirm('삭제 하시겠습니까?');
 
     if (userConfirmed) {
       try {
