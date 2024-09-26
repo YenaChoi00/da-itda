@@ -2,15 +2,18 @@ import {
   collection,
   deleteDoc,
   doc,
+  documentId,
   DocumentReference,
   getDoc,
   getDocs,
+  query,
   setDoc,
   updateDoc,
+  where,
 } from 'firebase/firestore';
 
-import { getDb } from '.';
-import { UserDoc } from './type';
+import { getCellCollection, getDb } from '.';
+import { CellDoc, UserDoc } from './type';
 
 const USER_COLLECTION_NAME = 'user-dev';
 
@@ -31,6 +34,26 @@ export async function createUser(userData: Omit<UserDoc, 'id'>): Promise<string>
 export async function readAllUser(): Promise<UserDoc[]> {
   const querySnapshot = await getDocs(getUserCollection());
   return querySnapshot.docs.map((doc) => doc.data() as UserDoc);
+}
+
+export async function getAllUser(cellId: string) {
+  const cellRef = doc(getCellCollection(), cellId);
+  const cellSnap = await getDoc(cellRef);
+
+  if (cellSnap.exists()) {
+    const cellData = cellSnap.data() as CellDoc;
+
+    const userIds = cellData.memberArr.map((user) => user.id);
+    // 최대 10개 밖에 못 가져옴.
+    const userQuery = query(getUserCollection(), where(documentId(), 'in', userIds));
+
+    const querySnapshot = await getDocs(userQuery);
+    const userArr = querySnapshot.docs.map((doc) => doc.data() as UserDoc);
+
+    return userArr;
+  } else {
+    return null;
+  }
 }
 
 interface ReadUserArrArgs {

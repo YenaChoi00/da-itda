@@ -3,7 +3,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { DATE, total } from '../../assets/dummy.ts';
-import { getTabModels } from '../../lib/firestore';
+import { getAllUser, getTabModels } from '../../lib/firestore';
 import { Info } from '../../model/info.ts';
 import { TabModel } from '../../model/tabModel.ts';
 import Header from '../Header';
@@ -16,10 +16,13 @@ const FamPage: React.FC = () => {
   const [curDate, setCurDate] = useState<string>(DATE);
   const [famData, setFamData] = useState<Info[]>(total);
 
+  const FAMILY_ID = 'Tp9bH9o7J6JRZDy1sz2d';
+
   const fetchTabs = async () => {
-    const fetchedTabs = await getTabModels();
+    const fetchedTabs = await getTabModels(FAMILY_ID);
     setTabs(fetchedTabs);
     setFamData(fetchedTabs[0].content);
+    console.log(getAllUser('dh9zHzMSJA0YKRaWiB7w'));
   };
 
   useEffect(() => {
@@ -140,7 +143,6 @@ const FamPage: React.FC = () => {
           tabData={tabData}
           activeTabNum={activeTab}
           setActiveTabNum={setActiveTab}
-          famData={famData}
           refreshPage={fetchTabs}
         />
       ) : (

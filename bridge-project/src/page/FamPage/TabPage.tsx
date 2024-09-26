@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Info } from '../../model/info.ts';
 import { TabModel } from '../../model/tabModel';
 import Card from '../Card/index.tsx';
 
@@ -7,17 +6,10 @@ interface TabProps {
   tabData: TabModel[];
   activeTabNum: number;
   setActiveTabNum: (num: number) => void;
-  famData: Info[];
   refreshPage: () => Promise<void>;
 }
 
-const TabPage: React.FC<TabProps> = ({
-  tabData,
-  activeTabNum,
-  setActiveTabNum,
-  famData,
-  refreshPage,
-}) => {
+const TabPage: React.FC<TabProps> = ({ tabData, activeTabNum, setActiveTabNum, refreshPage }) => {
   const [editingId, setEditingId] = useState<string>('-1');
 
   const startEdit = (id: string) => {

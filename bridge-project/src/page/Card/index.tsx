@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { HiOutlineTrash } from 'react-icons/hi';
 import { Info } from '../../model/info';
 import { deletePrayerRequest, updatePrayerRequest } from '../../lib/firestore/card';
 import { TabModel } from '../../model/tabModel';
+import { UserDoc } from '../../lib/firestore/type';
+import { readAllUser } from '../../lib/firestore';
 
 interface OwnProps {
   data: Info;
@@ -43,6 +45,16 @@ const Card: React.FC<OwnProps> = ({
     }
     setNewContent(updatedContent);
   };
+
+  const [userArr, serUserArr] = useState<UserDoc[]>([]);
+
+  useEffect(() => {
+    const getAllUser = async () => {
+      const data = await readAllUser();
+      serUserArr(data);
+    };
+    getAllUser();
+  }, []);
 
   const initForm = () => {
     // 초기화
@@ -88,16 +100,28 @@ const Card: React.FC<OwnProps> = ({
     return (
       <div className="flex flex-col p-2">
         <div className="flex space-x-2">
-          <input
+          {/* <input
             type="text"
             value={newTitle}
             onChange={(e) => updateTitle(e.target.value)}
             className="w-2/3 mb-2 input-box"
-          />
+          /> */}
           <select
-            className="w-1/3 input-box"
+            value={newTitle}
+            onChange={(e) => updateTitle(e.target.value)}
+            className="w-2/3 mb-2 input-box"
+          >
+            {userArr.map((item) => (
+              <option value={item.name} key={item.name}>
+                {item.name}
+              </option>
+            ))}
+          </select>
+          <select
+            disabled
             value={newCategory}
             onChange={(e) => createCategory(e.target.value)}
+            className="w-1/3 mb-2 input-box"
           >
             {categories.map((item) => (
               <option value={item.id} key={item.id}>
@@ -150,3 +174,6 @@ const Card: React.FC<OwnProps> = ({
 };
 
 export default Card;
+function userEffect(arg0: () => void, arg1: never[]) {
+  throw new Error('Function not implemented.');
+}

@@ -7,12 +7,12 @@ import { CellDoc, FamilyDoc, PrayerRequestDoc } from './type';
 
 const FAMILY_ID = 'Tp9bH9o7J6JRZDy1sz2d';
 
-export async function getTabModels(): Promise<TabModel[]> {
+export async function getTabModels(familyId: string): Promise<TabModel[]> {
   try {
     const cellArray: TabModel[] = [];
 
     // Get family with FAMILY_ID
-    const familyRef = doc(getFamilyCollection(), FAMILY_ID);
+    const familyRef = doc(getFamilyCollection(), familyId);
     const familyDoc = await getDoc(familyRef);
 
     if (!familyDoc.exists()) {
@@ -49,7 +49,7 @@ export async function getTabModels(): Promise<TabModel[]> {
           userId: data.user.id,
           name: userDict[data.user.id].name,
           cellId: cellId,
-          famId: FAMILY_ID,
+          famId: familyId,
           famName: familyData.name,
           cellName: cellName,
           alive: data.alive,

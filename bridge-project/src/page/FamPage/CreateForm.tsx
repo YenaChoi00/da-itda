@@ -113,7 +113,6 @@ const CreateForm: React.FC<CreateFormProps> = ({ curDate, categories, changeIsWr
 
   return (
     <div className="flex flex-col px-2 space-y-2">
-      <button onClick={() => setIsModalOpen(true)}></button>
       <CreateUserModal
         isOpen={isModalOpen}
         cellId={newInfo.cellId}
