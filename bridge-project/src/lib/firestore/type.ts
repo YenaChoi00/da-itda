@@ -21,3 +21,12 @@ export type PrayerRequestDoc = {
   user: DocumentReference;
   alive: boolean;
 };
+
+export type CategoryInfo = {
+  fname: string;
+  fid: string;
+  cellArr: {
+    cname: string;
+    cid: string;
+  }[];
+};

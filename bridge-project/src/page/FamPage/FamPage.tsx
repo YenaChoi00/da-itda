@@ -1,28 +1,48 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { DATE, total } from '../../assets/dummy.ts';
-import { getAllUser, getTabModels } from '../../lib/firestore';
+import { getTabModels } from '../../lib/firestore';
 import { Info } from '../../model/info.ts';
 import { TabModel } from '../../model/tabModel.ts';
-import Header from '../Header';
 import CreateForm from './CreateForm.tsx';
-import './FamPage.css';
+import Header from '../Header/index.tsx';
 import TabPage from './TabPage.tsx';
+import './FamPage.css';
+import 'react-toastify/dist/ReactToastify.css';
+import { CategoryContext } from '../../main.tsx';
+import { CategoryInfo } from '../../lib/firestore/type.ts';
+import { getCategoryInfo } from '../../lib/firestore/fam.ts';
 
 const FamPage: React.FC = () => {
+  const FAMILY_ID = 'Tp9bH9o7J6JRZDy1sz2d';
+  const [info, setInfo] = useState<CategoryInfo>({
+    fname: '',
+    fid: '',
+    cellArr: [{ cname: '', cid: '' }],
+  });
+
+  const fetchInfo = async () => {
+    try {
+      const categoryInfo = await getCategoryInfo();
+      setInfo(categoryInfo);
+    } catch (Error) {
+      console.log(Error);
+    }
+  };
+
+  useEffect(() => {
+    fetchInfo();
+  }, []);
+
   const [tabs, setTabs] = useState<TabModel[]>([]);
   const [curDate, setCurDate] = useState<string>(DATE);
   const [famData, setFamData] = useState<Info[]>(total);
-
-  const FAMILY_ID = 'Tp9bH9o7J6JRZDy1sz2d';
 
   const fetchTabs = async () => {
     const fetchedTabs = await getTabModels(FAMILY_ID);
     setTabs(fetchedTabs);
     setFamData(fetchedTabs[0].content);
-    console.log(getAllUser('dh9zHzMSJA0YKRaWiB7w'));
   };
 
   useEffect(() => {
@@ -134,20 +154,22 @@ const FamPage: React.FC = () => {
 
   return (
     <div className="container flex flex-col content-start w-96 h-svh">
-      <Header curDate={curDate} name="예빈팸" changeDate={changeDate}></Header>
+      <CategoryContext.Provider value={info}>
+        <Header curDate={curDate} changeDate={changeDate}></Header>
 
-      {CreateCopyBtn()}
+        {CreateCopyBtn()}
 
-      {curDateData.length > 0 ? (
-        <TabPage
-          tabData={tabData}
-          activeTabNum={activeTab}
-          setActiveTabNum={setActiveTab}
-          refreshPage={fetchTabs}
-        />
-      ) : (
-        <div className="container place-self-center">추가된 기도제목이 없습니다</div>
-      )}
+        {curDateData.length > 0 ? (
+          <TabPage
+            tabData={tabData}
+            activeTabNum={activeTab}
+            setActiveTabNum={setActiveTab}
+            refreshPage={fetchTabs}
+          />
+        ) : (
+          <div className="container place-self-center">추가된 기도제목이 없습니다</div>
+        )}
+      </CategoryContext.Provider>
     </div>
   );
 };
