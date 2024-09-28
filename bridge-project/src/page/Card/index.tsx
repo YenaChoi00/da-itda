@@ -1,31 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { HiOutlineTrash } from 'react-icons/hi';
 import { Info } from '../../model/info';
 import { deletePrayerRequest, updatePrayerRequest } from '../../lib/firestore/card';
-import { TabModel } from '../../model/tabModel';
 import { UserDoc } from '../../lib/firestore/type';
 import { readAllUser } from '../../lib/firestore';
+import { CategoryContext } from '../../main';
 
 interface OwnProps {
   data: Info;
-  categories: TabModel[];
   isEditable: boolean;
   startEdit(id: string): void;
   endEdit(): void;
   refreshParentPage: () => Promise<void>;
 }
 
-const Card: React.FC<OwnProps> = ({
-  data,
-  categories,
-  isEditable,
-  startEdit,
-  endEdit,
-  refreshParentPage,
-}) => {
+const Card: React.FC<OwnProps> = ({ data, isEditable, startEdit, endEdit, refreshParentPage }) => {
   const [newContent, setNewContent] = useState(data.content);
   const [newTitle, setNewTitle] = useState(data.name);
   const [newCategory, setNewCategory] = useState(data.cellId);
+
+  const info = useContext(CategoryContext);
 
   const updateEditState = () => {
     startEdit(data.id);
@@ -127,9 +121,9 @@ const Card: React.FC<OwnProps> = ({
             onChange={(e) => createCategory(e.target.value)}
             className="w-1/3 mb-2 input-box"
           >
-            {categories.map((item) => (
-              <option value={item.id} key={item.id}>
-                {item.name}
+            {info.cellArr.map((item) => (
+              <option value={item.cid} key={item.cid}>
+                {item.cname}
               </option>
             ))}
           </select>

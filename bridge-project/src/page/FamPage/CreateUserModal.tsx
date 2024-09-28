@@ -1,14 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import { createUser } from '../../lib/firestore/user';
 import { addUsertoCell } from '../../lib/firestore/cell';
 import Modal from 'react-modal';
-import { TabModel } from '../../model/tabModel';
+import { CategoryContext } from '../../main';
 
 interface ModalProps {
   isOpen: boolean;
   cellId: string;
-  cellCategory: TabModel[];
   updateCategoty: (newCell: string) => void;
   userName: string;
   closeModal: () => void;
@@ -18,10 +17,10 @@ const CreateUserModal: React.FC<ModalProps> = ({
   isOpen,
   cellId,
   updateCategoty,
-  cellCategory,
   userName,
   closeModal,
 }) => {
+  const info = useContext(CategoryContext);
   const createMember = async () => {
     try {
       const userId = await createUser({ name: userName, level: 10 });
@@ -75,9 +74,9 @@ const CreateUserModal: React.FC<ModalProps> = ({
               value={cellId}
               onChange={(e) => updateCategoty(e.target.value)}
             >
-              {cellCategory.map((item) => (
-                <option value={item.id} key={item.id}>
-                  {item.name}
+              {info.cellArr.map((item) => (
+                <option value={item.cid} key={item.cid}>
+                  {item.cname}
                 </option>
               ))}
             </select>

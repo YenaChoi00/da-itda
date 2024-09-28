@@ -41,7 +41,6 @@ const TabPage: React.FC<TabProps> = ({ tabData, activeTabNum, setActiveTabNum, r
             <Card
               key={item.id}
               data={item}
-              categories={tabData}
               isEditable={item.id === editingId}
               startEdit={(id: string) => startEdit(id)}
               endEdit={endEdit}

@@ -120,7 +120,6 @@ const FamPage: React.FC = () => {
       return (
         <CreateForm
           curDate={curDate}
-          categories={tabData}
           changeIsWriting={(isWriting: boolean) => changeWrtState(isWriting)}
         />
       );

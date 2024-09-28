@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Info } from '../../model/info';
 import { TabModel } from '../../model/tabModel';
 import { addPrayerRequest } from '../../lib/firestore/card';
 import CreateUserModal from './CreateUserModal';
+import { CategoryContext } from '../../main';
 
 interface CreateFormProps {
   curDate: string;
-  categories: TabModel[];
   changeIsWriting(isWriting: boolean): void;
 }
 
-const CreateForm: React.FC<CreateFormProps> = ({ curDate, categories, changeIsWriting }) => {
+const CreateForm: React.FC<CreateFormProps> = ({ curDate, changeIsWriting }) => {
   const emptyData: Omit<Info, 'id'> = {
     name: '',
     famId: '0',
@@ -23,6 +23,7 @@ const CreateForm: React.FC<CreateFormProps> = ({ curDate, categories, changeIsWr
   };
 
   const [newInfo, setNewInfo] = useState<Omit<Info, 'id'>>(emptyData);
+  const info = useContext(CategoryContext);
 
   const createTitle = (value: string) => {
     setNewInfo((prevInfo) => ({
@@ -116,7 +117,6 @@ const CreateForm: React.FC<CreateFormProps> = ({ curDate, categories, changeIsWr
       <CreateUserModal
         isOpen={isModalOpen}
         cellId={newInfo.cellId}
-        cellCategory={categories}
         updateCategoty={createCategory}
         userName={newInfo.name}
         closeModal={closeModal}
@@ -135,9 +135,9 @@ const CreateForm: React.FC<CreateFormProps> = ({ curDate, categories, changeIsWr
           value={newInfo.cellId}
           onChange={(e) => createCategory(e.target.value)}
         >
-          {categories.map((item) => (
-            <option value={item.id} key={item.id}>
-              {item.name}
+          {info.cellArr.map((item) => (
+            <option value={item.cid} key={item.cid}>
+              {item.cname}
             </option>
           ))}
         </select>
