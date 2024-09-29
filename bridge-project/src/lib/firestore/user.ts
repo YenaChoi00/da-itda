@@ -13,7 +13,7 @@ import {
 } from 'firebase/firestore';
 
 import { getCellCollection, getDb } from '.';
-import { CellDoc, UserDoc } from './type';
+import { Cell, CellDoc, UserDoc } from './type';
 
 const USER_COLLECTION_NAME = 'user-dev';
 
@@ -52,7 +52,36 @@ export async function getAllUser(cellId: string) {
 
     return userArr;
   } else {
-    return null;
+    throw new Error('Error while fetching every user in fam.');
+  }
+}
+
+export async function getAllUserWithCell(cellId: string) {
+  const cellRef = doc(getCellCollection(), cellId);
+  const cellSnap = await getDoc(cellRef);
+
+  if (cellSnap.exists()) {
+    const cellData = cellSnap.data() as CellDoc;
+
+    const userIds = cellData.memberArr.map((user) => user.id);
+    // 최대 10개 밖에 못 가져옴.
+    const userQuery = query(getUserCollection(), where(documentId(), 'in', userIds));
+
+    const querySnapshot = await getDocs(userQuery);
+    const userArr: Cell = {
+      name: '',
+      memberArr: [],
+    };
+
+    userArr.name = cellData.name;
+
+    querySnapshot.docs.forEach((doc) => {
+      userArr.memberArr.push(doc.data() as UserDoc);
+    });
+
+    return userArr;
+  } else {
+    throw new Error('Error while fetching every user in fam.');
   }
 }
 

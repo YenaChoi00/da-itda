@@ -2,9 +2,9 @@ import React, { useState, useEffect, useContext } from 'react';
 import { HiOutlineTrash } from 'react-icons/hi';
 import { Info } from '../../model/info';
 import { deletePrayerRequest, updatePrayerRequest } from '../../lib/firestore/card';
-import { UserDoc } from '../../lib/firestore/type';
-import { readAllUser } from '../../lib/firestore';
+import { UserInfo } from '../../lib/firestore/type';
 import { CategoryContext } from '../../main';
+import { getAllFamUser, getAllFamUserWCategory } from '../../lib/firestore/fam';
 
 interface OwnProps {
   data: Info;
@@ -17,7 +17,7 @@ interface OwnProps {
 const Card: React.FC<OwnProps> = ({ data, isEditable, startEdit, endEdit, refreshParentPage }) => {
   const [newContent, setNewContent] = useState(data.content);
   const [newTitle, setNewTitle] = useState(data.name);
-  const [newCategory, setNewCategory] = useState(data.cellId);
+  const [newCategory, setNewCategory] = useState(data.cellName);
 
   const info = useContext(CategoryContext);
 
@@ -27,6 +27,15 @@ const Card: React.FC<OwnProps> = ({ data, isEditable, startEdit, endEdit, refres
 
   const updateTitle = (value: string) => {
     setNewTitle(value);
+    updateCategoryByTitle(value);
+  };
+
+  const updateCategoryByTitle = (title: string) => {
+    const arr = userArr.find((item) => item.name === title);
+    if (arr) {
+      const category = arr.cell;
+      setNewCategory(category);
+    }
   };
 
   const updateContent = (index: number, value: string) => {
@@ -35,13 +44,17 @@ const Card: React.FC<OwnProps> = ({ data, isEditable, startEdit, endEdit, refres
     setNewContent(updatedContent);
   };
 
-  const [userArr, serUserArr] = useState<UserDoc[]>([]);
+  const [userArr, setUserArr] = useState<UserInfo[]>([]);
+  const getAllUser = async () => {
+    try {
+      const data = await getAllFamUserWCategory();
+      setUserArr(data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   useEffect(() => {
-    const getAllUser = async () => {
-      const data = await readAllUser();
-      serUserArr(data);
-    };
     getAllUser();
   }, []);
 
@@ -74,10 +87,6 @@ const Card: React.FC<OwnProps> = ({ data, isEditable, startEdit, endEdit, refres
     endEdit();
   };
 
-  const createCategory = (value: string) => {
-    setNewCategory(value);
-  };
-
   // 삭제
   const deleteContent = async () => {
     const userConfirmed = window.confirm('삭제 하시겠습니까?');
@@ -98,12 +107,6 @@ const Card: React.FC<OwnProps> = ({ data, isEditable, startEdit, endEdit, refres
     return (
       <div className="flex flex-col p-2">
         <div className="flex space-x-2">
-          {/* <input
-            type="text"
-            value={newTitle}
-            onChange={(e) => updateTitle(e.target.value)}
-            className="w-2/3 mb-2 input-box"
-          /> */}
           <select
             value={newTitle}
             onChange={(e) => updateTitle(e.target.value)}
@@ -115,18 +118,7 @@ const Card: React.FC<OwnProps> = ({ data, isEditable, startEdit, endEdit, refres
               </option>
             ))}
           </select>
-          <select
-            disabled
-            value={newCategory}
-            onChange={(e) => createCategory(e.target.value)}
-            className="w-1/3 mb-2 input-box"
-          >
-            {info.cellArr.map((item) => (
-              <option value={item.cid} key={item.cid}>
-                {item.cname}
-              </option>
-            ))}
-          </select>
+          <input disabled value={newCategory} className="w-1/3 mb-2 input-box"></input>
         </div>
         <ol className="pl-5 mb-2 space-y-2 list-decimal">
           {newContent.map((item, index) => (

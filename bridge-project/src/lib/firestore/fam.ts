@@ -1,6 +1,7 @@
 import { doc, getDoc } from 'firebase/firestore';
-import { getAllUser, getFamilyCollection } from '.';
-import { CategoryInfo, FamilyDoc } from './type';
+import { getAllUser, getCellCollection, getFamilyCollection, getUserCollection } from '.';
+import { CategoryInfo, FamilyDoc, UserDoc, UserInfo } from './type';
+import { getCellNameById, getLeader } from './cell';
 
 const FAMILY_ID = 'Tp9bH9o7J6JRZDy1sz2d';
 
@@ -26,6 +27,85 @@ export async function getCategoryInfo() {
       }
     });
     return info;
+  } else {
+    throw new Error('Error while fetching category data.');
+  }
+}
+
+export async function getAllFamUser() {
+  const famRef = doc(getFamilyCollection(), FAMILY_ID);
+  const famSnap = await getDoc(famRef);
+
+  if (famSnap.exists()) {
+    const everyUser: UserDoc[] = [];
+    const famData = famSnap.data() as FamilyDoc;
+    const cellIds = famData.cellArr.map((cell) => cell.id);
+
+    // 1. Staff
+    const staffRef = famSnap.data().leader;
+    const staffDoc = await getDoc(staffRef);
+    everyUser.push(staffDoc.data() as UserDoc);
+
+    cellIds.forEach(async (id) => {
+      try {
+        // 2. leader
+        const leader = await getLeader(id);
+        everyUser.push(leader);
+        // 3. member
+        const userArr = await getAllUser(id);
+        everyUser.push(...userArr);
+      } catch (e) {
+        console.log(e);
+      }
+    });
+
+    return everyUser;
+  } else {
+    throw new Error('Error while fetching category data.');
+  }
+}
+
+export async function getAllFamUserWCategory() {
+  const famRef = doc(getFamilyCollection(), FAMILY_ID);
+  const famSnap = await getDoc(famRef);
+
+  if (famSnap.exists()) {
+    const everyUser: UserInfo[] = [];
+    const famData = famSnap.data() as FamilyDoc;
+    const cellIds = famData.cellArr.map((cell) => cell.id);
+
+    // 1. Staff
+    const staffRef = famSnap.data().leader;
+    const staffDoc = await getDoc(staffRef);
+    const staff = {
+      cell: '전체',
+      ...(staffDoc.data() as UserDoc),
+    };
+    everyUser.push(staff);
+
+    cellIds.forEach(async (id) => {
+      try {
+        const cellName = await getCellNameById(id);
+        // 2. leader
+        const leader = await getLeader(id);
+        const leaderInfo = {
+          cell: cellName,
+          ...leader,
+        };
+        everyUser.push(leaderInfo);
+        // 3. member
+        const userArr = await getAllUser(id);
+        const userInfoArr = userArr.map((user) => ({
+          ...user,
+          cell: cellName,
+        }));
+        everyUser.push(...userInfoArr);
+      } catch (e) {
+        console.log(e);
+      }
+    });
+
+    return everyUser;
   } else {
     throw new Error('Error while fetching category data.');
   }
