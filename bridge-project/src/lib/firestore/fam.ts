@@ -1,5 +1,5 @@
 import { doc, getDoc } from 'firebase/firestore';
-import { getAllUser, getCellCollection, getFamilyCollection, getUserCollection } from '.';
+import { getAllUser, getFamilyCollection } from '.';
 import { CategoryInfo, FamilyDoc, UserDoc, UserInfo } from './type';
 import { getCellNameById, getLeader } from './cell';
 

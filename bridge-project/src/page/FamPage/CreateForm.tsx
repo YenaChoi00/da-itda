@@ -1,6 +1,5 @@
 import React, { useContext, useState } from 'react';
 import { Info } from '../../model/info';
-import { TabModel } from '../../model/tabModel';
 import { addPrayerRequest } from '../../lib/firestore/card';
 import CreateUserModal from './CreateUserModal';
 import { CategoryContext } from '../../main';

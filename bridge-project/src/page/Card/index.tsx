@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { HiOutlineTrash } from 'react-icons/hi';
 import { Info } from '../../model/info';
 import { deletePrayerRequest, updatePrayerRequest } from '../../lib/firestore/card';
 import { UserInfo } from '../../lib/firestore/type';
-import { CategoryContext } from '../../main';
-import { getAllFamUser, getAllFamUserWCategory } from '../../lib/firestore/fam';
+import { getAllFamUserWCategory } from '../../lib/firestore/fam';
 
 interface OwnProps {
   data: Info;
@@ -18,8 +17,6 @@ const Card: React.FC<OwnProps> = ({ data, isEditable, startEdit, endEdit, refres
   const [newContent, setNewContent] = useState(data.content);
   const [newTitle, setNewTitle] = useState(data.name);
   const [newCategory, setNewCategory] = useState(data.cellName);
-
-  const info = useContext(CategoryContext);
 
   const updateEditState = () => {
     startEdit(data.id);
@@ -164,6 +161,3 @@ const Card: React.FC<OwnProps> = ({ data, isEditable, startEdit, endEdit, refres
 };
 
 export default Card;
-function userEffect(arg0: () => void, arg1: never[]) {
-  throw new Error('Function not implemented.');
-}

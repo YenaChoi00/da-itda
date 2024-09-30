@@ -1,7 +1,6 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { ToastContainer, toast } from 'react-toastify';
-import { DATE, total } from '../../assets/dummy.ts';
 import { getTabModels } from '../../lib/firestore';
 import { Info } from '../../model/info.ts';
 import { TabModel } from '../../model/tabModel.ts';
@@ -13,6 +12,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { CategoryContext } from '../../main.tsx';
 import { CategoryInfo } from '../../lib/firestore/type.ts';
 import { getCategoryInfo } from '../../lib/firestore/fam.ts';
+import moment from 'moment';
 
 const FamPage: React.FC = () => {
   const FAMILY_ID = 'Tp9bH9o7J6JRZDy1sz2d';
@@ -36,8 +36,10 @@ const FamPage: React.FC = () => {
   }, []);
 
   const [tabs, setTabs] = useState<TabModel[]>([]);
+
+  const DATE: string = moment('2024-07-17').format('YYYY-MM-DD').toString();
   const [curDate, setCurDate] = useState<string>(DATE);
-  const [famData, setFamData] = useState<Info[]>(total);
+  const [famData, setFamData] = useState<Info[]>([]);
 
   const fetchTabs = async () => {
     const fetchedTabs = await getTabModels(FAMILY_ID);

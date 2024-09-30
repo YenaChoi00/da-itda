@@ -5,8 +5,6 @@ import { Info } from '../../model/info';
 import { TabModel } from '../../model/tabModel';
 import { CellDoc, FamilyDoc, PrayerRequestDoc } from './type';
 
-const FAMILY_ID = 'Tp9bH9o7J6JRZDy1sz2d';
-
 export async function getTabModels(familyId: string): Promise<TabModel[]> {
   try {
     const cellArray: TabModel[] = [];
