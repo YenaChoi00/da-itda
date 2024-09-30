@@ -22,56 +22,53 @@ const FamPage: React.FC = () => {
     cellArr: [{ cname: '', cid: '' }],
   });
 
-  const fetchInfo = async () => {
-    try {
-      const categoryInfo = await getCategoryInfo();
-      setInfo(categoryInfo);
-    } catch (Error) {
-      console.log(Error);
-    }
-  };
-
   useEffect(() => {
+    const fetchInfo = async () => {
+      try {
+        const categoryInfo = await getCategoryInfo();
+        setInfo(categoryInfo);
+      } catch (Error) {
+        console.log(Error);
+      }
+    };
+
     fetchInfo();
   }, []);
 
-  const [tabs, setTabs] = useState<TabModel[]>([]);
-
   const DATE: string = moment('2024-07-17').format('YYYY-MM-DD').toString();
   const [curDate, setCurDate] = useState<string>(DATE);
-  const [famData, setFamData] = useState<Info[]>([]);
+  const [allTabData, setAllTabData] = useState<TabModel[]>([]);
 
   const fetchTabs = async () => {
     const fetchedTabs = await getTabModels(FAMILY_ID);
-    setTabs(fetchedTabs);
-    setFamData(fetchedTabs[0].content);
+    setAllTabData(fetchedTabs);
   };
 
   useEffect(() => {
     fetchTabs();
   }, []);
 
-  const [isWriting, setIsWriting] = useState<boolean>(false);
-  const [contentForCopy, setContentForCopy] = useState<string>('');
-
   // 날짜별
   const [curDateData, setCurDateData] = useState<Info[]>([]);
   useEffect(() => {
     // 팸 전체 데이터 중, *현재 날짜*에 해당하는 데이터
-    const filtered = famData.filter((item) => {
-      return item.date === curDate && item.alive === true;
-    });
-    setCurDateData(filtered);
-  }, [curDate, famData]);
+    if (allTabData.length > 0) {
+      const everyContent = allTabData[0].content;
+      const filtered = everyContent.filter((item) => {
+        return item.date === curDate && item.alive === true;
+      });
+      setCurDateData(filtered);
+    }
+  }, [allTabData, curDate]);
 
   // 탭(셀)별
-  const [tabData, setTabData] = useState<TabModel[]>(tabs);
+  const [tabData, setTabData] = useState<TabModel[]>(allTabData);
   const [activeTab, setActiveTab] = useState(0);
 
+  // 현재 날짜 데이터 중, *해당 셀*에 해당하는 데이터
   useEffect(() => {
-    // 현재 날짜 데이터 중, *해당 셀*에 해당하는 데이터
     setTabData(
-      tabs.map((item) => ({
+      allTabData.map((item) => ({
         ...item,
         content:
           item.name === '전체'
@@ -79,11 +76,14 @@ const FamPage: React.FC = () => {
             : curDateData.filter((curItem) => curItem.cellId === item.id),
       })),
     );
-  }, [curDateData, tabs]);
+  }, [allTabData, curDateData]);
 
   const changeDate = (newDate: string) => {
     setCurDate(newDate);
   };
+
+  const [isWriting, setIsWriting] = useState<boolean>(false);
+  const [contentForCopy, setContentForCopy] = useState<string>('');
 
   const changeWrtState = (state: boolean) => {
     setIsWriting(state);
