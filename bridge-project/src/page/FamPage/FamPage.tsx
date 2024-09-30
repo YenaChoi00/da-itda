@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { ToastContainer, toast } from 'react-toastify';
 import { getTabModels } from '../../lib/firestore';
@@ -49,34 +49,40 @@ const FamPage: React.FC = () => {
   }, []);
 
   // 날짜별
-  const [curDateData, setCurDateData] = useState<Info[]>([]);
-  useEffect(() => {
-    // 팸 전체 데이터 중, *현재 날짜*에 해당하는 데이터
-    if (allTabData.length > 0) {
-      const everyContent = allTabData[0].content;
-      const filtered = everyContent.filter((item) => {
-        return item.date === curDate && item.alive === true;
-      });
-      setCurDateData(filtered);
-    }
-  }, [allTabData, curDate]);
+  // const [curDateData, setCurDateData] = useState<Info[]>([]);
+  // useMemo(() => {
+  //   // 팸 전체 데이터 중, *현재 날짜*에 해당하는 데이터
+  //   if (allTabData.length > 0) {
+  //     const everyContent = allTabData[0].content;
+  //     const filtered = everyContent.filter((item) => {
+  //       return item.date === curDate && item.alive === true;
+  //     });
+  //     setCurDateData(filtered);
+  //   }
+  // }, [allTabData, curDate]);
 
   // 탭(셀)별
   const [tabData, setTabData] = useState<TabModel[]>(allTabData);
   const [activeTab, setActiveTab] = useState(0);
 
   // 현재 날짜 데이터 중, *해당 셀*에 해당하는 데이터
-  useEffect(() => {
-    setTabData(
-      allTabData.map((item) => ({
+  useMemo(() => {
+    if (allTabData.length > 0) {
+      const everyContent = allTabData[0].content;
+      const curDateData = everyContent.filter((item) => {
+        return item.date === curDate && item.alive === true;
+      });
+
+      const filteredData = allTabData.map((item) => ({
         ...item,
         content:
           item.name === '전체'
             ? curDateData
             : curDateData.filter((curItem) => curItem.cellId === item.id),
-      })),
-    );
-  }, [allTabData, curDateData]);
+      }));
+      setTabData(filteredData);
+    }
+  }, [allTabData, curDate]);
 
   const changeDate = (newDate: string) => {
     setCurDate(newDate);
@@ -135,7 +141,7 @@ const FamPage: React.FC = () => {
           >
             추가하기
           </button>
-          {curDateData.length > 0 && (
+          {allTabData.length > 0 && (
             <>
               <CopyToClipboard text={contentForCopy} onCopy={copyToast}>
                 <button
@@ -160,7 +166,7 @@ const FamPage: React.FC = () => {
 
         {CreateCopyBtn()}
 
-        {curDateData.length > 0 ? (
+        {allTabData.length > 0 ? (
           <TabPage
             tabData={tabData}
             activeTabNum={activeTab}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { TabModel } from '../../model/tabModel';
 import Card from '../Card/index.tsx';
 
@@ -21,6 +21,8 @@ const TabPage: React.FC<TabProps> = ({ tabData, activeTabNum, setActiveTabNum, r
     refreshPage();
   };
 
+  const curTabData = useMemo(() => tabData[activeTabNum].content, [activeTabNum, tabData]);
+
   return (
     <div className="flex flex-col tab">
       <ul className="grid grid-flow-col cursor-pointer justify-stretch">
@@ -37,7 +39,7 @@ const TabPage: React.FC<TabProps> = ({ tabData, activeTabNum, setActiveTabNum, r
 
       <div>
         {tabData.length > 0 &&
-          tabData[activeTabNum].content.map((item) => (
+          curTabData.map((item) => (
             <Card
               key={item.id}
               data={item}
