@@ -5,7 +5,7 @@
 
 ## In Progress
 
-작업 중인 Github Repo [[Isuue#10](https://github.com/YenaChoi00/da-itda/issues/10#issue-2560873251)]
+작업 중인 Github Repo [[Issue#10](https://github.com/YenaChoi00/da-itda/issues/10#issue-2560873251)]
 - [ ] 페이지 추가 후 React-router를 활용한 라우팅 적용
 
   - [ ] 메인페이지
