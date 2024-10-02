@@ -11,6 +11,7 @@ interface ModalProps {
   updateCategoty: (newCell: string) => void;
   userName: string;
   closeModal: () => void;
+  submitContent: () => void;
 }
 
 const CreateUserModal: React.FC<ModalProps> = ({
@@ -19,12 +20,14 @@ const CreateUserModal: React.FC<ModalProps> = ({
   updateCategoty,
   userName,
   closeModal,
+  submitContent,
 }) => {
   const info = useContext(CategoryContext);
   const createMember = async () => {
     try {
       const userId = await createUser({ name: userName, level: 10 });
       await addUsertoCell(userId, cellId);
+      submitContent();
       successToast();
       closeModal();
     } catch (error) {

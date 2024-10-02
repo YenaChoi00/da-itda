@@ -6,7 +6,7 @@ export async function addPrayerRequest(param: Omit<Info, 'id'>) {
   try {
     const date = new Date(param.date);
 
-    const userRef = getUserDocByName(param.name);
+    const userRef = await getUserDocByName(param.name);
     const cardRef = getPrayerRequestCollection();
     await addDoc(cardRef, {
       content: param.content,
@@ -15,7 +15,7 @@ export async function addPrayerRequest(param: Omit<Info, 'id'>) {
       alive: true,
     });
   } catch (error) {
-    throw new Error(`Error fetching tab models: ${error}`);
+    throw new Error(`Error adding prayer request: ${error}`);
   }
 }
 

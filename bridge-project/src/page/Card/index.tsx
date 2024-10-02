@@ -4,6 +4,7 @@ import { Info } from '../../model/info';
 import { deletePrayerRequest, updatePrayerRequest } from '../../lib/firestore/card';
 import { UserInfo } from '../../lib/firestore/type';
 import { getAllFamUserWCategory } from '../../lib/firestore/fam';
+import { toast } from 'react-toastify';
 
 interface OwnProps {
   data: Info;
@@ -93,6 +94,7 @@ const Card: React.FC<OwnProps> = ({ data, isEditable, startEdit, endEdit, refres
     if (userConfirmed) {
       try {
         await deletePrayerRequest(data.id);
+        successToast();
         refreshParentPage();
       } catch (error) {
         console.error('Error deleting prayer request:', error);
@@ -101,6 +103,18 @@ const Card: React.FC<OwnProps> = ({ data, isEditable, startEdit, endEdit, refres
 
     return;
   };
+
+  const successToast = () =>
+    toast.success(`정상적으로 삭제되었습니다.`, {
+      position: 'bottom-left',
+      autoClose: 1500,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'light',
+    });
 
   if (isEditable)
     return (

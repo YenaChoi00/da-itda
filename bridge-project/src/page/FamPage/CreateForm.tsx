@@ -3,6 +3,7 @@ import { Info } from '../../model/info';
 import { addPrayerRequest } from '../../lib/firestore/card';
 import CreateUserModal from './CreateUserModal';
 import { CategoryContext } from '../../main';
+import { toast } from 'react-toastify';
 
 interface CreateFormProps {
   curDate: string;
@@ -88,11 +89,11 @@ const CreateForm: React.FC<CreateFormProps> = ({ curDate, changeIsWriting }) => 
 
     try {
       await addPrayerRequest(newInfo);
+      successToast();
       initForm();
     } catch (error) {
       if (error instanceof Error) {
-        // 모달 오픈
-        // 모달 내부에서, createUser
+        // User가 없을 때 - 모달 오픈
         setIsModalOpen(true);
       } else {
         console.error('Error adding prayer request:', error);
@@ -104,6 +105,18 @@ const CreateForm: React.FC<CreateFormProps> = ({ curDate, changeIsWriting }) => 
     setNewInfo(emptyData);
     changeIsWriting(false);
   };
+
+  const successToast = () =>
+    toast.success(`정상적으로 추가되었습니다.`, {
+      position: 'bottom-left',
+      autoClose: 1500,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'light',
+    });
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -119,6 +132,7 @@ const CreateForm: React.FC<CreateFormProps> = ({ curDate, changeIsWriting }) => 
         updateCategoty={createCategory}
         userName={newInfo.name}
         closeModal={closeModal}
+        submitContent={vaildForm}
       />
       <div className="flex space-x-2">
         <input

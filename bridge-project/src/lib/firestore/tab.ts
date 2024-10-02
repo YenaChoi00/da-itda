@@ -40,6 +40,7 @@ export async function getTabModels(familyId: string): Promise<TabModel[]> {
       // Convert prayer requests to Info[]
       const infos: Info[] = prayerRequestDocs.docs.map((doc) => {
         const data = doc.data() as PrayerRequestDoc;
+
         return {
           id: doc.id,
           content: data.content,
