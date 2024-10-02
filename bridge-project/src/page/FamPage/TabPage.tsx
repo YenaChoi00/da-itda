@@ -38,7 +38,7 @@ const TabPage: React.FC<TabProps> = ({ tabData, activeTabNum, setActiveTabNum, r
       </ul>
 
       <div>
-        {curTabData.length > 0 &&
+        {curTabData.length > 0 ? (
           curTabData.map((item) => (
             <Card
               key={item.id}
@@ -48,7 +48,12 @@ const TabPage: React.FC<TabProps> = ({ tabData, activeTabNum, setActiveTabNum, r
               endEdit={endEdit}
               refreshParentPage={refreshPage}
             />
-          ))}
+          ))
+        ) : (
+          <div className="container place-self-center">
+            {tabData[activeTabNum].name}의 기도제목이 없습니다
+          </div>
+        )}
       </div>
     </div>
   );

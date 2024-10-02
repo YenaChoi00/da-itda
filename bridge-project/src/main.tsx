@@ -10,7 +10,13 @@ export const CategoryContext = createContext<CategoryInfo>({
   cellArr: [{ cname: '', cid: '' }],
 });
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+const container = document.getElementById('root');
+if (!container) throw new Error('Root container not found');
+
+// 중복 호출 방지
+const root = ReactDOM.createRoot(container);
+
+root.render(
   <React.StrictMode>
     <FamPage />
   </React.StrictMode>,
