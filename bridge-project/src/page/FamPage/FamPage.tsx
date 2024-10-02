@@ -49,23 +49,11 @@ const FamPage: React.FC = () => {
   }, []);
 
   // 날짜별
-  // const [curDateData, setCurDateData] = useState<Info[]>([]);
-  // useMemo(() => {
-  //   // 팸 전체 데이터 중, *현재 날짜*에 해당하는 데이터
-  //   if (allTabData.length > 0) {
-  //     const everyContent = allTabData[0].content;
-  //     const filtered = everyContent.filter((item) => {
-  //       return item.date === curDate && item.alive === true;
-  //     });
-  //     setCurDateData(filtered);
-  //   }
-  // }, [allTabData, curDate]);
-
+  const [curDateData, setCurDateData] = useState<Info[]>([]);
   // 탭(셀)별
   const [tabData, setTabData] = useState<TabModel[]>(allTabData);
   const [activeTab, setActiveTab] = useState(0);
 
-  // 현재 날짜 데이터 중, *해당 셀*에 해당하는 데이터
   useMemo(() => {
     if (allTabData.length > 0) {
       const everyContent = allTabData[0].content;
@@ -80,6 +68,10 @@ const FamPage: React.FC = () => {
             ? curDateData
             : curDateData.filter((curItem) => curItem.cellId === item.id),
       }));
+
+      // 팸 전체 데이터 중, *현재 날짜*에 해당하는 데이터
+      setCurDateData(curDateData);
+      // 현재 날짜 데이터 중, *해당 셀*에 해당하는 데이터
       setTabData(filteredData);
     }
   }, [allTabData, curDate]);
@@ -141,7 +133,7 @@ const FamPage: React.FC = () => {
           >
             추가하기
           </button>
-          {allTabData.length > 0 && (
+          {curDateData.length > 0 && (
             <>
               <CopyToClipboard text={contentForCopy} onCopy={copyToast}>
                 <button
@@ -166,7 +158,7 @@ const FamPage: React.FC = () => {
 
         {CreateCopyBtn()}
 
-        {allTabData.length > 0 ? (
+        {curDateData.length > 0 ? (
           <TabPage
             tabData={tabData}
             activeTabNum={activeTab}

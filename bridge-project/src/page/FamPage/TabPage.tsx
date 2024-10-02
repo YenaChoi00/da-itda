@@ -38,7 +38,7 @@ const TabPage: React.FC<TabProps> = ({ tabData, activeTabNum, setActiveTabNum, r
       </ul>
 
       <div>
-        {tabData.length > 0 &&
+        {curTabData.length > 0 &&
           curTabData.map((item) => (
             <Card
               key={item.id}

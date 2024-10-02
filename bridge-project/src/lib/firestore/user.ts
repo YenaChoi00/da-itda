@@ -111,6 +111,17 @@ export async function readUser({ id }: { id: string }): Promise<UserDoc | null> 
   }
 }
 
+export async function getUserDocByName(name: string): Promise<DocumentReference> {
+  const userQuery = query(getUserCollection(), where('name', '==', name));
+
+  const userDocs = await getDocs(userQuery);
+  if (userDocs.empty) {
+    throw new Error(`No user found with the name ${name}`);
+  }
+  const userRef = userDocs.docs[0].ref;
+  return userRef;
+}
+
 export async function updateUser({
   id,
   userData,

@@ -74,8 +74,10 @@ const Card: React.FC<OwnProps> = ({ data, isEditable, startEdit, endEdit, refres
   const saveUpdates = async () => {
     try {
       const content = checkEmptyContent();
+
       await updatePrayerRequest({
         ...data,
+        name: newTitle,
         content: content,
       });
     } catch (error) {
@@ -115,7 +117,7 @@ const Card: React.FC<OwnProps> = ({ data, isEditable, startEdit, endEdit, refres
               </option>
             ))}
           </select>
-          <input disabled value={newCategory} className="w-1/3 mb-2 input-box"></input>
+          <input disabled value={newCategory} className="w-1/3 mb-2 input-box" />
         </div>
         <ol className="pl-5 mb-2 space-y-2 list-decimal">
           {newContent.map((item, index) => (
