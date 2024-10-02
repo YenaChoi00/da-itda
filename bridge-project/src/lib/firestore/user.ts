@@ -2,15 +2,18 @@ import {
   collection,
   deleteDoc,
   doc,
+  documentId,
   DocumentReference,
   getDoc,
   getDocs,
+  query,
   setDoc,
   updateDoc,
+  where,
 } from 'firebase/firestore';
 
-import { getDb } from '.';
-import { UserDoc } from './type';
+import { getCellCollection, getDb } from '.';
+import { Cell, CellDoc, UserDoc } from './type';
 
 const USER_COLLECTION_NAME = 'user-dev';
 
@@ -31,6 +34,55 @@ export async function createUser(userData: Omit<UserDoc, 'id'>): Promise<string>
 export async function readAllUser(): Promise<UserDoc[]> {
   const querySnapshot = await getDocs(getUserCollection());
   return querySnapshot.docs.map((doc) => doc.data() as UserDoc);
+}
+
+export async function getAllUser(cellId: string) {
+  const cellRef = doc(getCellCollection(), cellId);
+  const cellSnap = await getDoc(cellRef);
+
+  if (cellSnap.exists()) {
+    const cellData = cellSnap.data() as CellDoc;
+
+    const userIds = cellData.memberArr.map((user) => user.id);
+    // 최대 10개 밖에 못 가져옴.
+    const userQuery = query(getUserCollection(), where(documentId(), 'in', userIds));
+
+    const querySnapshot = await getDocs(userQuery);
+    const userArr = querySnapshot.docs.map((doc) => doc.data() as UserDoc);
+
+    return userArr;
+  } else {
+    throw new Error('Error while fetching every user in fam.');
+  }
+}
+
+export async function getAllUserWithCell(cellId: string) {
+  const cellRef = doc(getCellCollection(), cellId);
+  const cellSnap = await getDoc(cellRef);
+
+  if (cellSnap.exists()) {
+    const cellData = cellSnap.data() as CellDoc;
+
+    const userIds = cellData.memberArr.map((user) => user.id);
+    // 최대 10개 밖에 못 가져옴.
+    const userQuery = query(getUserCollection(), where(documentId(), 'in', userIds));
+
+    const querySnapshot = await getDocs(userQuery);
+    const userArr: Cell = {
+      name: '',
+      memberArr: [],
+    };
+
+    userArr.name = cellData.name;
+
+    querySnapshot.docs.forEach((doc) => {
+      userArr.memberArr.push(doc.data() as UserDoc);
+    });
+
+    return userArr;
+  } else {
+    throw new Error('Error while fetching every user in fam.');
+  }
 }
 
 interface ReadUserArrArgs {
@@ -57,6 +109,17 @@ export async function readUser({ id }: { id: string }): Promise<UserDoc | null> 
   } else {
     return null;
   }
+}
+
+export async function getUserDocByName(name: string): Promise<DocumentReference> {
+  const userQuery = query(getUserCollection(), where('name', '==', name));
+
+  const userDocs = await getDocs(userQuery);
+  if (userDocs.empty) {
+    throw new Error(`No user found with the name ${name}`);
+  }
+  const userRef = userDocs.docs[0].ref;
+  return userRef;
 }
 
 export async function updateUser({

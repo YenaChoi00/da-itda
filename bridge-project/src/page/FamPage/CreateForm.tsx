@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Info } from '../../model/info';
-import { TabModel } from '../../model/tabModel';
 import { addPrayerRequest } from '../../lib/firestore/card';
+import CreateUserModal from './CreateUserModal';
+import { CategoryContext } from '../../main';
+import { toast } from 'react-toastify';
 
 interface CreateFormProps {
   curDate: string;
-  categories: TabModel[];
   changeIsWriting(isWriting: boolean): void;
 }
 
-const CreateForm: React.FC<CreateFormProps> = ({ curDate, categories, changeIsWriting }) => {
-  const emptyData: Info = {
-    id: '0',
+const CreateForm: React.FC<CreateFormProps> = ({ curDate, changeIsWriting }) => {
+  const emptyData: Omit<Info, 'id'> = {
     name: '',
     famId: '0',
     famName: '',
@@ -22,7 +22,8 @@ const CreateForm: React.FC<CreateFormProps> = ({ curDate, categories, changeIsWr
     alive: true,
   };
 
-  const [newInfo, setNewInfo] = useState<Info>(emptyData);
+  const [newInfo, setNewInfo] = useState<Omit<Info, 'id'>>(emptyData);
+  const info = useContext(CategoryContext);
 
   const createTitle = (value: string) => {
     setNewInfo((prevInfo) => ({
@@ -40,7 +41,6 @@ const CreateForm: React.FC<CreateFormProps> = ({ curDate, categories, changeIsWr
       ...prevInfo,
       content: list,
       date: curDate,
-      id: '',
     }));
   };
 
@@ -89,9 +89,15 @@ const CreateForm: React.FC<CreateFormProps> = ({ curDate, categories, changeIsWr
 
     try {
       await addPrayerRequest(newInfo);
+      successToast();
       initForm();
     } catch (error) {
-      console.error('Error adding prayer request:', error);
+      if (error instanceof Error) {
+        // User가 없을 때 - 모달 오픈
+        setIsModalOpen(true);
+      } else {
+        console.error('Error adding prayer request:', error);
+      }
     }
   };
 
@@ -100,8 +106,34 @@ const CreateForm: React.FC<CreateFormProps> = ({ curDate, categories, changeIsWr
     changeIsWriting(false);
   };
 
+  const successToast = () =>
+    toast.success(`정상적으로 추가되었습니다.`, {
+      position: 'bottom-left',
+      autoClose: 1500,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'light',
+    });
+
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="flex flex-col px-2 space-y-2">
+      <CreateUserModal
+        isOpen={isModalOpen}
+        cellId={newInfo.cellId}
+        updateCategoty={createCategory}
+        userName={newInfo.name}
+        closeModal={closeModal}
+        submitContent={vaildForm}
+      />
       <div className="flex space-x-2">
         <input
           type="text"
@@ -116,9 +148,9 @@ const CreateForm: React.FC<CreateFormProps> = ({ curDate, categories, changeIsWr
           value={newInfo.cellId}
           onChange={(e) => createCategory(e.target.value)}
         >
-          {categories.map((item) => (
-            <option value={item.id} key={item.id}>
-              {item.name}
+          {info.cellArr.map((item) => (
+            <option value={item.cid} key={item.cid}>
+              {item.cname}
             </option>
           ))}
         </select>

@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Info } from '../../model/info.ts';
+import React, { useMemo, useState } from 'react';
 import { TabModel } from '../../model/tabModel';
 import Card from '../Card/index.tsx';
 
@@ -7,17 +6,10 @@ interface TabProps {
   tabData: TabModel[];
   activeTabNum: number;
   setActiveTabNum: (num: number) => void;
-  famData: Info[];
   refreshPage: () => Promise<void>;
 }
 
-const TabPage: React.FC<TabProps> = ({
-  tabData,
-  activeTabNum,
-  setActiveTabNum,
-  famData,
-  refreshPage,
-}) => {
+const TabPage: React.FC<TabProps> = ({ tabData, activeTabNum, setActiveTabNum, refreshPage }) => {
   const [editingId, setEditingId] = useState<string>('-1');
 
   const startEdit = (id: string) => {
@@ -28,6 +20,8 @@ const TabPage: React.FC<TabProps> = ({
     setEditingId('-1');
     refreshPage();
   };
+
+  const curTabData = useMemo(() => tabData[activeTabNum].content, [activeTabNum, tabData]);
 
   return (
     <div className="flex flex-col tab">
@@ -44,18 +38,22 @@ const TabPage: React.FC<TabProps> = ({
       </ul>
 
       <div>
-        {tabData.length > 0 &&
-          tabData[activeTabNum].content.map((item) => (
+        {curTabData.length > 0 ? (
+          curTabData.map((item) => (
             <Card
               key={item.id}
               data={item}
-              categories={tabData}
               isEditable={item.id === editingId}
               startEdit={(id: string) => startEdit(id)}
               endEdit={endEdit}
               refreshParentPage={refreshPage}
             />
-          ))}
+          ))
+        ) : (
+          <div className="container place-self-center">
+            {tabData[activeTabNum].name}의 기도제목이 없습니다
+          </div>
+        )}
       </div>
     </div>
   );

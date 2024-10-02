@@ -1,64 +1,87 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { DATE, total } from '../../assets/dummy.ts';
 import { getTabModels } from '../../lib/firestore';
 import { Info } from '../../model/info.ts';
 import { TabModel } from '../../model/tabModel.ts';
-import Header from '../Header';
 import CreateForm from './CreateForm.tsx';
-import './FamPage.css';
+import Header from '../Header/index.tsx';
 import TabPage from './TabPage.tsx';
+import './FamPage.css';
+import 'react-toastify/dist/ReactToastify.css';
+import { CategoryContext } from '../../main.tsx';
+import { CategoryInfo } from '../../lib/firestore/type.ts';
+import { getCategoryInfo } from '../../lib/firestore/fam.ts';
+import moment from 'moment';
 
 const FamPage: React.FC = () => {
-  const [tabs, setTabs] = useState<TabModel[]>([]);
+  const FAMILY_ID = 'Tp9bH9o7J6JRZDy1sz2d';
+  const [info, setInfo] = useState<CategoryInfo>({
+    fname: '',
+    fid: '',
+    cellArr: [{ cname: '', cid: '' }],
+  });
+
+  useEffect(() => {
+    const fetchInfo = async () => {
+      try {
+        const categoryInfo = await getCategoryInfo();
+        setInfo(categoryInfo);
+      } catch (Error) {
+        console.log(Error);
+      }
+    };
+
+    fetchInfo();
+  }, []);
+
+  const DATE: string = moment('2024-07-17').format('YYYY-MM-DD').toString();
   const [curDate, setCurDate] = useState<string>(DATE);
-  const [famData, setFamData] = useState<Info[]>(total);
+  const [allTabData, setAllTabData] = useState<TabModel[]>([]);
 
   const fetchTabs = async () => {
-    const fetchedTabs = await getTabModels();
-    setTabs(fetchedTabs);
-    setFamData(fetchedTabs[0].content);
+    const fetchedTabs = await getTabModels(FAMILY_ID);
+    setAllTabData(fetchedTabs);
   };
 
   useEffect(() => {
     fetchTabs();
   }, []);
 
-  const [isWriting, setIsWriting] = useState<boolean>(false);
-  const [contentForCopy, setContentForCopy] = useState<string>('');
-
   // 날짜별
   const [curDateData, setCurDateData] = useState<Info[]>([]);
-  useEffect(() => {
-    // 팸 전체 데이터 중, *현재 날짜*에 해당하는 데이터
-    const filtered = famData.filter((item) => {
-      return item.date === curDate && item.alive === true;
-    });
-    setCurDateData(filtered);
-  }, [curDate, famData]);
-
   // 탭(셀)별
-  const [tabData, setTabData] = useState<TabModel[]>(tabs);
+  const [tabData, setTabData] = useState<TabModel[]>(allTabData);
   const [activeTab, setActiveTab] = useState(0);
 
-  useEffect(() => {
-    // 현재 날짜 데이터 중, *해당 셀*에 해당하는 데이터
-    setTabData(
-      tabs.map((item) => ({
+  useMemo(() => {
+    if (allTabData.length > 0) {
+      const everyContent = allTabData[0].content;
+      const curDateData = everyContent.filter((item) => {
+        return item.date === curDate && item.alive === true;
+      });
+
+      const filteredData = allTabData.map((item) => ({
         ...item,
         content:
           item.name === '전체'
             ? curDateData
             : curDateData.filter((curItem) => curItem.cellId === item.id),
-      })),
-    );
-  }, [curDateData, tabs]);
+      }));
+
+      // 팸 전체 데이터 중, *현재 날짜*에 해당하는 데이터
+      setCurDateData(curDateData);
+      // 현재 날짜 데이터 중, *해당 셀*에 해당하는 데이터
+      setTabData(filteredData);
+    }
+  }, [allTabData, curDate]);
 
   const changeDate = (newDate: string) => {
     setCurDate(newDate);
   };
+
+  const [isWriting, setIsWriting] = useState<boolean>(false);
+  const [contentForCopy, setContentForCopy] = useState<string>('');
 
   const changeWrtState = (state: boolean) => {
     setIsWriting(state);
@@ -97,7 +120,6 @@ const FamPage: React.FC = () => {
       return (
         <CreateForm
           curDate={curDate}
-          categories={tabData}
           changeIsWriting={(isWriting: boolean) => changeWrtState(isWriting)}
         />
       );
@@ -131,21 +153,22 @@ const FamPage: React.FC = () => {
 
   return (
     <div className="container flex flex-col content-start w-96 h-svh">
-      <Header curDate={curDate} name="예빈팸" changeDate={changeDate}></Header>
+      <CategoryContext.Provider value={info}>
+        <Header curDate={curDate} changeDate={changeDate}></Header>
 
-      {CreateCopyBtn()}
+        {CreateCopyBtn()}
 
-      {curDateData.length > 0 ? (
-        <TabPage
-          tabData={tabData}
-          activeTabNum={activeTab}
-          setActiveTabNum={setActiveTab}
-          famData={famData}
-          refreshPage={fetchTabs}
-        />
-      ) : (
-        <div className="container place-self-center">추가된 기도제목이 없습니다</div>
-      )}
+        {curDateData.length > 0 ? (
+          <TabPage
+            tabData={tabData}
+            activeTabNum={activeTab}
+            setActiveTabNum={setActiveTab}
+            refreshPage={fetchTabs}
+          />
+        ) : (
+          <div className="container place-self-center">추가된 기도제목이 없습니다</div>
+        )}
+      </CategoryContext.Provider>
     </div>
   );
 };

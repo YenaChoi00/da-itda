@@ -10,8 +10,18 @@ export type CellDoc = {
   memberArr: DocumentReference[];
 };
 
+export type Cell = {
+  name: string;
+  memberArr: UserDoc[];
+};
+
 export type UserDoc = {
   name: string;
+  level: number;
+};
+
+export type UserInfo = UserDoc & {
+  cell: string;
 };
 
 export type PrayerRequestDoc = {
@@ -19,4 +29,13 @@ export type PrayerRequestDoc = {
   date: Timestamp;
   user: DocumentReference;
   alive: boolean;
+};
+
+export type CategoryInfo = {
+  fname: string;
+  fid: string;
+  cellArr: {
+    cname: string;
+    cid: string;
+  }[];
 };

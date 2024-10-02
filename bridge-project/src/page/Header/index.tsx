@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { HiChevronLeft } from 'react-icons/hi';
 import { HiChevronRight } from 'react-icons/hi';
 import moment from 'moment';
+import { CategoryContext } from '../../main';
 
 interface HeaderProps {
   curDate: string;
-  name: string; // 셀 이름
   changeDate(newDate: string): void;
 }
 
-const Header: React.FC<HeaderProps> = ({ changeDate, name, curDate }) => {
+const Header: React.FC<HeaderProps> = ({ changeDate, curDate }) => {
+  const info = useContext(CategoryContext);
   const moveDate = (date: number, direction: 'forward' | 'backward') => {
     const momentDate = moment(curDate, 'YYYY-MM-DD');
     let newDate = momentDate;
@@ -23,7 +24,7 @@ const Header: React.FC<HeaderProps> = ({ changeDate, name, curDate }) => {
 
   return (
     <>
-      <h2 className="text-2xl font-semibold">{name}</h2>
+      <h2 className="text-2xl font-semibold">{info.fname}</h2>
       <div className="flex content-center justify-between my-2">
         <button
           className="bg-transparent hover:border-primary"

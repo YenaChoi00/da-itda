@@ -1,29 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { HiOutlineTrash } from 'react-icons/hi';
 import { Info } from '../../model/info';
 import { deletePrayerRequest, updatePrayerRequest } from '../../lib/firestore/card';
-import { TabModel } from '../../model/tabModel';
+import { UserInfo } from '../../lib/firestore/type';
+import { getAllFamUserWCategory } from '../../lib/firestore/fam';
+import { toast } from 'react-toastify';
 
 interface OwnProps {
   data: Info;
-  categories: TabModel[];
   isEditable: boolean;
   startEdit(id: string): void;
   endEdit(): void;
   refreshParentPage: () => Promise<void>;
 }
 
-const Card: React.FC<OwnProps> = ({
-  data,
-  categories,
-  isEditable,
-  startEdit,
-  endEdit,
-  refreshParentPage,
-}) => {
+const Card: React.FC<OwnProps> = ({ data, isEditable, startEdit, endEdit, refreshParentPage }) => {
   const [newContent, setNewContent] = useState(data.content);
   const [newTitle, setNewTitle] = useState(data.name);
-  const [newCategory, setNewCategory] = useState(data.cellId);
+  const [newCategory, setNewCategory] = useState(data.cellName);
 
   const updateEditState = () => {
     startEdit(data.id);
@@ -31,18 +25,36 @@ const Card: React.FC<OwnProps> = ({
 
   const updateTitle = (value: string) => {
     setNewTitle(value);
+    updateCategoryByTitle(value);
+  };
+
+  const updateCategoryByTitle = (title: string) => {
+    const arr = userArr.find((item) => item.name === title);
+    if (arr) {
+      const category = arr.cell;
+      setNewCategory(category);
+    }
   };
 
   const updateContent = (index: number, value: string) => {
     const updatedContent = [...newContent];
-    if (value == '') {
-      // 빈 값이면 아예 삭제
-      updatedContent.splice(index, 1);
-    } else {
-      updatedContent[index] = value;
-    }
+    updatedContent[index] = value;
     setNewContent(updatedContent);
   };
+
+  const [userArr, setUserArr] = useState<UserInfo[]>([]);
+  const getAllUser = async () => {
+    try {
+      const data = await getAllFamUserWCategory();
+      setUserArr(data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    getAllUser();
+  }, []);
 
   const initForm = () => {
     // 초기화
@@ -51,12 +63,23 @@ const Card: React.FC<OwnProps> = ({
     endEdit();
   };
 
+  const checkEmptyContent = () => {
+    const validArr = newContent.filter((e) => e !== '');
+    if (validArr.length === 0) {
+      deleteContent();
+    }
+    return validArr;
+  };
+
   // 수정된 내용 저장
   const saveUpdates = async () => {
     try {
+      const content = checkEmptyContent();
+
       await updatePrayerRequest({
         ...data,
-        content: newContent,
+        name: newTitle,
+        content: content,
       });
     } catch (error) {
       console.error('Error updating data:', error);
@@ -64,17 +87,14 @@ const Card: React.FC<OwnProps> = ({
     endEdit();
   };
 
-  const createCategory = (value: string) => {
-    setNewCategory(value);
-  };
-
   // 삭제
   const deleteContent = async () => {
-    const userConfirmed = window.confirm('정말 삭제 하시겠습니까?');
+    const userConfirmed = window.confirm('삭제 하시겠습니까?');
 
     if (userConfirmed) {
       try {
         await deletePrayerRequest(data.id);
+        successToast();
         refreshParentPage();
       } catch (error) {
         console.error('Error deleting prayer request:', error);
@@ -84,27 +104,34 @@ const Card: React.FC<OwnProps> = ({
     return;
   };
 
+  const successToast = () =>
+    toast.success(`정상적으로 삭제되었습니다.`, {
+      position: 'bottom-left',
+      autoClose: 1500,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'light',
+    });
+
   if (isEditable)
     return (
       <div className="flex flex-col p-2">
         <div className="flex space-x-2">
-          <input
-            type="text"
+          <select
             value={newTitle}
             onChange={(e) => updateTitle(e.target.value)}
             className="w-2/3 mb-2 input-box"
-          />
-          <select
-            className="w-1/3 input-box"
-            value={newCategory}
-            onChange={(e) => createCategory(e.target.value)}
           >
-            {categories.map((item) => (
-              <option value={item.id} key={item.id}>
+            {userArr.map((item) => (
+              <option value={item.name} key={item.name}>
                 {item.name}
               </option>
             ))}
           </select>
+          <input disabled value={newCategory} className="w-1/3 mb-2 input-box" />
         </div>
         <ol className="pl-5 mb-2 space-y-2 list-decimal">
           {newContent.map((item, index) => (
