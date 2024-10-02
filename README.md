@@ -15,8 +15,9 @@
 
 ## Todo
 
-- [ ] Zustand 적용: 현재의 Context 변수를 포함한 사용자 정보 등의 전역변수 관리
-- [ ] Tanstack query 적용: Firestore로부터의 데이터 fecthing, 이후 caching 등
+- [ ] Zustand : 현재의 Context 변수를 포함한 사용자 정보 등의 전역변수 관리
+- [ ] Tanstack query : Firestore로부터의 데이터 fecthing, 이후 caching 등
+- [ ] Next.js : 속도 개선을 위한 SSR 구현과 쉬운 Vercel 배포
 
 
 ## Done ✓
