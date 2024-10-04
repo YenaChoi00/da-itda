@@ -30,7 +30,9 @@
 - [x] 사용자 오류 방지를 위한 기능 추가 : 사용자 이름 선택, 없는 이름일 경우 추가
 - [x] Context 변수에 팸, 셀 단순 이름 정보 저장하여 전역 접근
 - [x] 3차 리팩토링 : useMemo로 셀 별 필터링되는 배열 메모화
-<img src="https://github.com/user-attachments/assets/357d0881-bc7b-48f9-b49c-76961ea4cb6b" width="500">
+<img src="https://github.com/user-attachments/assets/7a70615b-5701-414a-9712-26f14d9ecbe2" width="500">
+
+
 
 | 확인하기 | 추가하기 | 추가하기(없는 사용자일경우) |
 |:--------:|:--------:|:---------------------------:|
@@ -40,7 +42,7 @@
 
 
 ## Developer
-| [김성돈](https://github.com/sehandev) | [최예나](https://github.com/YenaChoi00) |
+| [최예나](https://github.com/YenaChoi00) | [김성돈](https://github.com/sehandev) |
 | :-: | :-: |
-| BE, Mentor | FE, 기획 |
-|<img src="https://avatars.githubusercontent.com/u/43680595?v=4" style="width:150px; height:150px;">|<img src="https://avatars.githubusercontent.com/u/71956482?v=4" style="width:150px; height:150px;">|
+| FE, 기획 | BE, Mentor |
+|<img src="https://avatars.githubusercontent.com/u/71956482?v=4" style="width:150px; height:150px;">|<img src="https://avatars.githubusercontent.com/u/43680595?v=4" style="width:150px; height:150px;">|
