@@ -5,7 +5,7 @@
 
 ## In Progress
 
-작업 중인 Github Repo [[Issue#10](https://github.com/YenaChoi00/da-itda/issues/10#issue-2560873251)]
+작업 중인 Github Issue [[Issue#10](https://github.com/YenaChoi00/da-itda/issues/10#issue-2560873251)]
 - [ ] 페이지 추가 후 React-router를 활용한 라우팅 적용
 
   - [ ] 메인페이지
@@ -42,7 +42,7 @@
 
 
 ## Developer
-| [최예나](https://github.com/YenaChoi00) | [김성돈](https://github.com/sehandev) |
+| [김성돈](https://github.com/sehandev) |  [최예나](https://github.com/YenaChoi00)|
 | :-: | :-: |
-| FE, 기획 | BE, Mentor |
-|<img src="https://avatars.githubusercontent.com/u/71956482?v=4" style="width:150px; height:150px;">|<img src="https://avatars.githubusercontent.com/u/43680595?v=4" style="width:150px; height:150px;">|
+| BE, Mentor | FE, 기획 |
+|<img src="https://avatars.githubusercontent.com/u/43680595?v=4" style="width:150px; height:150px;">|<img src="https://avatars.githubusercontent.com/u/71956482?v=4" style="width:150px; height:150px;">|
