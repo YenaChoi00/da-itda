@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import FamPage from './page/FamPage/FamPage.tsx';
 import { CategoryInfo } from './lib/firestore/type.ts';
+import { ToastContainer } from 'react-toastify';
 
 export const CategoryContext = createContext<CategoryInfo>({
   fname: '',
@@ -19,5 +20,6 @@ const root = ReactDOM.createRoot(container);
 root.render(
   <React.StrictMode>
     <FamPage />
+    <ToastContainer />
   </React.StrictMode>,
 );

@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { ToastContainer, toast } from 'react-toastify';
 import { getTabModels } from '../../lib/firestore';
 import { Info } from '../../model/info.ts';
 import { TabModel } from '../../model/tabModel.ts';
@@ -13,6 +12,7 @@ import { CategoryContext } from '../../main.tsx';
 import { CategoryInfo } from '../../lib/firestore/type.ts';
 import { getCategoryInfo } from '../../lib/firestore/fam.ts';
 import moment from 'moment';
+import { copyToast } from '../toast.tsx';
 
 const FamPage: React.FC = () => {
   const FAMILY_ID = 'Tp9bH9o7J6JRZDy1sz2d';
@@ -103,18 +103,6 @@ const FamPage: React.FC = () => {
     setContentForCopy(copyData);
   };
 
-  const copyToast = () =>
-    toast.info('기도제목이 복사되었습니다.', {
-      position: 'bottom-left',
-      autoClose: 1500,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: 'light',
-    });
-
   function CreateCopyBtn() {
     if (isWriting)
       return (
@@ -135,7 +123,10 @@ const FamPage: React.FC = () => {
           </button>
           {curDateData.length > 0 && (
             <>
-              <CopyToClipboard text={contentForCopy} onCopy={copyToast}>
+              <CopyToClipboard
+                text={contentForCopy}
+                onCopy={() => copyToast('기도제목이 복사되었습니다.')}
+              >
                 <button
                   type="button"
                   className="self-center w-1/3 mx-1 font-semibold outline-hover-btn"
@@ -144,7 +135,6 @@ const FamPage: React.FC = () => {
                   복사하기
                 </button>
               </CopyToClipboard>
-              <ToastContainer />
             </>
           )}
         </div>
