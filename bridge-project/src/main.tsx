@@ -5,6 +5,8 @@ import FamPage from './page/FamPage/FamPage.tsx';
 import { CategoryInfo } from './lib/firestore/type.ts';
 import { ToastContainer } from 'react-toastify';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import CellPage from './page/CellPage/index.tsx';
+import Root from './root.tsx';
 
 export const CategoryContext = createContext<CategoryInfo>({
   fname: '',
@@ -21,7 +23,15 @@ const root = ReactDOM.createRoot(container);
 const router = createBrowserRouter([
   {
     path: '/',
+    element: <Root />,
+  },
+  {
+    path: '/fam',
     element: <FamPage />,
+  },
+  {
+    path: '/admin',
+    element: <CellPage />,
   },
 ]);
 
