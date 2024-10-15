@@ -4,6 +4,7 @@ import './index.css';
 import FamPage from './page/FamPage/FamPage.tsx';
 import { CategoryInfo } from './lib/firestore/type.ts';
 import { ToastContainer } from 'react-toastify';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 export const CategoryContext = createContext<CategoryInfo>({
   fname: '',
@@ -17,9 +18,16 @@ if (!container) throw new Error('Root container not found');
 // 중복 호출 방지
 const root = ReactDOM.createRoot(container);
 
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <FamPage />,
+  },
+]);
+
 root.render(
   <React.StrictMode>
-    <FamPage />
+    <RouterProvider router={router} />
     <ToastContainer />
   </React.StrictMode>,
 );
