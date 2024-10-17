@@ -5,7 +5,7 @@ import { Info } from '../../model/info.ts';
 import { FamPageTab } from '../../model/tab.ts';
 import CreateForm from './CreateForm.tsx';
 import Header from '../Header/index.tsx';
-import TabPage from './TabPage.tsx';
+import FamTabPage from './FamTabPage.tsx';
 import './FamPage.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { CategoryContext } from '../../main.tsx';
@@ -149,7 +149,7 @@ const FamPage: React.FC = () => {
         {CreateCopyBtn()}
 
         {curDateData.length > 0 ? (
-          <TabPage
+          <FamTabPage
             tabData={tabData}
             activeTabNum={activeTab}
             setActiveTabNum={setActiveTab}
