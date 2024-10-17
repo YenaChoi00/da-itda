@@ -1,6 +1,6 @@
 import { Info } from './info';
 
-export type TabModel = {
+export type FamPageTab = {
   name: string;
   id: string;
   content: Info[];

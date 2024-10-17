@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { getTabModels } from '../../lib/firestore';
+import { getFamPageTab } from '../../lib/firestore';
 import { Info } from '../../model/info.ts';
-import { TabModel } from '../../model/tabModel.ts';
+import { FamPageTab } from '../../model/tab.ts';
 import CreateForm from './CreateForm.tsx';
 import Header from '../Header/index.tsx';
 import TabPage from './TabPage.tsx';
@@ -37,10 +37,10 @@ const FamPage: React.FC = () => {
 
   const DATE: string = moment('2024-07-17').format('YYYY-MM-DD').toString();
   const [curDate, setCurDate] = useState<string>(DATE);
-  const [allTabData, setAllTabData] = useState<TabModel[]>([]);
+  const [allTabData, setAllTabData] = useState<FamPageTab[]>([]);
 
   const fetchTabs = async () => {
-    const fetchedTabs = await getTabModels(FAMILY_ID);
+    const fetchedTabs = await getFamPageTab(FAMILY_ID);
     setAllTabData(fetchedTabs);
   };
 
@@ -51,7 +51,7 @@ const FamPage: React.FC = () => {
   // 날짜별
   const [curDateData, setCurDateData] = useState<Info[]>([]);
   // 탭(셀)별
-  const [tabData, setTabData] = useState<TabModel[]>(allTabData);
+  const [tabData, setTabData] = useState<FamPageTab[]>(allTabData);
   const [activeTab, setActiveTab] = useState(0);
 
   useMemo(() => {

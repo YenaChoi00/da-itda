@@ -2,12 +2,12 @@ import { doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import moment from 'moment';
 import { getFamilyCollection, getPrayerRequestCollection, readUserArr } from '.';
 import { Info } from '../../model/info';
-import { TabModel } from '../../model/tabModel';
+import { FamPageTab } from '../../model/tab';
 import { CellDoc, FamilyDoc, PrayerRequestDoc } from './type';
 
-export async function getTabModels(familyId: string): Promise<TabModel[]> {
+export async function getFamPageTab(familyId: string): Promise<FamPageTab[]> {
   try {
-    const cellArray: TabModel[] = [];
+    const cellArray: FamPageTab[] = [];
 
     // Get family with FAMILY_ID
     const familyRef = doc(getFamilyCollection(), familyId);
