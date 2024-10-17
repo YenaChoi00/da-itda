@@ -13,9 +13,12 @@ import { CategoryInfo } from '../../lib/firestore/type.ts';
 import { getCategoryInfo } from '../../lib/firestore/fam.ts';
 import moment from 'moment';
 import { copyToast } from '../toast.tsx';
+import FadeLoader from 'react-spinners/FadeLoader';
 
 const FamPage: React.FC = () => {
   const FAMILY_ID = 'Tp9bH9o7J6JRZDy1sz2d';
+  const [isLoading, setIsLoading] = useState(true);
+
   const [info, setInfo] = useState<CategoryInfo>({
     fname: '',
     fid: '',
@@ -40,8 +43,16 @@ const FamPage: React.FC = () => {
   const [allTabData, setAllTabData] = useState<FamPageTab[]>([]);
 
   const fetchTabs = async () => {
-    const fetchedTabs = await getFamPageTab(FAMILY_ID);
-    setAllTabData(fetchedTabs);
+    try {
+      const fetchedTabs = await getFamPageTab(FAMILY_ID);
+      setAllTabData(fetchedTabs);
+
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 2000);
+    } catch (error) {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -145,18 +156,27 @@ const FamPage: React.FC = () => {
     <div className="container flex flex-col content-start w-96 h-svh">
       <CategoryContext.Provider value={info}>
         <Header curDate={curDate} changeDate={changeDate}></Header>
-
-        {CreateCopyBtn()}
-
-        {curDateData.length > 0 ? (
-          <FamTabPage
-            tabData={tabData}
-            activeTabNum={activeTab}
-            setActiveTabNum={setActiveTab}
-            refreshPage={fetchTabs}
-          />
+        {isLoading ? (
+          <>
+            <div className="container flex flex-col items-center justify-center h-screen space-y-5">
+              <FadeLoader color="#5db075" margin={3} />
+              <span>데이터를 불러오는 중입니다.</span>
+            </div>
+          </>
         ) : (
-          <div className="container place-self-center">추가된 기도제목이 없습니다</div>
+          <>
+            {CreateCopyBtn()}
+            {curDateData.length > 0 ? (
+              <FamTabPage
+                tabData={tabData}
+                activeTabNum={activeTab}
+                setActiveTabNum={setActiveTab}
+                refreshPage={fetchTabs}
+              />
+            ) : (
+              <div className="container place-self-center">추가된 기도제목이 없습니다</div>
+            )}
+          </>
         )}
       </CategoryContext.Provider>
     </div>
