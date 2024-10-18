@@ -9,12 +9,7 @@ interface TabProps {
   refreshPage: () => Promise<void>;
 }
 
-const FamTabPage: React.FC<TabProps> = ({
-  tabData,
-  activeTabNum,
-  setActiveTabNum,
-  refreshPage,
-}) => {
+const TabPage: React.FC<TabProps> = ({ tabData, activeTabNum, setActiveTabNum, refreshPage }) => {
   const [editingId, setEditingId] = useState<string>('-1');
 
   const startEdit = (id: string) => {
@@ -64,4 +59,4 @@ const FamTabPage: React.FC<TabProps> = ({
   );
 };
 
-export default FamTabPage;
+export default TabPage;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { CellPageTab } from '../../model/tab';
 import { getCellPageTab } from '../../lib/firestore/tab';
-import FamTabPage from '../FamPage/FamTabPage';
+import TabPage from '../FamPage/TabPage';
 
 const CellPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -43,7 +43,7 @@ const CellPage: React.FC = () => {
 
       <div>
         {tabData.length > 0 ? (
-          <FamTabPage
+          <TabPage
             tabData={tabData}
             activeTabNum={activeTab}
             setActiveTabNum={setActiveTab}

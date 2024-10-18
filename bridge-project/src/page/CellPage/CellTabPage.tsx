@@ -9,7 +9,7 @@ interface TabProps {
   refreshPage: () => Promise<void>;
 }
 
-const CellFamTabPage: React.FC<TabProps> = ({
+const CellTabPage: React.FC<TabProps> = ({
   tabData,
   activeTabNum,
   setActiveTabNum,
@@ -64,4 +64,4 @@ const CellFamTabPage: React.FC<TabProps> = ({
   );
 };
 
-export default CellFamTabPage;
+export default CellTabPage;
