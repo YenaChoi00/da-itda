@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { getFamPageTab } from '../../lib/firestore';
+import { getFamPageTab } from '../../lib/firestore/index.ts';
 import { Info } from '../../model/info.ts';
 import { FamPageTab } from '../../model/tab.ts';
 import CreateForm from './CreateForm.tsx';

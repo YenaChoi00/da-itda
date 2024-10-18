@@ -1,7 +1,7 @@
 import React, { createContext } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import FamPage from './page/FamPage/FamPage.tsx';
+import FamPage from './page/FamPage/index.tsx';
 import { CategoryInfo } from './lib/firestore/type.ts';
 import { ToastContainer } from 'react-toastify';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
