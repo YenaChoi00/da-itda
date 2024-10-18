@@ -103,12 +103,9 @@ export async function getCellPageTab(familyId: string): Promise<CellPageTab[]> {
       const cellId = cellDoc.id;
       const cellName = cellData.name;
 
-      // Create userDict for this cell
       const userDict = await readUserArr({ userRefArr: cellData.memberArr });
-      console.log('userDict: ', userDict);
-      // userDict의 모든 값을 순회
+
       const infos = Object.entries(userDict).map(([docId, user]) => {
-        console.log('user', user);
         return {
           id: docId,
           name: user.name,
@@ -118,8 +115,6 @@ export async function getCellPageTab(familyId: string): Promise<CellPageTab[]> {
           cellName: cellName,
         };
       });
-      console.log('infos: ', infos);
-      // Push Info[] to tabModels with cell id and cell name
       cellArray.push({
         id: cellId,
         name: cellName,
@@ -127,7 +122,6 @@ export async function getCellPageTab(familyId: string): Promise<CellPageTab[]> {
       });
     }
 
-    // Create an "All" tab that includes all prayer requests
     const allInfos = cellArray.flatMap((tab) => tab.content);
     const tabModels = [
       {
