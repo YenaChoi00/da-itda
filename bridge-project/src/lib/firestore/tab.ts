@@ -2,7 +2,7 @@ import { doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import moment from 'moment';
 import { getFamilyCollection, getPrayerRequestCollection, readUserArr } from '.';
 import { Info } from '../../model/info';
-import { FamPageTab } from '../../model/tab';
+import { CellPageTab, FamPageTab } from '../../model/tab';
 import { CellDoc, FamilyDoc, PrayerRequestDoc } from './type';
 
 export async function getFamPageTab(familyId: string): Promise<FamPageTab[]> {
@@ -55,6 +55,70 @@ export async function getFamPageTab(familyId: string): Promise<FamPageTab[]> {
         };
       });
 
+      // Push Info[] to tabModels with cell id and cell name
+      cellArray.push({
+        id: cellId,
+        name: cellName,
+        content: infos,
+      });
+    }
+
+    // Create an "All" tab that includes all prayer requests
+    const allInfos = cellArray.flatMap((tab) => tab.content);
+    const tabModels = [
+      {
+        id: 'all',
+        name: '전체',
+        content: allInfos,
+      },
+      ...cellArray,
+    ];
+
+    return tabModels;
+  } catch (error) {
+    console.error('Error fetching tab models:', error);
+    throw error;
+  }
+}
+
+export async function getCellPageTab(familyId: string): Promise<CellPageTab[]> {
+  try {
+    const cellArray: CellPageTab[] = [];
+
+    // Get family with FAMILY_ID
+    const familyRef = doc(getFamilyCollection(), familyId);
+    const familyDoc = await getDoc(familyRef);
+
+    if (!familyDoc.exists()) {
+      throw new Error('Family not found');
+    }
+
+    const familyData = familyDoc.data() as FamilyDoc;
+    const cellRefs = familyData.cellArr;
+
+    // Iterate through cells
+    for (const cellRef of cellRefs) {
+      const cellDoc = await getDoc(cellRef);
+      const cellData = cellDoc.data() as CellDoc;
+      const cellId = cellDoc.id;
+      const cellName = cellData.name;
+
+      // Create userDict for this cell
+      const userDict = await readUserArr({ userRefArr: cellData.memberArr });
+      console.log('userDict: ', userDict);
+      // userDict의 모든 값을 순회
+      const infos = Object.entries(userDict).map(([docId, user]) => {
+        console.log('user', user);
+        return {
+          id: docId,
+          name: user.name,
+          cellId: cellId,
+          famId: familyId,
+          famName: familyData.name,
+          cellName: cellName,
+        };
+      });
+      console.log('infos: ', infos);
       // Push Info[] to tabModels with cell id and cell name
       cellArray.push({
         id: cellId,

@@ -6,16 +6,22 @@ import { UserInfo } from '../../lib/firestore/type';
 import { getAllFamUserWCategory } from '../../lib/firestore/fam';
 import { successToast } from '../toast';
 
-interface OwnProps {
-  data: Info;
+interface InfoWithoutContent extends Omit<Info, 'content' | 'date' | 'alive'> {
+  content?: string[];
+  date?: string;
+  alive?: boolean;
+}
+
+interface CardProps {
+  data: InfoWithoutContent;
   isEditable: boolean;
   startEdit(id: string): void;
   endEdit(): void;
   refreshParentPage: () => Promise<void>;
 }
 
-const Card: React.FC<OwnProps> = ({ data, isEditable, startEdit, endEdit, refreshParentPage }) => {
-  const [newContent, setNewContent] = useState(data.content);
+const Card: React.FC<CardProps> = ({ data, isEditable, startEdit, endEdit, refreshParentPage }) => {
+  const [newContent, setNewContent] = useState(data.content || []);
   const [newTitle, setNewTitle] = useState(data.name);
   const [newCategory, setNewCategory] = useState(data.cellName);
 
@@ -58,7 +64,9 @@ const Card: React.FC<OwnProps> = ({ data, isEditable, startEdit, endEdit, refres
 
   const initForm = () => {
     // 초기화
-    setNewContent(data.content);
+    if (data.content) {
+      setNewContent(data.content);
+    }
     setNewTitle(data.name);
     endEdit();
   };
@@ -74,13 +82,14 @@ const Card: React.FC<OwnProps> = ({ data, isEditable, startEdit, endEdit, refres
   // 수정된 내용 저장
   const saveUpdates = async () => {
     try {
-      const content = checkEmptyContent();
-
-      await updatePrayerRequest({
-        ...data,
-        name: newTitle,
-        content: content,
-      });
+      if (data.content && data.date && data.alive) {
+        const content = checkEmptyContent();
+        await updatePrayerRequest({
+          ...data,
+          name: newTitle,
+          content: content,
+        });
+      }
     } catch (error) {
       console.error('Error updating data:', error);
     }
@@ -152,13 +161,17 @@ const Card: React.FC<OwnProps> = ({ data, isEditable, startEdit, endEdit, refres
               <HiOutlineTrash />
             </button>
           </div>
-          <ol className="pl-5 list-decimal">
-            {data.content.map((item, index) => (
-              <li key={index} className="mb-2 text-left whitespace-pre-line">
-                {item}
-              </li>
-            ))}
-          </ol>
+          {data.content && data.content.length > 0 ? (
+            <ol className="pl-5 list-decimal">
+              {data.content.map((item, index) => (
+                <li key={index} className="mb-2 text-left whitespace-pre-line">
+                  {item}
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
     );

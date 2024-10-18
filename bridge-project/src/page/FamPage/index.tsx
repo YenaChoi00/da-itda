@@ -5,7 +5,6 @@ import { Info } from '../../model/info.ts';
 import { FamPageTab } from '../../model/tab.ts';
 import CreateForm from './CreateForm.tsx';
 import Header from '../Header/index.tsx';
-import FamTabPage from './FamTabPage.tsx';
 import './FamPage.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { CategoryContext } from '../../main.tsx';
@@ -14,6 +13,7 @@ import { getCategoryInfo } from '../../lib/firestore/fam.ts';
 import moment from 'moment';
 import { copyToast } from '../toast.tsx';
 import FadeLoader from 'react-spinners/FadeLoader';
+import FamTabPage from './FamTabPage.tsx';
 
 const FamPage: React.FC = () => {
   const FAMILY_ID = 'Tp9bH9o7J6JRZDy1sz2d';
