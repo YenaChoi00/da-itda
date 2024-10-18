@@ -7,9 +7,6 @@ import CreateForm from './CreateForm.tsx';
 import Header from '../Header/index.tsx';
 import './FamPage.css';
 import 'react-toastify/dist/ReactToastify.css';
-import { CategoryContext } from '../../main.tsx';
-import { CategoryInfo } from '../../lib/firestore/type.ts';
-import { getCategoryInfo } from '../../lib/firestore/fam.ts';
 import moment from 'moment';
 import { copyToast } from '../toast.tsx';
 import FadeLoader from 'react-spinners/FadeLoader';
@@ -18,25 +15,6 @@ import TabPage from './TabPage.tsx';
 const FamPage: React.FC = () => {
   const FAMILY_ID = 'Tp9bH9o7J6JRZDy1sz2d';
   const [isLoading, setIsLoading] = useState(true);
-
-  const [info, setInfo] = useState<CategoryInfo>({
-    fname: '',
-    fid: '',
-    cellArr: [{ cname: '', cid: '' }],
-  });
-
-  useEffect(() => {
-    const fetchInfo = async () => {
-      try {
-        const categoryInfo = await getCategoryInfo();
-        setInfo(categoryInfo);
-      } catch (Error) {
-        console.log(Error);
-      }
-    };
-
-    fetchInfo();
-  }, []);
 
   const DATE: string = moment('2024-07-17').format('YYYY-MM-DD').toString();
   const [curDate, setCurDate] = useState<string>(DATE);
@@ -154,31 +132,29 @@ const FamPage: React.FC = () => {
 
   return (
     <div className="container flex flex-col content-start w-96 h-svh">
-      <CategoryContext.Provider value={info}>
-        <Header curDate={curDate} changeDate={changeDate}></Header>
-        {isLoading ? (
-          <>
-            <div className="container flex flex-col items-center justify-center h-screen space-y-5">
-              <FadeLoader color="#5db075" margin={3} />
-              <span>데이터를 불러오는 중입니다.</span>
-            </div>
-          </>
-        ) : (
-          <>
-            {CreateCopyBtn()}
-            {curDateData.length > 0 ? (
-              <TabPage
-                tabData={tabData}
-                activeTabNum={activeTab}
-                setActiveTabNum={setActiveTab}
-                refreshPage={fetchTabs}
-              />
-            ) : (
-              <div className="container place-self-center">추가된 기도제목이 없습니다</div>
-            )}
-          </>
-        )}
-      </CategoryContext.Provider>
+      <Header curDate={curDate} changeDate={changeDate}></Header>
+      {isLoading ? (
+        <>
+          <div className="container flex flex-col items-center justify-center h-screen space-y-5">
+            <FadeLoader color="#5db075" margin={3} />
+            <span>데이터를 불러오는 중입니다.</span>
+          </div>
+        </>
+      ) : (
+        <>
+          {CreateCopyBtn()}
+          {curDateData.length > 0 ? (
+            <TabPage
+              tabData={tabData}
+              activeTabNum={activeTab}
+              setActiveTabNum={setActiveTab}
+              refreshPage={fetchTabs}
+            />
+          ) : (
+            <div className="container place-self-center">추가된 기도제목이 없습니다</div>
+          )}
+        </>
+      )}
     </div>
   );
 };
