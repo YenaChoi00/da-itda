@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
 import { createUser } from '../../lib/firestore/user';
 import { addUsertoCell } from '../../lib/firestore/cell';
 import Modal from 'react-modal';
 import { CategoryContext } from '../../main';
+import { successToast } from '../toast';
 
 interface ModalProps {
   isOpen: boolean;
@@ -23,12 +23,13 @@ const CreateUserModal: React.FC<ModalProps> = ({
   submitContent,
 }) => {
   const info = useContext(CategoryContext);
+
   const createMember = async () => {
     try {
       const userId = await createUser({ name: userName, level: 10 });
       await addUsertoCell(userId, cellId);
       submitContent();
-      successToast();
+      successToast(`${userName} 이/가 셀에 추가되었습니다. 이어서 저장을 눌러주세요.`);
       closeModal();
     } catch (error) {
       console.log('Error while create new member: ', error);
@@ -46,21 +47,8 @@ const CreateUserModal: React.FC<ModalProps> = ({
     },
   };
 
-  const successToast = () =>
-    toast.success(`${userName} 이/가 셀에 추가되었습니다. 이어서 저장을 눌러주세요.`, {
-      position: 'bottom-left',
-      autoClose: 1500,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: 'light',
-    });
-
   return (
     <div>
-      <ToastContainer />
       <Modal
         isOpen={isOpen}
         onRequestClose={closeModal}

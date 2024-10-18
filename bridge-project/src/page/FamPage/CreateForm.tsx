@@ -3,7 +3,7 @@ import { Info } from '../../model/info';
 import { addPrayerRequest } from '../../lib/firestore/card';
 import CreateUserModal from './CreateUserModal';
 import { CategoryContext } from '../../main';
-import { toast } from 'react-toastify';
+import { successToast } from '../toast';
 
 interface CreateFormProps {
   curDate: string;
@@ -89,7 +89,7 @@ const CreateForm: React.FC<CreateFormProps> = ({ curDate, changeIsWriting }) => 
 
     try {
       await addPrayerRequest(newInfo);
-      successToast();
+      successToast('정상적으로 추가되었습니다.');
       initForm();
     } catch (error) {
       if (error instanceof Error) {
@@ -105,18 +105,6 @@ const CreateForm: React.FC<CreateFormProps> = ({ curDate, changeIsWriting }) => 
     setNewInfo(emptyData);
     changeIsWriting(false);
   };
-
-  const successToast = () =>
-    toast.success(`정상적으로 추가되었습니다.`, {
-      position: 'bottom-left',
-      autoClose: 1500,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: 'light',
-    });
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 

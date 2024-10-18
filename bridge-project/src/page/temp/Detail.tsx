@@ -1,6 +1,6 @@
 // import React from 'react';
 // import Tab from '../FamPage/Tab.tsx';
-// import { TabModel } from '../../model/tabModel.ts';
+// import { FamPageTab } from '../../model/tabModel.ts';
 // import { data, data2, total } from '../../assets/dummy.ts';
 // import { Info } from '../../model/info.ts';
 // import CardReadOnly from '../Card/CardReadOnly.tsx';
@@ -17,7 +17,7 @@
 //     return itemArr.map((item) => <CardReadOnly data={item} />);
 //   };
 
-//   const tabData: TabModel[] = [
+//   const tabData: FamPageTab[] = [
 //     { title: '전체', content: TabContent(total) },
 //     { title: '하형셀', content: TabContent(data2) },
 //     { title: '예나셀', content: TabContent(data) },
