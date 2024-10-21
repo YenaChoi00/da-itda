@@ -45,7 +45,6 @@ const App = () => {
     cellArr: [{ cname: '', cid: '' }],
   });
 
-  // useEffect로 Firestore에서 데이터 가져오기
   useEffect(() => {
     const fetchInfo = async () => {
       try {
