@@ -6,15 +6,27 @@ import { UserInfo } from '../../lib/firestore/type';
 import { getAllFamUserWCategory } from '../../lib/firestore/fam';
 import { successToast } from '../toast';
 
-interface CardProps {
-  data: Info;
+interface InfoWithoutContent extends Omit<Info, 'content' | 'date' | 'alive'> {
+  content?: string[];
+  date?: string;
+  alive?: boolean;
+}
+
+interface UserCardProps {
+  data: InfoWithoutContent;
   isEditable: boolean;
   startEdit(id: string): void;
   endEdit(): void;
   refreshParentPage: () => Promise<void>;
 }
 
-const Card: React.FC<CardProps> = ({ data, isEditable, startEdit, endEdit, refreshParentPage }) => {
+const UserCard: React.FC<UserCardProps> = ({
+  data,
+  isEditable,
+  startEdit,
+  endEdit,
+  refreshParentPage,
+}) => {
   const [newContent, setNewContent] = useState(data.content || []);
   const [newTitle, setNewTitle] = useState(data.name);
   const [newCategory, setNewCategory] = useState(data.cellName);
@@ -78,11 +90,7 @@ const Card: React.FC<CardProps> = ({ data, isEditable, startEdit, endEdit, refre
     try {
       if (data.content && data.date && data.alive) {
         const content = checkEmptyContent();
-        await updatePrayerRequest({
-          ...data,
-          name: newTitle,
-          content: content,
-        });
+        // await
       }
     } catch (error) {
       console.error('Error updating data:', error);
@@ -100,7 +108,7 @@ const Card: React.FC<CardProps> = ({ data, isEditable, startEdit, endEdit, refre
         successToast('정상적으로 삭제되었습니다.');
         refreshParentPage();
       } catch (error) {
-        console.error('Error deleting prayer request:', error);
+        console.error('Error deleting User Info:', error);
       }
     }
 
@@ -111,17 +119,11 @@ const Card: React.FC<CardProps> = ({ data, isEditable, startEdit, endEdit, refre
     return (
       <div className="flex flex-col p-2">
         <div className="flex space-x-2">
-          <select
+          <input
             value={newTitle}
             onChange={(e) => updateTitle(e.target.value)}
             className="w-2/3 mb-2 input-box"
-          >
-            {userArr.map((item) => (
-              <option value={item.name} key={item.name}>
-                {item.name}
-              </option>
-            ))}
-          </select>
+          />
           <input disabled value={newCategory} className="w-1/3 mb-2 input-box" />
         </div>
         <ol className="pl-5 mb-2 space-y-2 list-decimal">
@@ -155,16 +157,10 @@ const Card: React.FC<CardProps> = ({ data, isEditable, startEdit, endEdit, refre
               <HiOutlineTrash />
             </button>
           </div>
-          <ol className="pl-5 list-decimal">
-            {data.content.map((item, index) => (
-              <li key={index} className="mb-2 text-left whitespace-pre-line">
-                {item}
-              </li>
-            ))}
-          </ol>
+          <div className="self-start">생년월일</div>
         </div>
       </div>
     );
 };
 
-export default Card;
+export default UserCard;

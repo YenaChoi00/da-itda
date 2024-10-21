@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { CellPageTab } from '../../model/tab';
 import { getCellPageTab } from '../../lib/firestore/tab';
-import TabPage from '../FamPage/TabPage';
 import FadeLoader from 'react-spinners/FadeLoader';
 import { addUser } from '../../lib/firestore/user';
 import { CategoryContext } from '../../main';
 import { errorToast, successToast } from '../toast';
+import CellTabPage from './CellTabPage';
 
 const CellPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -152,7 +152,7 @@ const CellPage: React.FC = () => {
       ) : (
         <div>
           {tabData.length > 0 ? (
-            <TabPage
+            <CellTabPage
               tabData={tabData}
               activeTabNum={activeTab}
               setActiveTabNum={setActiveTab}

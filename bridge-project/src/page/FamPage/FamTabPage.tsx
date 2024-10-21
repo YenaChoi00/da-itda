@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from 'react';
-import { CellPageTab, FamPageTab } from '../../model/tab.ts';
+import { FamPageTab } from '../../model/tab.ts';
 import Card from '../Card/index.tsx';
 
 interface TabProps {
-  tabData: FamPageTab[] | CellPageTab[];
+  tabData: FamPageTab[];
   activeTabNum: number;
   setActiveTabNum: (num: number) => void;
   refreshPage: () => Promise<void>;
@@ -26,7 +26,7 @@ const TabPage: React.FC<TabProps> = ({ tabData, activeTabNum, setActiveTabNum, r
   return (
     <div className="flex flex-col tab">
       <ul className="grid grid-flow-col cursor-pointer justify-stretch">
-        {tabData.map((tab: FamPageTab | CellPageTab, index: number) => (
+        {tabData.map((tab: FamPageTab, index: number) => (
           <li
             key={index}
             onClick={() => setActiveTabNum(index)}
