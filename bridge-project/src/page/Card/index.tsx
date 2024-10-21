@@ -15,7 +15,7 @@ interface CardProps {
 }
 
 const Card: React.FC<CardProps> = ({ data, isEditable, startEdit, endEdit, refreshParentPage }) => {
-  const [newContent, setNewContent] = useState(data.content || []);
+  const [newContent, setNewContent] = useState(data.content);
   const [newTitle, setNewTitle] = useState(data.name);
   const [newCategory, setNewCategory] = useState(data.cellName);
 
@@ -58,9 +58,7 @@ const Card: React.FC<CardProps> = ({ data, isEditable, startEdit, endEdit, refre
 
   const initForm = () => {
     // 초기화
-    if (data.content) {
-      setNewContent(data.content);
-    }
+    setNewContent(data.content);
     setNewTitle(data.name);
     endEdit();
   };
@@ -76,14 +74,12 @@ const Card: React.FC<CardProps> = ({ data, isEditable, startEdit, endEdit, refre
   // 수정된 내용 저장
   const saveUpdates = async () => {
     try {
-      if (data.content && data.date && data.alive) {
-        const content = checkEmptyContent();
-        await updatePrayerRequest({
-          ...data,
-          name: newTitle,
-          content: content,
-        });
-      }
+      const content = checkEmptyContent();
+      await updatePrayerRequest({
+        ...data,
+        name: newTitle,
+        content: content,
+      });
     } catch (error) {
       console.error('Error updating data:', error);
     }
