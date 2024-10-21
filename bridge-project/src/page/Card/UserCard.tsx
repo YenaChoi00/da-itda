@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { HiOutlineTrash } from 'react-icons/hi';
 import { Info } from '../../model/info';
 import { successToast } from '../toast';
@@ -6,6 +6,8 @@ import DatePicker from 'react-datepicker';
 import { ko } from 'date-fns/locale/ko';
 import './Datepicker.css';
 import 'react-datepicker/dist/react-datepicker.css';
+import { updateUser } from '../../lib/firestore/user';
+import { UserDoc } from '../../lib/firestore/type';
 
 interface InfoWithoutContent extends Omit<Info, 'content' | 'date' | 'alive'> {
   content?: string[];
@@ -48,9 +50,13 @@ const UserCard: React.FC<UserCardProps> = ({
   // 수정된 내용 저장
   const saveUpdates = async () => {
     try {
-      // await updateUser(data.id, {
-      //   level: data.
-      // });
+      const user = {
+        name: title,
+        // level: 10,
+        // birthday: birthday
+      };
+      await updateUser({ id: data.id, userData: user });
+      successToast('성공적으로 수정되었습니다.');
     } catch (error) {
       console.error('Error updating data:', error);
     }
