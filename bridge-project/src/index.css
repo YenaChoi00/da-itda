@@ -57,6 +57,12 @@ button:hover {
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 } */
+
+button:disabled,
+button:disabled:hover {
+  @apply bg-primary/20 border-primary/20 text-primary/50;
+}
+
 textarea {
   resize: none;
 }

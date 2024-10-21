@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { HiOutlineTrash } from 'react-icons/hi';
 import { Info } from '../../model/info';
-import { deletePrayerRequest, updatePrayerRequest } from '../../lib/firestore/card';
 import { UserInfo } from '../../lib/firestore/type';
 import { getAllFamUserWCategory } from '../../lib/firestore/fam';
 import { successToast } from '../toast';
+import DatePicker from 'react-datepicker';
+import { ko } from 'date-fns/locale/ko';
+import './Datepicker.css';
+import 'react-datepicker/dist/react-datepicker.css';
 
 interface InfoWithoutContent extends Omit<Info, 'content' | 'date' | 'alive'> {
   content?: string[];
@@ -30,6 +33,7 @@ const UserCard: React.FC<UserCardProps> = ({
   const [newContent, setNewContent] = useState(data.content || []);
   const [newTitle, setNewTitle] = useState(data.name);
   const [newCategory, setNewCategory] = useState(data.cellName);
+  const [birthday, setBirthday] = useState<Date | null>(new Date('2000-12-04'));
 
   const updateEditState = () => {
     startEdit(data.id);
@@ -104,7 +108,7 @@ const UserCard: React.FC<UserCardProps> = ({
 
     if (userConfirmed) {
       try {
-        await deletePrayerRequest(data.id);
+        // await deletePrayerRequest(data.id);
         successToast('정상적으로 삭제되었습니다.');
         refreshParentPage();
       } catch (error) {
@@ -137,6 +141,16 @@ const UserCard: React.FC<UserCardProps> = ({
             </li>
           ))}
         </ol>
+        <DatePicker
+          locale={ko}
+          dateFormat="yyyy-MM-dd"
+          shouldCloseOnSelect
+          minDate={new Date('1910-01-01')}
+          maxDate={new Date()}
+          selected={birthday}
+          onChange={(date) => setBirthday(date)}
+          className=""
+        />
         <div className="flex flex-row justify-end space-x-2">
           <button onClick={initForm} type="button" className="self-end outline-hover-btn">
             취소

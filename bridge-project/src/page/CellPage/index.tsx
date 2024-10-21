@@ -93,12 +93,6 @@ const CellPage: React.FC = () => {
   return (
     <div className="container flex flex-col w-96 h-svh">
       <h2 className="text-2xl font-semibold">예빈팸</h2>
-      <div className="flex flex-row justify-between">
-        <div className="flex flex-row space-x-3">
-          <h2 className="text-xl font-semibold">하형셀</h2>
-          <button>수정</button>
-        </div>
-      </div>
 
       {isAdding ? (
         <div className="flex flex-col p-2 space-y-2 ">
@@ -136,7 +130,8 @@ const CellPage: React.FC = () => {
         <button
           onClick={() => setIsAdding(true)}
           type="button"
-          className="self-end outline-hover-btn"
+          className="self-end m-1 outline-hover-btn"
+          disabled={isLoading}
         >
           셀원 추가
         </button>
