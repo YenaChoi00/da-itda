@@ -99,6 +99,7 @@ const UserCard: React.FC<UserCardProps> = ({
           maxDate={new Date()}
           selected={birthday}
           onChange={(date) => setBirthday(date)}
+          className="input-box"
         />
         <div className="flex flex-row justify-end space-x-2">
           <button onClick={initForm} type="button" className="self-end outline-hover-btn">

@@ -22,12 +22,10 @@ const FamPage: React.FC = () => {
 
   const fetchTabs = async () => {
     try {
+      setIsLoading(true);
       const fetchedTabs = await getFamPageTab(FAMILY_ID);
       setAllTabData(fetchedTabs);
-
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 2000);
+      setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
     }

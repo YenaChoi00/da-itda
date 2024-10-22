@@ -18,12 +18,10 @@ const CellPage: React.FC = () => {
   const FAMILY_ID = 'Tp9bH9o7J6JRZDy1sz2d';
   const fetchTabs = async () => {
     try {
+      setIsLoading(true);
       const fetchedTabs = await getCellPageTab(FAMILY_ID);
       setTabData(fetchedTabs);
-
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 2000);
+      setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
     }
