@@ -10,7 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import moment from 'moment';
 import { copyToast } from '../toast.tsx';
 import FadeLoader from 'react-spinners/FadeLoader';
-import TabPage from './TabPage.tsx';
+import FamTabPage from './FamTabPage.tsx';
 
 const FamPage: React.FC = () => {
   const FAMILY_ID = 'Tp9bH9o7J6JRZDy1sz2d';
@@ -142,7 +142,7 @@ const FamPage: React.FC = () => {
         <>
           {CreateCopyBtn()}
           {curDateData.length > 0 ? (
-            <TabPage
+            <FamTabPage
               tabData={tabData}
               activeTabNum={activeTab}
               setActiveTabNum={setActiveTab}

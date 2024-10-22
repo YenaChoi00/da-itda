@@ -109,29 +109,31 @@ export async function getCellPageTab(familyId: string): Promise<CellPageTab[]> {
         return {
           id: docId,
           name: user.name,
+          alive: user.alive,
           cellId: cellId,
           famId: familyId,
           famName: familyData.name,
           cellName: cellName,
-          alive: user.alive,
         };
       });
       cellArray.push({
         id: cellId,
         name: cellName,
-        content: infos,
+        memberArr: infos,
       });
     }
 
-    const allInfos = cellArray.flatMap((tab) => tab.content);
+    const allInfos = cellArray.flatMap((tab) => tab.memberArr);
     const tabModels = [
       {
         id: 'all',
         name: '전체',
-        content: allInfos,
+        memberArr: allInfos,
       },
       ...cellArray,
     ];
+
+    console.log('getCellPageTab:', tabModels);
 
     return tabModels;
   } catch (error) {

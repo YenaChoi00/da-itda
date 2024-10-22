@@ -25,7 +25,7 @@ const TabPage: React.FC<TabProps> = ({ tabData, activeTabNum, setActiveTabNum, r
   };
 
   const curTabData = useMemo(() => {
-    const allTabData = tabData[activeTabNum].content;
+    const allTabData = tabData[activeTabNum].memberArr;
     const filteredData = allTabData.filter((item) => {
       return item.alive === true;
     });
