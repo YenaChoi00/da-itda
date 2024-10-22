@@ -113,6 +113,7 @@ export async function getCellPageTab(familyId: string): Promise<CellPageTab[]> {
           famId: familyId,
           famName: familyData.name,
           cellName: cellName,
+          alive: user.alive,
         };
       });
       cellArray.push({

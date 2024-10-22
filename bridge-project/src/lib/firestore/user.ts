@@ -144,7 +144,9 @@ export async function updateUser({
 export async function deleteUser({ id }: { id: string }): Promise<void> {
   try {
     const userRef = doc(getUserCollection(), id);
-    await deleteDoc(userRef);
+    await updateDoc(userRef, {
+      alive: false,
+    });
   } catch (error) {
     new Error(`Error deleting user: ${error}`);
     throw error;

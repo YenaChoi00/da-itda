@@ -6,7 +6,7 @@ import DatePicker from 'react-datepicker';
 import { ko } from 'date-fns/locale/ko';
 import './Datepicker.css';
 import 'react-datepicker/dist/react-datepicker.css';
-import { updateUser } from '../../lib/firestore/user';
+import { deleteUser, updateUser } from '../../lib/firestore/user';
 import { UserDoc } from '../../lib/firestore/type';
 
 interface InfoWithoutContent extends Omit<Info, 'content' | 'date' | 'alive'> {
@@ -64,12 +64,12 @@ const UserCard: React.FC<UserCardProps> = ({
   };
 
   // 삭제
-  const deleteContent = async () => {
+  const deleteUserInfo = async () => {
     const userConfirmed = window.confirm('삭제 하시겠습니까?');
 
     if (userConfirmed) {
       try {
-        // await deletePrayerRequest(data.id);
+        await deleteUser({ id: data.id });
         successToast('정상적으로 삭제되었습니다.');
         refreshParentPage();
       } catch (error) {
@@ -116,7 +116,7 @@ const UserCard: React.FC<UserCardProps> = ({
         <div onDoubleClick={updateEditState} className="flex flex-col w-full">
           <div className="flex justify-between mb-1">
             <h4 className="self-center text-base font-semibold">{data.name}</h4>
-            <button className="bg-transparent" onClick={deleteContent}>
+            <button className="bg-transparent" onClick={deleteUserInfo}>
               <HiOutlineTrash />
             </button>
           </div>

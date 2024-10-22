@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { CellPageTab } from '../../model/tab.ts';
 import UserCard from '../Card/UserCard.tsx';
 import { HiOutlinePencil } from 'react-icons/hi';
@@ -22,7 +22,14 @@ const TabPage: React.FC<TabProps> = ({ tabData, activeTabNum, setActiveTabNum, r
     refreshPage();
   };
 
-  const curTabData = useMemo(() => tabData[activeTabNum].content, [activeTabNum, tabData]);
+  const curTabData = useMemo(() => {
+    const allTabData = tabData[activeTabNum].content;
+    const filteredData = allTabData.filter((item) => {
+      return item.alive === true;
+    });
+
+    return filteredData;
+  }, [activeTabNum, tabData]);
 
   const editCategoryName = () => [console.log('editCategoryName')];
 

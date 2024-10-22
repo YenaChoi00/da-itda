@@ -9,5 +9,5 @@ export type FamPageTab = {
 export type CellPageTab = {
   name: string;
   id: string;
-  content: Omit<Info, 'content' | 'date' | 'alive'>[];
+  content: Omit<Info, 'content' | 'date'>[];
 };
