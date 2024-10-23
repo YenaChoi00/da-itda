@@ -7,12 +7,11 @@ import { ko } from 'date-fns/locale/ko';
 import './Datepicker.css';
 import 'react-datepicker/dist/react-datepicker.css';
 import { deleteUser, updateUser } from '../../lib/firestore/user';
-import { UserDoc } from '../../lib/firestore/type';
 
-interface InfoWithoutContent extends Omit<Info, 'content' | 'date' | 'alive'> {
+interface InfoWithoutContent extends Omit<Info, 'content' | 'date'> {
   content?: string[];
   date?: string;
-  alive?: boolean;
+  birthday: string;
 }
 
 interface UserCardProps {
@@ -31,7 +30,12 @@ const UserCard: React.FC<UserCardProps> = ({
   refreshParentPage,
 }) => {
   const [title, setTitle] = useState(data.name);
-  const [birthday, setBirthday] = useState<Date | null>(new Date('2000-12-04'));
+  const [birthday, setBirthday] = useState<Date | null>();
+
+  useEffect(() => {
+    const bday = new Date(data.birthday);
+    setBirthday(bday);
+  }, []);
 
   const updateEditState = () => {
     startEdit(data.id);
@@ -41,7 +45,7 @@ const UserCard: React.FC<UserCardProps> = ({
     setTitle(value);
   };
 
-  const initForm = () => {
+  const cancelUpdate = () => {
     // 초기화
     setTitle(data.name);
     endEdit();
@@ -61,6 +65,7 @@ const UserCard: React.FC<UserCardProps> = ({
       console.error('Error updating data:', error);
     }
     endEdit();
+    refreshParentPage();
   };
 
   // 삭제
@@ -102,7 +107,7 @@ const UserCard: React.FC<UserCardProps> = ({
           className="input-box"
         />
         <div className="flex flex-row justify-end space-x-2">
-          <button onClick={initForm} type="button" className="self-end outline-hover-btn">
+          <button onClick={cancelUpdate} type="button" className="self-end outline-hover-btn">
             취소
           </button>
           <button onClick={saveUpdates} type="button" className="self-end primary-hover-btn">

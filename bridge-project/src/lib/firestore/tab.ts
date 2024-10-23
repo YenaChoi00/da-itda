@@ -109,6 +109,7 @@ export async function getCellPageTab(familyId: string): Promise<CellPageTab[]> {
         return {
           id: docId,
           name: user.name,
+          birthday: user.birthday!,
           alive: user.alive,
           cellId: cellId,
           famId: familyId,
@@ -132,8 +133,6 @@ export async function getCellPageTab(familyId: string): Promise<CellPageTab[]> {
       },
       ...cellArray,
     ];
-
-    console.log('getCellPageTab:', tabModels);
 
     return tabModels;
   } catch (error) {

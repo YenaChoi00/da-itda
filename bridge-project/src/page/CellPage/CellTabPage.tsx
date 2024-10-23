@@ -21,7 +21,6 @@ const TabPage: React.FC<TabProps> = ({ tabData, activeTabNum, setActiveTabNum, r
 
   const endEdit = () => {
     setEditingId('-1');
-    refreshPage();
   };
 
   const curTabData = useMemo(() => {
