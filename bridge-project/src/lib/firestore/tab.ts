@@ -76,7 +76,7 @@ export async function getFamPageTab(familyId: string): Promise<FamPageTab[]> {
 
     return tabModels;
   } catch (error) {
-    console.error('Error fetching tab models:', error);
+    console.error('Error fetching Fam tab models:', error);
     throw error;
   }
 }
@@ -136,7 +136,7 @@ export async function getCellPageTab(familyId: string): Promise<CellPageTab[]> {
 
     return tabModels;
   } catch (error) {
-    console.error('Error fetching tab models:', error);
+    console.error('Error fetching Cell tab models:', error);
     throw error;
   }
 }

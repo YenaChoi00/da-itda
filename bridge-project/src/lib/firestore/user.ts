@@ -152,13 +152,15 @@ export async function deleteUser({ id }: { id: string }): Promise<void> {
   }
 }
 
-export async function addUser(user: Omit<User, 'id'>, cellId: string): Promise<void> {
+export async function addUser(user: Omit<UserDoc, 'id'>, cellId: string): Promise<void> {
   try {
     // 1. 사용자 추가
     const userRef = getUserCollection();
     const userDocRef = await addDoc(userRef, {
-      level: user.level,
       name: user.name,
+      birthday: user.birthday,
+      level: user.level,
+      alive: true,
     });
 
     // 2. 셀에 추가

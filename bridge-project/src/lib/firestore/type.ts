@@ -19,7 +19,7 @@ export type UserDoc = {
   name: string;
   level: number;
   alive: boolean;
-  birthday?: string;
+  birthday: string;
 };
 
 export type UserInfo = UserDoc & {

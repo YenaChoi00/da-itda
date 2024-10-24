@@ -51,13 +51,12 @@ const UserCard: React.FC<UserCardProps> = ({
     endEdit();
   };
 
-  // 수정된 내용 저장
+  // 수정
   const saveUpdates = async () => {
     try {
       const user = {
         name: title,
-        // level: 10,
-        // birthday: birthday
+        birthday: birthday?.toString(),
       };
       await updateUser({ id: data.id, userData: user });
       successToast('성공적으로 수정되었습니다.');
@@ -126,7 +125,7 @@ const UserCard: React.FC<UserCardProps> = ({
               <HiOutlineTrash />
             </button>
           </div>
-          <div className="self-start">생년월일</div>
+          <div className="self-start">{data.birthday}</div>
         </div>
       </div>
     );
