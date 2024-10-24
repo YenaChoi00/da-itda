@@ -7,6 +7,7 @@ import { ko } from 'date-fns/locale/ko';
 import './Datepicker.css';
 import 'react-datepicker/dist/react-datepicker.css';
 import { deleteUser, updateUser } from '../../lib/firestore/user';
+import { dateFormat } from '../../assets/utils';
 
 interface InfoWithoutContent extends Omit<Info, 'content' | 'date'> {
   content?: string[];
@@ -56,7 +57,7 @@ const UserCard: React.FC<UserCardProps> = ({
     try {
       const user = {
         name: title,
-        birthday: birthday?.toString(),
+        birthday: dateFormat(birthday!),
       };
       await updateUser({ id: data.id, userData: user });
       successToast('성공적으로 수정되었습니다.');
