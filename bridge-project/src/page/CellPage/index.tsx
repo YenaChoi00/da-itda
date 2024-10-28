@@ -6,8 +6,8 @@ import { addUser } from '../../lib/firestore/user';
 import { CategoryContext } from '../../main';
 import { errorToast, successToast } from '../toast';
 import CellTabPage from './CellTabPage';
-import DatePicker from 'react-datepicker';
-import { ko } from 'date-fns/locale/ko';
+import { dateFormat } from '../../assets/utils';
+import CustomCalender from '../Calender';
 
 const CellPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -53,6 +53,8 @@ const CellPage: React.FC = () => {
 
   const closeAdd = () => {
     setTitle('');
+    setBirthday(null);
+    setCategory('');
     setIsAdding(false);
   };
 
@@ -63,11 +65,21 @@ const CellPage: React.FC = () => {
 
   const checkValues = () => {
     if (title !== '') {
-      if (category !== '') {
-        return true;
+      if (birthday) {
+        if (category !== '') {
+          return true;
+        } else {
+          errorToast('셀을 선택해주세요.');
+          return false;
+        }
+      } else {
+        errorToast('생년월일을 입력해주세요.');
+        return false;
       }
+    } else {
+      errorToast('이름을 입력해주세요.');
+      return false;
     }
-    return false;
   };
 
   const submit = async () => {
@@ -75,7 +87,8 @@ const CellPage: React.FC = () => {
       const user = {
         name: title,
         level: 10,
-        birthday: birthday?.toString(),
+        birthday: dateFormat(birthday!),
+        alive: true,
       };
       const cellId = category;
       const cellName = getNameById(category);
@@ -119,17 +132,7 @@ const CellPage: React.FC = () => {
               ))}
             </select>
           </div>
-          <DatePicker
-            locale={ko}
-            dateFormat="yyyy-MM-dd"
-            shouldCloseOnSelect
-            minDate={new Date('1970-01-01')}
-            maxDate={new Date()}
-            selected={birthday}
-            onChange={(date) => setBirthday(date)}
-            placeholderText="생년월일"
-            className="input-box"
-          />
+          <CustomCalender selectedDate={birthday} onChange={(date) => setBirthday(date)} />
           <div className="flex flex-row self-end space-x-2">
             <button onClick={closeAdd} type="button" className="self-end outline-hover-btn">
               취소

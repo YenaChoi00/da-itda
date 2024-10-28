@@ -1,0 +1,7 @@
+.calender-div {
+  @apply flex justify-center gap-2;
+}
+
+.select {
+  @apply h-8 px-2 border rounded focus:outline-none focus:ring-2;
+}

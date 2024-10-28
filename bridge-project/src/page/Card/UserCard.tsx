@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { HiOutlineTrash } from 'react-icons/hi';
 import { Info } from '../../model/info';
 import { successToast } from '../toast';
-import DatePicker from 'react-datepicker';
-import { ko } from 'date-fns/locale/ko';
 import './Datepicker.css';
 import 'react-datepicker/dist/react-datepicker.css';
 import { deleteUser, updateUser } from '../../lib/firestore/user';
 import { dateFormat } from '../../assets/utils';
+import CustomCalender from '../Calender';
 
 interface InfoWithoutContent extends Omit<Info, 'content' | 'date'> {
   content?: string[];
@@ -96,16 +95,7 @@ const UserCard: React.FC<UserCardProps> = ({
           />
           <input disabled value={data.cellName} className="w-1/3 mb-2 input-box" />
         </div>
-        <DatePicker
-          locale={ko}
-          dateFormat="yyyy-MM-dd"
-          shouldCloseOnSelect
-          minDate={new Date('1970-01-01')}
-          maxDate={new Date()}
-          selected={birthday}
-          onChange={(date) => setBirthday(date)}
-          className="input-box"
-        />
+        <CustomCalender selectedDate={birthday} onChange={(date) => setBirthday(date)} />
         <div className="flex flex-row justify-end space-x-2">
           <button onClick={cancelUpdate} type="button" className="self-end outline-hover-btn">
             취소

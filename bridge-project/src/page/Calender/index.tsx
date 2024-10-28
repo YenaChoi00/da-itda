@@ -1,75 +1,75 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import DatePicker from 'react-datepicker';
-import { getMonth, getYear } from 'date-fns';
-import 'react-datepicker/dist/react-datepicker.css';
-import styles from './calendar.module.scss';
+import { ko } from 'date-fns/locale/ko';
+import './calender.css';
 
-interface CalenderProps {
-  selectedDate: Date | null;
-  setSelectedDate: Dispatch<SetStateAction<Date | null>>;
+interface CalenderProp {
+  selectedDate: Date | null | undefined;
+  onChange: (date: Date | null) => void;
 }
+const CustomCalender: React.FC<CalenderProp> = ({ selectedDate, onChange }) => {
+  const months = [
+    '1월',
+    '2월',
+    '3월',
+    '4월',
+    '5월',
+    '6월',
+    '7월',
+    '8월',
+    '9월',
+    '10월',
+    '11월',
+    '12월',
+  ];
 
-const YEARS = Array.from(
-  { length: getYear(new Date()) + 1 - 2000 },
-  (_, i) => getYear(new Date()) - i,
-);
-const MONTHS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
-
-const Calendar: React.FC<CalenderProps> = ({ selectedDate, setSelectedDate }) => {
   return (
-    <div className={styles.datePickerWrapper}>
-      <DatePicker
-        // 요일이 Su Mo Tu가 아닌 S M T 형태로 나타냄
-        formatWeekDay={(nameOfDay) => nameOfDay.substring(0, 1)}
-        showYearDropdown
-        scrollableYearDropdown
-        yearDropdownItemNumber={100}
-        renderCustomHeader={({
-          date,
-          changeYear,
-          decreaseMonth,
-          increaseMonth,
-          prevMonthButtonDisabled,
-          nextMonthButtonDisabled,
-        }) => (
-          <div className={styles.customHeaderContainer}>
-            <div>
-              <span className={styles.month}>{MONTHS[getMonth(date)]}</span>
-              <select
-                value={getYear(date)}
-                className={styles.year}
-                onChange={({ target: { value } }) => changeYear(+value)}
-              >
-                {YEARS.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <button
-                type="button"
-                onClick={decreaseMonth}
-                className={styles.monthButton}
-                disabled={prevMonthButtonDisabled}
-              >
-                <LeftArrow fill="#ffffff" />
-              </button>
-              <button
-                type="button"
-                onClick={increaseMonth}
-                className={styles.monthButton}
-                disabled={nextMonthButtonDisabled}
-              >
-                <RightArrow fill="#ffffff" />
-              </button>
-            </div>
-          </div>
-        )}
-      />
-    </div>
+    <DatePicker
+      locale={ko}
+      dateFormat="yyyy-MM-dd"
+      minDate={new Date('1970-01-01')}
+      maxDate={new Date()}
+      selected={selectedDate}
+      onChange={onChange}
+      className="input-box"
+      placeholderText="생년월일"
+      shouldCloseOnSelect
+      showYearDropdown
+      scrollableYearDropdown
+      yearDropdownItemNumber={70}
+      showMonthDropdown
+      renderCustomHeader={({ date, changeYear, changeMonth }) => (
+        <div className="calender-div">
+          <select
+            className="select"
+            value={date.getFullYear()}
+            onChange={({ target: { value } }) => changeYear(parseInt(value))}
+          >
+            {Array.from({ length: 50 }, (_, i) => {
+              const year = new Date().getFullYear() - i;
+              return (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              );
+            })}
+          </select>
+
+          <select
+            className="select"
+            value={months[date.getMonth()]}
+            onChange={({ target: { value } }) => changeMonth(months.indexOf(value))}
+          >
+            {months.map((month, index) => (
+              <option key={index} value={month}>
+                {month}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+    />
   );
 };
 
-export default Calendar;
+export default CustomCalender;
