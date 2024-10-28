@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
-import { HiChevronLeft } from 'react-icons/hi';
-import { HiChevronRight } from 'react-icons/hi';
+import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 import moment from 'moment';
 import { CategoryContext } from '../../main';
 

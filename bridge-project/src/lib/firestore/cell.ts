@@ -47,3 +47,15 @@ export async function getCellNameById(cellId: string) {
     throw new Error('Cell document does not exist.');
   }
 }
+
+export async function updateCellName({ cellId, cellName }: { cellId: string; cellName: string }) {
+  try {
+    const cellRef = doc(getCellCollection(), cellId);
+    console.log(cellRef);
+    await updateDoc(cellRef, {
+      name: cellName,
+    });
+  } catch (error) {
+    throw new Error('Cell document does not exist.');
+  }
+}

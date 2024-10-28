@@ -1,7 +1,7 @@
 import React from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { copyToast } from '../toast';
 
 interface CopyBtnProps {
   btnText: string;
@@ -11,21 +11,9 @@ interface CopyBtnProps {
 }
 
 const CopyBtn: React.FC<CopyBtnProps> = ({ btnText, copyContent, toastText, copy }) => {
-  const copyToast = () =>
-    toast.info(toastText, {
-      position: 'bottom-left',
-      autoClose: 1500,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: 'light',
-    });
-
   return (
     <>
-      <CopyToClipboard text={copyContent} onCopy={copyToast}>
+      <CopyToClipboard text={copyContent} onCopy={() => copyToast(toastText)}>
         <button
           type="button"
           className="self-center w-1/3 mx-1 font-semibold outline-hover-btn"
@@ -34,7 +22,6 @@ const CopyBtn: React.FC<CopyBtnProps> = ({ btnText, copyContent, toastText, copy
           {btnText}
         </button>
       </CopyToClipboard>
-      <ToastContainer />
     </>
   );
 };

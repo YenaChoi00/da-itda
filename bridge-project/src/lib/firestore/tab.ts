@@ -2,12 +2,12 @@ import { doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import moment from 'moment';
 import { getFamilyCollection, getPrayerRequestCollection, readUserArr } from '.';
 import { Info } from '../../model/info';
-import { TabModel } from '../../model/tabModel';
+import { CellPageTab, FamPageTab } from '../../model/tab';
 import { CellDoc, FamilyDoc, PrayerRequestDoc } from './type';
 
-export async function getTabModels(familyId: string): Promise<TabModel[]> {
+export async function getFamPageTab(familyId: string): Promise<FamPageTab[]> {
   try {
-    const cellArray: TabModel[] = [];
+    const cellArray: FamPageTab[] = [];
 
     // Get family with FAMILY_ID
     const familyRef = doc(getFamilyCollection(), familyId);
@@ -76,7 +76,67 @@ export async function getTabModels(familyId: string): Promise<TabModel[]> {
 
     return tabModels;
   } catch (error) {
-    console.error('Error fetching tab models:', error);
+    console.error('Error fetching Fam tab models:', error);
+    throw error;
+  }
+}
+
+export async function getCellPageTab(familyId: string): Promise<CellPageTab[]> {
+  try {
+    const cellArray: CellPageTab[] = [];
+
+    // Get family with FAMILY_ID
+    const familyRef = doc(getFamilyCollection(), familyId);
+    const familyDoc = await getDoc(familyRef);
+
+    if (!familyDoc.exists()) {
+      throw new Error('Family not found');
+    }
+
+    const familyData = familyDoc.data() as FamilyDoc;
+    const cellRefs = familyData.cellArr;
+
+    // Iterate through cells
+    for (const cellRef of cellRefs) {
+      const cellDoc = await getDoc(cellRef);
+      const cellData = cellDoc.data() as CellDoc;
+      const cellId = cellDoc.id;
+      const cellName = cellData.name;
+
+      const userDict = await readUserArr({ userRefArr: cellData.memberArr });
+
+      const infos = Object.entries(userDict).map(([docId, user]) => {
+        return {
+          id: docId,
+          name: user.name,
+          birthday: user.birthday!,
+          alive: user.alive,
+          cellId: cellId,
+          famId: familyId,
+          famName: familyData.name,
+          cellName: cellName,
+        };
+      });
+      cellArray.push({
+        id: cellId,
+        name: cellName,
+        memberArr: infos,
+      });
+    }
+
+    const allInfos = cellArray.flatMap((tab) => tab.memberArr);
+    const tabModels = [
+      {
+        id: 'all',
+        name: '전체',
+        memberArr: allInfos,
+      },
+      ...cellArray,
+    ];
+
+    return tabModels;
+  } catch (error) {
+    console.error('Error fetching Cell tab models:', error);
     throw error;
   }
 }

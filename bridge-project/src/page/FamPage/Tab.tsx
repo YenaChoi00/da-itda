@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { TabModel } from '../../model/tabModel';
+import { FamPageTab } from '../../model/tab';
 
 interface TabsProps {
-  tabs: TabModel[];
+  tabs: FamPageTab[];
 }
 
 const Tab: React.FC<TabsProps> = ({ tabs }) => {
@@ -11,7 +11,7 @@ const Tab: React.FC<TabsProps> = ({ tabs }) => {
   return (
     <div className="flex flex-col mb-3">
       <ul>
-        {tabs.map((tab: TabModel, index: number) => (
+        {tabs.map((tab: FamPageTab, index: number) => (
           <li
             key={index}
             onClick={() => setActive(index)}

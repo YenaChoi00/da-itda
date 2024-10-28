@@ -1,6 +1,7 @@
 import {
+  addDoc,
+  arrayUnion,
   collection,
-  deleteDoc,
   doc,
   documentId,
   DocumentReference,
@@ -14,6 +15,7 @@ import {
 
 import { getCellCollection, getDb } from '.';
 import { Cell, CellDoc, UserDoc } from './type';
+import { User } from '../../model/user';
 
 const USER_COLLECTION_NAME = 'user-dev';
 
@@ -133,7 +135,7 @@ export async function updateUser({
     const userRef = doc(getUserCollection(), id);
     await updateDoc(userRef, userData);
   } catch (error) {
-    console.error('Error updating user:', error);
+    new Error(`Error updating user: ${error}`);
     throw error;
   }
 }
@@ -141,9 +143,33 @@ export async function updateUser({
 export async function deleteUser({ id }: { id: string }): Promise<void> {
   try {
     const userRef = doc(getUserCollection(), id);
-    await deleteDoc(userRef);
+    await updateDoc(userRef, {
+      alive: false,
+    });
   } catch (error) {
-    console.error('Error deleting user:', error);
+    new Error(`Error deleting user: ${error}`);
+    throw error;
+  }
+}
+
+export async function addUser(user: Omit<UserDoc, 'id'>, cellId: string): Promise<void> {
+  try {
+    // 1. 사용자 추가
+    const userRef = getUserCollection();
+    const userDocRef = await addDoc(userRef, {
+      name: user.name,
+      birthday: user.birthday,
+      level: user.level,
+      alive: true,
+    });
+
+    // 2. 셀에 추가
+    const cellRef = doc(getCellCollection(), cellId);
+    await updateDoc(cellRef, {
+      memberArr: arrayUnion(userDocRef), // users 배열에 새로운 사용자 참조 추가
+    });
+  } catch (error) {
+    new Error(`Error adding user: ${error}`);
     throw error;
   }
 }

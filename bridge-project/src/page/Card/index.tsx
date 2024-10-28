@@ -4,9 +4,9 @@ import { Info } from '../../model/info';
 import { deletePrayerRequest, updatePrayerRequest } from '../../lib/firestore/card';
 import { UserInfo } from '../../lib/firestore/type';
 import { getAllFamUserWCategory } from '../../lib/firestore/fam';
-import { toast } from 'react-toastify';
+import { successToast } from '../toast';
 
-interface OwnProps {
+interface CardProps {
   data: Info;
   isEditable: boolean;
   startEdit(id: string): void;
@@ -14,7 +14,7 @@ interface OwnProps {
   refreshParentPage: () => Promise<void>;
 }
 
-const Card: React.FC<OwnProps> = ({ data, isEditable, startEdit, endEdit, refreshParentPage }) => {
+const Card: React.FC<CardProps> = ({ data, isEditable, startEdit, endEdit, refreshParentPage }) => {
   const [newContent, setNewContent] = useState(data.content);
   const [newTitle, setNewTitle] = useState(data.name);
   const [newCategory, setNewCategory] = useState(data.cellName);
@@ -75,7 +75,6 @@ const Card: React.FC<OwnProps> = ({ data, isEditable, startEdit, endEdit, refres
   const saveUpdates = async () => {
     try {
       const content = checkEmptyContent();
-
       await updatePrayerRequest({
         ...data,
         name: newTitle,
@@ -94,7 +93,7 @@ const Card: React.FC<OwnProps> = ({ data, isEditable, startEdit, endEdit, refres
     if (userConfirmed) {
       try {
         await deletePrayerRequest(data.id);
-        successToast();
+        successToast('정상적으로 삭제되었습니다.');
         refreshParentPage();
       } catch (error) {
         console.error('Error deleting prayer request:', error);
@@ -103,18 +102,6 @@ const Card: React.FC<OwnProps> = ({ data, isEditable, startEdit, endEdit, refres
 
     return;
   };
-
-  const successToast = () =>
-    toast.success(`정상적으로 삭제되었습니다.`, {
-      position: 'bottom-left',
-      autoClose: 1500,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: 'light',
-    });
 
   if (isEditable)
     return (

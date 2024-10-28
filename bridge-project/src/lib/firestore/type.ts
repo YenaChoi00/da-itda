@@ -18,6 +18,8 @@ export type Cell = {
 export type UserDoc = {
   name: string;
   level: number;
+  alive: boolean;
+  birthday: string;
 };
 
 export type UserInfo = UserDoc & {

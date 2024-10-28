@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from 'react';
-import { TabModel } from '../../model/tabModel';
+import { FamPageTab } from '../../model/tab.ts';
 import Card from '../Card/index.tsx';
 
 interface TabProps {
-  tabData: TabModel[];
+  tabData: FamPageTab[];
   activeTabNum: number;
   setActiveTabNum: (num: number) => void;
   refreshPage: () => Promise<void>;
@@ -26,7 +26,7 @@ const TabPage: React.FC<TabProps> = ({ tabData, activeTabNum, setActiveTabNum, r
   return (
     <div className="flex flex-col tab">
       <ul className="grid grid-flow-col cursor-pointer justify-stretch">
-        {tabData.map((tab: TabModel, index: number) => (
+        {tabData.map((tab: FamPageTab, index: number) => (
           <li
             key={index}
             onClick={() => setActiveTabNum(index)}
@@ -51,7 +51,7 @@ const TabPage: React.FC<TabProps> = ({ tabData, activeTabNum, setActiveTabNum, r
           ))
         ) : (
           <div className="container place-self-center">
-            {tabData[activeTabNum].name}의 기도제목이 없습니다
+            {tabData[activeTabNum].name}의 기도제목이 없습니다.
           </div>
         )}
       </div>
