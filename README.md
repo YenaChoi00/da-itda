@@ -5,12 +5,11 @@
 
 ## In Progress
 
-작업 중인 Github Issue [[Issue#10](https://github.com/YenaChoi00/da-itda/issues/10#issue-2560873251)]
-- [ ] 페이지 추가 후 React-router를 활용한 라우팅 적용
+- [x] 페이지 추가 후 React-router를 활용한 라우팅 적용
 
-  - [ ] 메인페이지
+  - [x] 메인페이지
   - [ ] 팸 페이지
-  - [ ] 셀 페이지 - 멤버 관리(CRUD)
+  - [x] 셀 페이지 - 멤버 관리(CRUD)
      
 
 ## Todo
