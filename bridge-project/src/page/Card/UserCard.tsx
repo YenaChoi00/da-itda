@@ -19,16 +19,9 @@ interface UserCardProps {
   isEditable: boolean;
   startEdit(id: string): void;
   endEdit(): void;
-  refreshParentPage: () => Promise<void>;
 }
 
-const UserCard: React.FC<UserCardProps> = ({
-  data,
-  isEditable,
-  startEdit,
-  endEdit,
-  refreshParentPage,
-}) => {
+const UserCard: React.FC<UserCardProps> = ({ data, isEditable, startEdit, endEdit }) => {
   const [title, setTitle] = useState(data.name);
   const [birthday, setBirthday] = useState<Date | null>();
 
@@ -64,7 +57,7 @@ const UserCard: React.FC<UserCardProps> = ({
       console.error('Error updating data:', error);
     }
     endEdit();
-    refreshParentPage();
+    // refreshParentPage();
   };
 
   // 삭제
@@ -75,7 +68,7 @@ const UserCard: React.FC<UserCardProps> = ({
       try {
         await deleteUser({ id: data.id });
         successToast('정상적으로 삭제되었습니다.');
-        refreshParentPage();
+        //   refreshParentPage();
       } catch (error) {
         console.error('Error deleting User Info:', error);
       }
