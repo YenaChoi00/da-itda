@@ -177,7 +177,7 @@ const CellPage: React.FC = () => {
           <span>데이터를 불러오는 중입니다.</span>
         </div>
       ) : query.isError ? (
-        <div>데이터를 불러오는 데 오류가 발생했습니다.</div>
+        <div className="container place-self-center">데이터를 불러오는 데 오류가 발생했습니다.</div>
       ) : (
         <div>
           {query.data?.length != undefined ? (

@@ -15,7 +15,6 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 const FamPage: React.FC = () => {
   const FAMILY_ID = 'Tp9bH9o7J6JRZDy1sz2d';
-  const [isLoading, setIsLoading] = useState(false);
 
   const DATE: string = moment('2024-07-17').format('YYYY-MM-DD').toString();
   const [curDate, setCurDate] = useState<string>(DATE);
@@ -126,23 +125,26 @@ const FamPage: React.FC = () => {
   return (
     <div className="container flex flex-col content-start w-96 h-svh">
       <Header curDate={curDate} changeDate={changeDate}></Header>
-      {isLoading ? (
-        <>
-          <div className="container flex flex-col items-center justify-center h-screen space-y-5">
-            <FadeLoader color="#5db075" margin={3} />
-            <span>데이터를 불러오는 중입니다.</span>
-          </div>
-        </>
+
+      {query.isLoading || query.isFetching ? (
+        <div className="container flex flex-col items-center justify-center h-screen space-y-5">
+          <FadeLoader color="#5db075" margin={3} />
+          <span>데이터를 불러오는 중입니다.</span>
+        </div>
+      ) : query.isError ? (
+        <div className="container place-self-center">데이터를 불러오는 데 오류가 발생했습니다.</div>
       ) : (
         <>
-          {CreateCopyBtn()}
-          {curDateData.length > 0 ? (
-            <FamTabPage
-              tabData={tabData}
-              activeTabNum={activeTab}
-              setActiveTabNum={setActiveTab}
-              refreshData={refreshData}
-            />
+          {query.data?.length != undefined ? (
+            <>
+              {CreateCopyBtn()}
+              <FamTabPage
+                tabData={tabData}
+                activeTabNum={activeTab}
+                setActiveTabNum={setActiveTab}
+                refreshData={refreshData}
+              />
+            </>
           ) : (
             <div className="container place-self-center">추가된 기도제목이 없습니다</div>
           )}
