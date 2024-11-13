@@ -9,9 +9,10 @@ interface TabProps {
   tabData: CellPageTab[];
   activeTabNum: number;
   setActiveTabNum: (num: number) => void;
+  refreshData: () => void;
 }
 
-const TabPage: React.FC<TabProps> = ({ tabData, activeTabNum, setActiveTabNum }) => {
+const TabPage: React.FC<TabProps> = ({ tabData, activeTabNum, setActiveTabNum, refreshData }) => {
   const [editingId, setEditingId] = useState<string>('-1');
 
   const startEdit = (id: string) => {
@@ -50,7 +51,7 @@ const TabPage: React.FC<TabProps> = ({ tabData, activeTabNum, setActiveTabNum })
         cellId: tabData[activeTabNum].id,
       });
       closeEditCategoryName();
-      // refreshData();
+      refreshData();
       successToast('수정되었습니다.');
     } catch (error) {
       console.error(error);

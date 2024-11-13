@@ -6,10 +6,10 @@ interface TabProps {
   tabData: FamPageTab[];
   activeTabNum: number;
   setActiveTabNum: (num: number) => void;
-  refreshPage: () => Promise<void>;
+  refreshData: () => void;
 }
 
-const TabPage: React.FC<TabProps> = ({ tabData, activeTabNum, setActiveTabNum, refreshPage }) => {
+const TabPage: React.FC<TabProps> = ({ tabData, activeTabNum, setActiveTabNum, refreshData }) => {
   const [editingId, setEditingId] = useState<string>('-1');
 
   const startEdit = (id: string) => {
@@ -18,7 +18,7 @@ const TabPage: React.FC<TabProps> = ({ tabData, activeTabNum, setActiveTabNum, r
 
   const endEdit = () => {
     setEditingId('-1');
-    refreshPage();
+    refreshData();
   };
 
   const curTabData = useMemo(() => tabData[activeTabNum].content, [activeTabNum, tabData]);
@@ -46,7 +46,7 @@ const TabPage: React.FC<TabProps> = ({ tabData, activeTabNum, setActiveTabNum, r
               isEditable={item.id === editingId}
               startEdit={(id: string) => startEdit(id)}
               endEdit={endEdit}
-              refreshParentPage={refreshPage}
+              refreshParentPage={refreshData}
             />
           ))
         ) : (

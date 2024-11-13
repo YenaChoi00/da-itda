@@ -185,6 +185,7 @@ const CellPage: React.FC = () => {
               tabData={query.data!}
               activeTabNum={activeTab}
               setActiveTabNum={setActiveTab}
+              refreshData={refreshData}
             />
           ) : (
             <div className="container place-self-center">추가된 기도제목이 없습니다</div>

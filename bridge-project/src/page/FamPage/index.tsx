@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { getFamPageTab } from '../../lib/firestore/index.ts';
 import { Info } from '../../model/info.ts';
@@ -11,44 +11,39 @@ import moment from 'moment';
 import { copyToast } from '../toast.tsx';
 import FadeLoader from 'react-spinners/FadeLoader';
 import FamTabPage from './FamTabPage.tsx';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 const FamPage: React.FC = () => {
   const FAMILY_ID = 'Tp9bH9o7J6JRZDy1sz2d';
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const DATE: string = moment('2024-07-17').format('YYYY-MM-DD').toString();
   const [curDate, setCurDate] = useState<string>(DATE);
-  const [allTabData, setAllTabData] = useState<FamPageTab[]>([]);
 
-  const fetchTabs = async () => {
-    try {
-      setIsLoading(true);
-      const fetchedTabs = await getFamPageTab(FAMILY_ID);
-      setAllTabData(fetchedTabs);
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-    }
+  const queryClient = useQueryClient();
+  const query = useQuery<FamPageTab[]>({
+    queryKey: ['famPageData'],
+    queryFn: async () => getFamPageTab(FAMILY_ID),
+  });
+
+  const refreshData = () => {
+    queryClient.invalidateQueries({ queryKey: ['famPageData'] });
   };
-
-  useEffect(() => {
-    fetchTabs();
-  }, []);
 
   // 날짜별
   const [curDateData, setCurDateData] = useState<Info[]>([]);
   // 탭(셀)별
-  const [tabData, setTabData] = useState<FamPageTab[]>(allTabData);
+  const [tabData, setTabData] = useState<FamPageTab[]>(query.data!);
   const [activeTab, setActiveTab] = useState(0);
 
   useMemo(() => {
-    if (allTabData.length > 0) {
-      const everyContent = allTabData[0].content;
+    if (query.data && query.data!.length > 0) {
+      const everyContent = query.data![0].content;
       const curDateData = everyContent.filter((item) => {
         return item.date === curDate && item.alive === true;
       });
 
-      const filteredData = allTabData.map((item) => ({
+      const filteredData = query.data!.map((item) => ({
         ...item,
         content:
           item.name === '전체'
@@ -61,7 +56,7 @@ const FamPage: React.FC = () => {
       // 현재 날짜 데이터 중, *해당 셀*에 해당하는 데이터
       setTabData(filteredData);
     }
-  }, [allTabData, curDate]);
+  }, [query.data, curDate]);
 
   const changeDate = (newDate: string) => {
     setCurDate(newDate);
@@ -72,7 +67,7 @@ const FamPage: React.FC = () => {
 
   const changeWrtState = (state: boolean) => {
     setIsWriting(state);
-    fetchTabs(); // 화면 업데이트
+    // fetchTabs(); // 화면 업데이트
   };
 
   // 복사
@@ -146,7 +141,7 @@ const FamPage: React.FC = () => {
               tabData={tabData}
               activeTabNum={activeTab}
               setActiveTabNum={setActiveTab}
-              refreshPage={fetchTabs}
+              refreshData={refreshData}
             />
           ) : (
             <div className="container place-self-center">추가된 기도제목이 없습니다</div>
