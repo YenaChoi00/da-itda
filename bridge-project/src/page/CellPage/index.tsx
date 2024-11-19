@@ -33,34 +33,10 @@ const CellPage: React.FC = () => {
   const [category, setCategory] = useState<string>('');
 
   useEffect(() => {
-    if (info.cellArr.length > 0 && category === '') {
+    if (info.cellArr.length > 1 && category === '') {
       setCategory(info.cellArr[0].cid);
     }
-  }, [info.cellArr]);
-
-  // const infoQuery = useQuery({
-  //   queryKey: ['categoryInfo'],
-  //   queryFn: getCategoryInfo,
-  // });
-  // const [category, setCategory] = useState<string>('');
-
-  // useEffect(() => {
-  //   if (infoQuery.isSuccess && infoQuery.data.cellArr.length > 0) {
-  //     setCategory(infoQuery.data.cellArr[0].cid);
-  //   }
-  // }, [infoQuery.isSuccess, infoQuery.data?.cellArr]);
-
-  // useEffect(() => {
-  //   if (infoQuery.isSuccess && infoQuery.data) {
-  //     setCategory(infoQuery.data.cellArr[0].cid);
-  //   }
-  // }, [infoQuery.isSuccess]);
-
-  // useEffect(() => {
-  //   if (infoQuery.isSuccess && infoQuery.data?.cellArr.length > 0) {
-  //     setCategory(infoQuery.data.cellArr[0].cid);
-  //   }
-  // }, [infoQuery.isSuccess, infoQuery.data]);
+  }, [info.cellArr.length]);
 
   const createTitle = (value: string) => {
     setTitle(value);
