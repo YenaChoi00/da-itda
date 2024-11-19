@@ -10,11 +10,10 @@ import Root from './root.tsx';
 import { getCategoryInfo } from './lib/firestore/fam.ts';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-// CategoryContext 생성
 export const CategoryContext = createContext<CategoryInfo>({
   fname: '',
   fid: '',
-  cellArr: [{ cname: '', cid: '' }],
+  cellArr: [],
 });
 
 const queryClient = new QueryClient();
@@ -45,7 +44,7 @@ const App = () => {
   const [info, setInfo] = useState<CategoryInfo>({
     fname: '',
     fid: '',
-    cellArr: [{ cname: '', cid: '' }],
+    cellArr: [],
   });
 
   useEffect(() => {

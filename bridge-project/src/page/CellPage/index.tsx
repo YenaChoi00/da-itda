@@ -33,7 +33,7 @@ const CellPage: React.FC = () => {
   const [category, setCategory] = useState<string>('');
 
   useEffect(() => {
-    if (info.cellArr.length > 1 && category === '') {
+    if (info.cellArr.length > 0 && category === '') {
       setCategory(info.cellArr[0].cid);
     }
   }, [info.cellArr.length]);
