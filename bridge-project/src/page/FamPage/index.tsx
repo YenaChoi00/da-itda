@@ -22,7 +22,7 @@ const FamPage: React.FC = () => {
   const queryClient = useQueryClient();
   const query = useQuery<FamPageTab[]>({
     queryKey: ['famPageData'],
-    queryFn: async () => getFamPageTab(FAMILY_ID),
+    queryFn: async () => await getFamPageTab(FAMILY_ID),
   });
 
   const refreshData = () => {

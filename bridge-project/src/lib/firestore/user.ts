@@ -15,7 +15,6 @@ import {
 
 import { getCellCollection, getDb } from '.';
 import { Cell, CellDoc, UserDoc } from './type';
-import { User } from '../../model/user';
 
 const USER_COLLECTION_NAME = 'user-dev';
 

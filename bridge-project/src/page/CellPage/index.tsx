@@ -22,7 +22,7 @@ const CellPage: React.FC = () => {
   const queryClient = useQueryClient();
   const query = useQuery<CellPageTab[]>({
     queryKey: ['cellPageData'],
-    queryFn: async () => getCellPageTab(FAMILY_ID),
+    queryFn: async () => await getCellPageTab(FAMILY_ID),
   });
 
   const refreshData = () => {
