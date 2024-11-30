@@ -1,9 +1,11 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { createUser } from '../../lib/firestore/user';
 import { addUsertoCell } from '../../lib/firestore/cell';
 import Modal from 'react-modal';
 import { CategoryContext } from '../../main';
-import { successToast } from '../toast';
+import { errorToast, successToast } from '../toast';
+import CustomCalender from '../Calender';
+import { dateFormat } from '../../assets/utils';
 
 interface ModalProps {
   isOpen: boolean;
@@ -25,14 +27,23 @@ const CreateUserModal: React.FC<ModalProps> = ({
   const info = useContext(CategoryContext);
 
   const createMember = async () => {
+    const today = new Date();
+    const formattedDate = dateFormat(today);
+
     try {
-      const userId = await createUser({ name: userName, level: 10 });
+      const userId = await createUser({
+        name: userName,
+        level: 10,
+        birthday: formattedDate,
+        alive: true,
+      });
       await addUsertoCell(userId, cellId);
       submitContent();
       successToast(`${userName} 이/가 셀에 추가되었습니다. 이어서 저장을 눌러주세요.`);
       closeModal();
     } catch (error) {
       console.log('Error while create new member: ', error);
+      errorToast('멤버 추가 과정에서 오류가 발생했습니다.');
     }
   };
 
