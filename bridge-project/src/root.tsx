@@ -2,7 +2,7 @@ const Root = () => {
   return (
     <>
       <div className="container flex-row space-y-10">
-        <h1>Bridge</h1>
+        <h1>Hello, Bridge!</h1>
 
         <nav>
           <ul className="space-y-5">
