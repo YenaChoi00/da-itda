@@ -8,31 +8,26 @@ import { errorToast, successToast } from '../toast';
 import CellTabPage from './CellTabPage';
 import { dateFormat } from '../../assets/utils';
 import CustomCalender from '../Calender';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 const CellPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0);
-  const [tabData, setTabData] = useState<CellPageTab[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [title, setTitle] = useState<string>('');
   const [birthday, setBirthday] = useState<Date | null>();
 
   const FAMILY_ID = 'Tp9bH9o7J6JRZDy1sz2d';
-  const fetchTabs = async () => {
-    try {
-      setIsLoading(true);
-      const fetchedTabs = await getCellPageTab(FAMILY_ID);
-      setTabData(fetchedTabs);
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-    }
-  };
 
-  useEffect(() => {
-    fetchTabs();
-  }, []);
+  const queryClient = useQueryClient();
+  const query = useQuery<CellPageTab[]>({
+    queryKey: ['cellPageData'],
+    queryFn: async () => await getCellPageTab(FAMILY_ID),
+  });
+
+  const refreshData = () => {
+    queryClient.invalidateQueries({ queryKey: ['cellPageData'] });
+  };
 
   const info = useContext(CategoryContext);
   const [category, setCategory] = useState<string>('');
@@ -41,7 +36,7 @@ const CellPage: React.FC = () => {
     if (info.cellArr.length > 0 && category === '') {
       setCategory(info.cellArr[0].cid);
     }
-  }, [info.cellArr]);
+  }, [info.cellArr.length]);
 
   const createTitle = (value: string) => {
     setTitle(value);
@@ -94,7 +89,7 @@ const CellPage: React.FC = () => {
       const cellName = getNameById(category);
       try {
         await addUser(user, cellId);
-        await fetchTabs();
+        refreshData();
 
         successToast(`${title}이/가 ${cellName}에 추가되었습니다.`);
         closeAdd();
@@ -147,27 +142,26 @@ const CellPage: React.FC = () => {
           onClick={() => setIsAdding(true)}
           type="button"
           className="self-end m-1 outline-hover-btn"
-          disabled={isLoading}
         >
           셀원 추가
         </button>
       )}
 
-      {isLoading ? (
-        <>
-          <div className="container flex flex-col items-center justify-center h-screen space-y-5">
-            <FadeLoader color="#5db075" margin={3} />
-            <span>데이터를 불러오는 중입니다.</span>
-          </div>
-        </>
+      {query.isLoading || query.isFetching ? (
+        <div className="container flex flex-col items-center justify-center h-screen space-y-5">
+          <FadeLoader color="#5db075" margin={3} />
+          <span>데이터를 불러오는 중입니다.</span>
+        </div>
+      ) : query.isError ? (
+        <div className="container place-self-center">데이터를 불러오는 데 오류가 발생했습니다.</div>
       ) : (
         <div>
-          {tabData.length > 0 ? (
+          {query.data?.length != undefined ? (
             <CellTabPage
-              tabData={tabData}
+              tabData={query.data!}
               activeTabNum={activeTab}
               setActiveTabNum={setActiveTab}
-              refreshPage={fetchTabs}
+              refreshData={refreshData}
             />
           ) : (
             <div className="container place-self-center">추가된 기도제목이 없습니다</div>

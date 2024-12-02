@@ -11,7 +11,7 @@ interface CardProps {
   isEditable: boolean;
   startEdit(id: string): void;
   endEdit(): void;
-  refreshParentPage: () => Promise<void>;
+  refreshParentPage: () => void;
 }
 
 const Card: React.FC<CardProps> = ({ data, isEditable, startEdit, endEdit, refreshParentPage }) => {

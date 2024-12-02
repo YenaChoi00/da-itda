@@ -8,13 +8,15 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import CellPage from './page/CellPage/index.tsx';
 import Root from './root.tsx';
 import { getCategoryInfo } from './lib/firestore/fam.ts';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-// CategoryContext 생성
 export const CategoryContext = createContext<CategoryInfo>({
   fname: '',
   fid: '',
-  cellArr: [{ cname: '', cid: '' }],
+  cellArr: [],
 });
+
+const queryClient = new QueryClient();
 
 const container = document.getElementById('root');
 if (!container) throw new Error('Root container not found');
@@ -42,7 +44,7 @@ const App = () => {
   const [info, setInfo] = useState<CategoryInfo>({
     fname: '',
     fid: '',
-    cellArr: [{ cname: '', cid: '' }],
+    cellArr: [],
   });
 
   useEffect(() => {
@@ -60,10 +62,12 @@ const App = () => {
 
   return (
     <React.StrictMode>
-      <CategoryContext.Provider value={info}>
-        <RouterProvider router={router} />
-        <ToastContainer />
-      </CategoryContext.Provider>
+      <QueryClientProvider client={queryClient}>
+        <CategoryContext.Provider value={info}>
+          <RouterProvider router={router} />
+          <ToastContainer />
+        </CategoryContext.Provider>
+      </QueryClientProvider>
     </React.StrictMode>
   );
 };
