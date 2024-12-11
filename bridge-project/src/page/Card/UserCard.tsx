@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { HiOutlineTrash } from 'react-icons/hi';
 import { Info } from '../../model/info';
-import { successToast } from '../toast';
+import { errorToast, successToast } from '../toast';
 import './Datepicker.css';
 import 'react-datepicker/dist/react-datepicker.css';
 import { deleteUser, updateUser } from '../../lib/firestore/user';
 import { dateFormat } from '../../assets/utils';
 import CustomCalender from '../Calender';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface InfoWithoutContent extends Omit<Info, 'content' | 'date'> {
   content?: string[];
@@ -19,9 +20,16 @@ interface UserCardProps {
   isEditable: boolean;
   startEdit(id: string): void;
   endEdit(): void;
+  refreshData(): void;
 }
 
-const UserCard: React.FC<UserCardProps> = ({ data, isEditable, startEdit, endEdit }) => {
+const UserCard: React.FC<UserCardProps> = ({
+  data,
+  isEditable,
+  startEdit,
+  endEdit,
+  refreshData,
+}) => {
   const [title, setTitle] = useState(data.name);
   const [birthday, setBirthday] = useState<Date | null>();
 
@@ -45,33 +53,46 @@ const UserCard: React.FC<UserCardProps> = ({ data, isEditable, startEdit, endEdi
   };
 
   // 수정
-  const saveUpdates = async () => {
-    try {
-      const user = {
-        name: title,
-        birthday: dateFormat(birthday!),
-      };
-      await updateUser({ id: data.id, userData: user });
+  const updateM = useMutation({
+    mutationFn: ({ id, user }: { id: string; user: object }) =>
+      updateUser({ id: id, userData: user }),
+    onSuccess: async () => {
       successToast('성공적으로 수정되었습니다.');
-    } catch (error) {
-      console.error('Error updating data:', error);
-    }
+      refreshData();
+    },
+    onError: async (e) => {
+      console.log(e.message);
+      errorToast('수정 중 오류가 발생하였습니다.');
+    },
+  });
+
+  const saveUpdates = async () => {
+    const newData = {
+      name: title,
+      birthday: dateFormat(birthday!),
+    };
+    updateM.mutate({ id: data.id, user: newData });
     endEdit();
-    // refreshParentPage();
   };
 
   // 삭제
+  const deleteM = useMutation({
+    mutationFn: (id: string) => deleteUser({ id: id }),
+    onSuccess: async () => {
+      successToast('정상적으로 삭제되었습니다.');
+      refreshData();
+    },
+    onError: async (e) => {
+      console.log(e.message);
+      errorToast('삭제 중 오류가 발생하였습니다.');
+    },
+  });
+
   const deleteUserInfo = async () => {
     const userConfirmed = window.confirm('삭제 하시겠습니까?');
 
     if (userConfirmed) {
-      try {
-        await deleteUser({ id: data.id });
-        successToast('정상적으로 삭제되었습니다.');
-        //   refreshParentPage();
-      } catch (error) {
-        console.error('Error deleting User Info:', error);
-      }
+      deleteM.mutate(data.id);
     }
 
     return;

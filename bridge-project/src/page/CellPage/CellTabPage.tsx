@@ -4,6 +4,7 @@ import UserCard from '../Card/UserCard.tsx';
 import { HiOutlinePencil } from 'react-icons/hi';
 import { errorToast, successToast } from '../toast.tsx';
 import { updateCellName } from '../../lib/firestore/cell.ts';
+import { useMutation } from '@tanstack/react-query';
 
 interface TabProps {
   tabData: CellPageTab[];
@@ -44,19 +45,26 @@ const TabPage: React.FC<TabProps> = ({ tabData, activeTabNum, setActiveTabNum, r
     initCategoryName();
   }, [activeTabNum, tabData]);
 
-  const editCategoryName = async () => {
-    try {
-      await updateCellName({
-        cellName: newCategory,
-        cellId: tabData[activeTabNum].id,
-      });
+  const updateC = useMutation({
+    mutationFn: ({ name, id }: { name: string; id: string }) =>
+      updateCellName({ cellName: name, cellId: id }),
+    onSuccess: async () => {
+      successToast('성공적으로 수정되었습니다.');
       closeEditCategoryName();
       refreshData();
-      successToast('수정되었습니다.');
-    } catch (error) {
-      console.error(error);
-      errorToast('수정 중 오류가 발생했습니다.');
-    }
+    },
+    onError: async (e) => {
+      console.log(e.message);
+      errorToast('수정 중 오류가 발생하였습니다.');
+    },
+  });
+
+  const editCategoryName = async () => {
+    const newData = {
+      name: newCategory,
+      id: tabData[activeTabNum].id,
+    };
+    updateC.mutate(newData);
   };
 
   const closeEditCategoryName = () => {
@@ -122,6 +130,7 @@ const TabPage: React.FC<TabProps> = ({ tabData, activeTabNum, setActiveTabNum, r
               isEditable={item.id === editingId}
               startEdit={(id: string) => startEdit(id)}
               endEdit={endEdit}
+              refreshData={refreshData}
             />
           ))
         ) : (

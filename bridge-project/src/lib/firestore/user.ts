@@ -151,7 +151,13 @@ export async function deleteUser({ id }: { id: string }): Promise<void> {
   }
 }
 
-export async function addUser(user: Omit<UserDoc, 'id'>, cellId: string): Promise<void> {
+export async function addUser({
+  user,
+  cellId,
+}: {
+  user: Omit<UserDoc, 'id'>;
+  cellId: string;
+}): Promise<void> {
   try {
     // 1. 사용자 추가
     const userRef = getUserCollection();

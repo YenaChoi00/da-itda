@@ -8,7 +8,8 @@ import { errorToast, successToast } from '../toast';
 import CellTabPage from './CellTabPage';
 import { dateFormat } from '../../assets/utils';
 import CustomCalender from '../Calender';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { UserDoc } from '../../lib/firestore/type';
 
 const CellPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -77,6 +78,20 @@ const CellPage: React.FC = () => {
     }
   };
 
+  const addU = useMutation({
+    mutationFn: ({ user, id }: { user: Omit<UserDoc, 'id'>; id: string; cell: string | null }) =>
+      addUser({ user: user, cellId: id }),
+    onSuccess: async (_mutationResponse, { user, cell }) => {
+      successToast(`${user.name} 이/가 ${cell} 에 추가되었습니다.`);
+      refreshData();
+      closeAdd();
+    },
+    onError: async (e) => {
+      console.log(e.message);
+      errorToast('오류가 발생하여 추가에 실패했습니다.');
+    },
+  });
+
   const submit = async () => {
     if (checkValues()) {
       const user = {
@@ -87,16 +102,8 @@ const CellPage: React.FC = () => {
       };
       const cellId = category;
       const cellName = getNameById(category);
-      try {
-        await addUser(user, cellId);
-        refreshData();
 
-        successToast(`${title}이/가 ${cellName}에 추가되었습니다.`);
-        closeAdd();
-      } catch (error) {
-        console.error(error);
-        errorToast('오류가 발생하여 추가에 실패했습니다.');
-      }
+      addU.mutate({ user: user, id: cellId, cell: cellName });
     }
   };
 
